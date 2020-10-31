@@ -1,0 +1,99 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+
+<ContentPage
+    Title="{Binding Title}"
+    x:Class="Test.Views.ItemsPage"
+    x:Name="BrowseItemsPage"
+    xmlns="http://xamarin.com/schemas/2014/forms"
+    xmlns:PanCake="clr-namespace:Xamarin.Forms.PancakeView;assembly=Xamarin.Forms.PancakeView"
+    xmlns:local="clr-namespace:Test.ViewModels"
+    xmlns:model="clr-namespace:Test.Models"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    NavigationPage.HasNavigationBar="False"
+    >
+
+    <ContentPage.Resources>
+        <Style TargetType="Grid">
+            <Setter Property="VisualStateManager.VisualStateGroups">
+                <VisualStateGroupList>
+                    <VisualStateGroup x:Name="CommonStates">
+                        <VisualState x:Name="Normal" />
+                        <VisualState x:Name="Selected">
+                            <VisualState.Setters>
+                                <Setter Property="BackgroundColor"
+                                        Value="White" />
+                            </VisualState.Setters>
+                        </VisualState>
+                    </VisualStateGroup>
+                </VisualStateGroupList>
+            </Setter>
+        </Style>
+    </ContentPage.Resources>
+
+    <ContentPage.ToolbarItems>
+        <ToolbarItem
+            Command="{Binding AddItemCommand}"
+            Text="Add"
+            x:DataType="local:ItemsViewModel" />
+    </ContentPage.ToolbarItems>
+
+    <RefreshView IsRefreshing="{Binding IsBusy}" Command="{Binding LoadItemsCommand}">
+
+        <Grid Padding="15,0,5,0" RowDefinitions="Auto, Auto, Auto, *" ColumnDefinitions="Auto, *, Auto"
+        >
+            <CollectionView
+                    Grid.Row="3"
+                    ItemsSource="{Binding Items}"
+                    SelectionMode="Single"
+                    SelectedItem="{Binding SelectedItem}"
+                    >
+                <CollectionView.ItemsLayout>
+                    <GridItemsLayout Orientation="Vertical" Span="1"  VerticalItemSpacing="0" HorizontalItemSpacing="10"/>
+                </CollectionView.ItemsLayout>
+                <CollectionView.EmptyView>
+                    <Grid RowDefinitions="*,*,*">
+                    <Label Grid.Row="1" FontSize="30" Text="No farm found." HorizontalOptions="Center" VerticalOptions="Center"/>
+                    </Grid>
+                </CollectionView.EmptyView>
+                <CollectionView.ItemTemplate>
+                    <DataTemplate>
+                        <Grid RowDefinitions="Auto" ColumnDefinitions="Auto"
+                        x:DataType="model:Item" Padding="0,0,0,20">
+                            <PanCake:PancakeView
+                                
+                            CornerRadius="20,20,20,20"
+                                BackgroundColor="#F4E4B1"
+                            Grid.Column="0"
+                            Grid.Row="0">
+                                <Grid RowDefinitions="20, 20, 20" ColumnDefinitions="30,*,*, *">
+                                    <Image Grid.Row="1"  Grid.RowSpan="10" Grid.Column="3" Scale="1" Opacity="1" Source="{Binding Image}" Aspect="AspectFit"/>
+                                    <Label
+                            Grid.Column="1"
+                                        Grid.ColumnSpan="2"
+                            Grid.Row="1"
+                            HorizontalOptions="Start"
+                                        LineBreakMode="WordWrap">
+                                        <Label.FormattedText>
+                                            <FormattedString>
+                                                <Span
+                                        FontAttributes="Bold"
+                                        FontSize="16"
+                                                    
+                                        Text="{Binding Name}" />
+                                            </FormattedString>
+                                        </Label.FormattedText>
+                                    </Label>
+                                    <Label LineBreakMode="WordWrap" Grid.ColumnSpan="3" Grid.Column="1" Grid.Row="2" Text="{Binding Id}"/>
+                                </Grid>
+
+                            </PanCake:PancakeView>
+
+                        </Grid>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
+        </Grid>
+
+    </RefreshView>
+
+</ContentPage>
