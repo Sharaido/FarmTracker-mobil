@@ -1,49 +1,16 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
-
 <ContentPage
-    x:Class="Test.Views.ItemsPage"
+    x:Class="Test.Views.FarmDetailPage"
     xmlns="http://xamarin.com/schemas/2014/forms"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     xmlns:PanCake="clr-namespace:Xamarin.Forms.PancakeView;assembly=Xamarin.Forms.PancakeView"
     xmlns:converter="clr-namespace:Test.Converters"
     xmlns:local="clr-namespace:Test.ViewModels"
-    xmlns:model="clr-namespace:Test.Models"
-    x:Name="BrowseItemsPage"
-    Title="{Binding Title}"
-    BackgroundColor="White"
-    NavigationPage.HasNavigationBar="False">
-
-    <ContentPage.Resources>
-        <converter:FarmBarnToColorConverter x:Key="FarmBarnToColorConverter" />
-        <converter:FarmBarnToImageConverter x:Key="FarmBarnToImageConverter" />
-        <Style TargetType="Grid">
-            <Setter Property="VisualStateManager.VisualStateGroups">
-                <VisualStateGroupList>
-                    <VisualStateGroup x:Name="CommonStates">
-                        <VisualState x:Name="Normal" />
-                        <VisualState x:Name="Selected">
-                            <VisualState.Setters>
-                                <Setter Property="BackgroundColor" Value="White" />
-                            </VisualState.Setters>
-                        </VisualState>
-                    </VisualStateGroup>
-                </VisualStateGroupList>
-            </Setter>
-        </Style>
-    </ContentPage.Resources>
-    <Shell.TitleView>
-        <SearchBar
-            CancelButtonColor="White"
-            HorizontalOptions="Start"
-            TextColor="White" />
-    </Shell.TitleView>
+    xmlns:model="clr-namespace:Test.Models">
 
     <ContentPage.ToolbarItems>
-        <ToolbarItem IconImageSource="" />
-        <ToolbarItem
-            x:DataType="local:ItemsViewModel"
-            Command="{Binding AddItemCommand}"
-            Text="Add" />
+        <ToolbarItem Command="{Binding EditItemCommand}" Text="Edit" />
+        <ToolbarItem Command="{Binding DeleteItemCommand}" Text="Delete" />
     </ContentPage.ToolbarItems>
 
     <RefreshView Command="{Binding LoadItemsCommand}" IsRefreshing="{Binding IsBusy}">
@@ -54,14 +21,14 @@
             RowDefinitions="Auto">
             <CollectionView
                 Grid.Row="0"
-                ItemsSource="{Binding Items}"
+                ItemsSource="{Binding Entities}"
                 SelectedItem="{Binding SelectedItem}"
                 SelectionMode="Single">
                 <CollectionView.ItemsLayout>
                     <GridItemsLayout
                         HorizontalItemSpacing="10"
                         Orientation="Vertical"
-                        Span="1"
+                        Span="2"
                         VerticalItemSpacing="0" />
                 </CollectionView.ItemsLayout>
                 <CollectionView.EmptyView>
@@ -78,7 +45,7 @@
                     <DataTemplate>
                         <Grid
                             Padding="0,10,0,10"
-                            x:DataType="model:Item"
+                            x:DataType="model:Entity"
                             ColumnDefinitions="Auto"
                             RowDefinitions="Auto">
                             <PanCake:PancakeView
@@ -91,9 +58,10 @@
                                         Grid.Row="0"
                                         Grid.RowSpan="10"
                                         Grid.Column="3"
+                                        Grid.ColumnSpan="1"
                                         Aspect="AspectFit"
                                         Opacity="1"
-                                        Scale="1"
+                                        Scale="1.1"
                                         Source="tree1.png" />
                                     <Label
                                         Grid.Row="1"
@@ -112,7 +80,7 @@
                                         Grid.ColumnSpan="3"
                                         FontFamily="Roboto"
                                         LineBreakMode="WordWrap"
-                                        Text="{Binding Address}" />
+                                        Text="{Binding PurchaseDate}" />
                                     <StackLayout
                                         Grid.Row="3"
                                         Grid.RowSpan="5"
@@ -122,12 +90,7 @@
                                         <Label
                                             Margin="0,2,0,0"
                                             FontFamily="Roboto"
-                                            Text="{Binding Size}" />
-                                        <Label
-                                            FontFamily="Roboto"
-                                            Text="m&lt;sup&gt;&lt;small&gt;2"
-                                            TextType="Html"
-                                            VerticalOptions="Start" />
+                                            Text="{Binding Amount}" />
                                     </StackLayout>
 
                                 </Grid>
@@ -141,5 +104,6 @@
         </Grid>
 
     </RefreshView>
+
 
 </ContentPage>

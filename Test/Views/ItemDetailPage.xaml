@@ -1,11 +1,11 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <ContentPage
-    Title="{Binding Title}"
     x:Class="Test.Views.ItemDetailPage"
-    x:DataType="viewModels:ItemDetailViewModel"
     xmlns="http://xamarin.com/schemas/2014/forms"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     xmlns:viewModels="clr-namespace:Test.ViewModels;assembly=Test"
-    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml">
+    Title="{Binding Title}"
+    x:DataType="viewModels:ItemDetailViewModel">
 
     <ContentPage.ToolbarItems>
         <ToolbarItem Command="{Binding EditItemCommand}" Text="Save" />
@@ -15,15 +15,15 @@
     <StackLayout Padding="15" Spacing="20">
         <Label FontSize="Medium" Text="Text:" />
         <Entry
+            x:Name="EntryText"
             IsPassword="False"
-            Text="{Binding Text}"
-            x:Name="EntryText" />
+            Text="{Binding Text}" />
 
         <Label FontSize="Medium" Text="Description:" />
         <Entry
+            x:Name="EntryDesc"
             IsPassword="False"
-            Text="{Binding Description}"
-            x:Name="EntryDesc" />
+            Text="{Binding Description}" />
 
     </StackLayout>
 

@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 
 <Shell
-    Title="Test"
     x:Class="Test.AppShell"
     xmlns="http://xamarin.com/schemas/2014/forms"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     xmlns:local="clr-namespace:Test.Views"
-    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml">
+    Title="Test">
 
     <!--
         The overall app visual hierarchy is defined here, along with navigation.
@@ -15,7 +15,7 @@
 
     <Shell.Resources>
         <ResourceDictionary>
-            <Style TargetType="Element" x:Key="BaseStyle">
+            <Style x:Key="BaseStyle" TargetType="Element">
                 <Setter Property="Shell.BackgroundColor" Value="{StaticResource Primary}" />
                 <Setter Property="Shell.ForegroundColor" Value="White" />
                 <Setter Property="Shell.TitleColor" Value="White" />
@@ -47,7 +47,7 @@
                             <VisualState x:Name="Normal">
                                 <VisualState.Setters>
                                     <Setter Property="BackgroundColor" Value="White" />
-                                    <Setter Property="Label.TextColor" TargetName="FlyoutItemLabel" Value="{StaticResource Primary}" />
+                                    <Setter TargetName="FlyoutItemLabel" Property="Label.TextColor" Value="{StaticResource Primary}" />
                                 </VisualState.Setters>
                             </VisualState>
                             <VisualState x:Name="Selected">
@@ -72,7 +72,7 @@
                         <VisualStateGroup x:Name="CommonStates">
                             <VisualState x:Name="Normal">
                                 <VisualState.Setters>
-                                    <Setter Property="Label.TextColor" TargetName="FlyoutItemLabel" Value="{StaticResource Primary}" />
+                                    <Setter TargetName="FlyoutItemLabel" Property="Label.TextColor" Value="{StaticResource Primary}" />
                                 </VisualState.Setters>
                             </VisualState>
                         </VisualStateGroup>
@@ -88,25 +88,31 @@
         https://docs.microsoft.com/dotnet/api/xamarin.forms.shellgroupitem.flyoutdisplayoptions?view=xamarin-forms
     -->
 
+    <Shell.FlyoutHeader>
+        <local:ShellHeader />
+    </Shell.FlyoutHeader>
+
     <FlyoutItem FlyoutDisplayOptions="AsMultipleItems">
-        
         <ShellContent
+            Title="Farms"
             ContentTemplate="{DataTemplate local:ItemsPage}"
-            Icon="tab_feed.png"
-            Title="Browse" />
+            Icon="tree1.png" />
+
+    </FlyoutItem>
+
+    <FlyoutItem Title="asd" FlyoutDisplayOptions="AsMultipleItems">
+        <ShellContent
+            Title="Income and Expense"
+            ContentTemplate="{DataTemplate local:ItemsPage}"
+            Icon="dog.png"
+            IsTabStop="False" />
     </FlyoutItem>
 
 
-
-
     <ShellContent
-        ContentTemplate="{DataTemplate local:ItemsPage}"
-        IsTabStop="True"
-        Title="Farms" />
-    <ShellContent
-        ContentTemplate="{DataTemplate local:ItemsPage}"
-        IsTabStop="True"
-        Title="Income and Expense" />
+        Title="Profile"
+        ContentTemplate="{DataTemplate local:AboutPage}"
+        Route="AboutPage" />
 
     <!--  When the Flyout is visible this will be a menu item you can tie a click behavior to  -->
     <MenuItem
@@ -124,6 +130,8 @@
         ContentTemplate="{DataTemplate local:LoginPage}"
         Route="LoginPage"
         Shell.FlyoutBehavior="Disabled" />
+
+
 
     <!-- Optional Templates
     // These may be provided inline as below or as separate classes.

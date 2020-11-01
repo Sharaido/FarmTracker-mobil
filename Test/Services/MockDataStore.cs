@@ -17,8 +17,10 @@ namespace Test.Services
                 new Item
                 {
                     Id = Guid.NewGuid().ToString(),
-                    Name = "Small farm.",
-                    Image = "tree1.png",
+                    Name = "Small farm",
+                    Address = "123 Somewhere Place, City",
+                    Size = 50,
+                    IsFarm = true,
                     Entities = new List<Entity>
                     {
                         new Entity
@@ -38,8 +40,10 @@ namespace Test.Services
                 new Item
                 {
                     Id = Guid.NewGuid().ToString(),
-                    Name = "Large farm.",
-                    Image = "tree2.png",
+                    Name = "Large farm",
+                    Address = "123 Somewhere Place, City",
+                    IsFarm = true,
+                    Size = 50,
                     Entities = new List<Entity>
                     {
                         new Entity
@@ -59,8 +63,10 @@ namespace Test.Services
                 new Item
                 {
                     Id = Guid.NewGuid().ToString(),
-                    Name = "Plants at home.",
-                    Image = "tree3.png",
+                    Name = "Plants at home",
+                    Address = "123 Somewhere Place, City",
+                    Size = 50,
+                    IsFarm = true,
                     Entities = new List<Entity>
                     {
                         new Entity
@@ -80,8 +86,10 @@ namespace Test.Services
                 new Item
                 {
                     Id = Guid.NewGuid().ToString(),
-                    Name = "Another small farm.",
-                    Image = "tree4.png",
+                    Name = "Another small farm",
+                    Address = "123 Somewhere Place, City",
+                    Size = 50,
+                    IsFarm = true,
                     Entities = new List<Entity>
                     {
                         new Entity
@@ -101,8 +109,10 @@ namespace Test.Services
                 new Item
                 {
                     Id = Guid.NewGuid().ToString(),
-                    Name = "Another large farm.",
-                    Image = "tree5.png",
+                    Name = "Large farm",
+                    Address = "123 Somewhere Place, City",
+                    Size = 500,
+                    IsFarm = true,
                     Entities = new List<Entity>
                     {
                         new Entity
@@ -119,27 +129,6 @@ namespace Test.Services
                         },
                     }
                 },
-                new Item
-                {
-                    Id = Guid.NewGuid().ToString(),
-                    Name = "My wife's garden.",
-                    Image = "tree6.png",
-                    Entities = new List<Entity>
-                    {
-                        new Entity
-                        {
-                            Id = Guid.NewGuid().ToString(), Name = "Plant 1", Amount = 1, PurchaseDate = "2020-10-11", Cost = 100.00f, Sold = false, Note = "This is a note."
-                        },
-                        new Entity
-                        {
-                            Id = Guid.NewGuid().ToString(), Name = "Plant 2", Amount = 2, PurchaseDate = "2020-10-12", Cost = 200.00f, Sold = false, Note = "This is a note."
-                        },
-                        new Entity
-                        {
-                            Id = Guid.NewGuid().ToString(), Name = "Plant 3", Amount = 3, PurchaseDate = "2020-10-13", Cost = 300.00f, Sold = false, Note = "This is a note."
-                        },
-                    }
-                }
             };
         }
 
@@ -172,6 +161,11 @@ namespace Test.Services
         public async Task<IEnumerable<Item>> GetItemsAsync(bool forceRefresh = false)
         {
             return await Task.FromResult(items);
+        }
+
+        public async Task<IEnumerable<Entity>> GetEntitiesAsync(string id, bool forceRefresh = false)
+        {
+            return await Task.FromResult(items.FirstOrDefault(s => s.Id == id).Entities);
         }
     }
 }

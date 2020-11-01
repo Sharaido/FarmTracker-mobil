@@ -1,26 +1,22 @@
 ﻿using System;
-using System.ComponentModel;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Test.ViewModels;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
 
-using Test.Models;
-using Test.Views;
-using Test.ViewModels;
-
 namespace Test.Views
 {
-    public partial class ItemsPage : ContentPage
+    [XamlCompilation(XamlCompilationOptions.Compile)]
+    public partial class FarmDetailPage : ContentPage
     {
-        ItemsViewModel _viewModel;
-        
-        public ItemsPage()
+        FarmDetailViewModel _viewModel;
+        public FarmDetailPage()
         {
             InitializeComponent();
-            BindingContext = _viewModel = new ItemsViewModel();
+            BindingContext = _viewModel = new FarmDetailViewModel();
         }
 
         protected override void OnAppearing()
@@ -28,7 +24,5 @@ namespace Test.Views
             base.OnAppearing();
             _viewModel.OnAppearing();
         }
-
-        
     }
 }

@@ -26,7 +26,7 @@ namespace Test.ViewModels
 
         public ItemsViewModel()
         {
-            Title = "Browse";
+            Title = "My Farms";
             Items = new ObservableCollection<Item>();
             LoadItemsCommand = new Command(async () => await ExecuteLoadItemsCommand());
             ItemTapped = new Command<Item>(OnItemSelected);
@@ -82,9 +82,9 @@ namespace Test.ViewModels
         {
             if (item == null)
                 return;
-            Console.WriteLine("ışınla bizi");
             // This will push the ItemDetailPage onto the navigation stack
-            await Shell.Current.GoToAsync($"{nameof(ItemDetailPage)}?{nameof(ItemDetailViewModel.ItemId)}={item.Id}");
+            await Shell.Current.GoToAsync($"{nameof(FarmDetailPage)}?{nameof(FarmDetailViewModel.ItemId)}={item.Id}");
+            
         }
     }
 }

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Test.Models;
 
 namespace Test.Services
 {
@@ -11,5 +12,6 @@ namespace Test.Services
         Task<bool> DeleteItemAsync(string id);
         Task<T> GetItemAsync(string id);
         Task<IEnumerable<T>> GetItemsAsync(bool forceRefresh = false);
+        Task<IEnumerable<Entity>> GetEntitiesAsync(string id, bool forceRefresh = false);
     }
 }

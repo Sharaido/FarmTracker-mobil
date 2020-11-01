@@ -2,8 +2,8 @@
 <TabbedPage
     x:Class="Test.Views.TabbedPage1"
     xmlns="http://xamarin.com/schemas/2014/forms"
-    xmlns:local="clr-namespace:Test.Views"
-    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml">
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:local="clr-namespace:Test.Views">
     <!--  Pages can be added as references or inline  -->
 
     <NavigationPage>

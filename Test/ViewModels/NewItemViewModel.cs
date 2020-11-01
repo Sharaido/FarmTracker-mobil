@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Numerics;
 using System.Text;
 using System.Windows.Input;
 using Test.Models;
@@ -11,6 +12,8 @@ namespace Test.ViewModels
     {
         private string text;
         private string description;
+        private string address;
+        private int size;
 
         public NewItemViewModel()
         {
@@ -23,7 +26,7 @@ namespace Test.ViewModels
         private bool ValidateSave()
         {
             return !String.IsNullOrWhiteSpace(text)
-                && !String.IsNullOrWhiteSpace(description);
+                && !String.IsNullOrWhiteSpace(address) && size > 0;
         }
 
         public string Text
@@ -36,6 +39,18 @@ namespace Test.ViewModels
         {
             get => description;
             set => SetProperty(ref description, value);
+        }
+
+        public string Address
+        {
+            get => address;
+            set => SetProperty(ref address, value);
+        }
+
+        public int Size
+        {
+            get => size;
+            set => SetProperty(ref size, value);
         }
 
         public Command SaveCommand { get; }
@@ -53,7 +68,8 @@ namespace Test.ViewModels
             {
                 Id = Guid.NewGuid().ToString(),
                 Name = Text,
-                Description = Description
+                Address = Address,
+                Size = Size,
             };
 
             await DataStore.AddItemAsync(newItem);
