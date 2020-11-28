@@ -4,7 +4,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
-import 'package:flutter_app/pages/register_page.dart';
+//import 'package:flutter_app/pages/register_page.dart';
 import 'package:http/http.dart' as http;
 import 'package:video_player/video_player.dart';
 
@@ -90,7 +90,8 @@ class _LoginPageState extends State<LoginPage> {
           ),
           onPressed: () {
             setState(() {
-              _loginResult = tryLogin(_usernameController.text, _passwordController.text);
+              _loginResult =
+                  tryLogin(_usernameController.text, _passwordController.text);
             });
           },
         ),
@@ -114,7 +115,7 @@ class _LoginPageState extends State<LoginPage> {
           ),
           onPressed: () async {
             _controller.pause();
-            await Navigator.of(context).push(routeBottomToUp(RegisterPage()));
+            //await Navigator.of(context).push(routeBottomToUp(RegisterPage()));
             _controller.play();
           },
         ),
@@ -139,7 +140,11 @@ class _LoginPageState extends State<LoginPage> {
         if (hasError)
           Text(
             'Wrong username or password',
-            style: TextStyle(fontSize: 17, fontFamily: 'Roboto', color: Colors.grey[200], fontWeight: FontWeight.bold),
+            style: TextStyle(
+                fontSize: 17,
+                fontFamily: 'Roboto',
+                color: Colors.grey[200],
+                fontWeight: FontWeight.bold),
           ),
         _getInputField(_usernameController, "USERNAME", false),
         _getInputField(_passwordController, "PASSWORD", true),
@@ -164,7 +169,8 @@ class _LoginPageState extends State<LoginPage> {
         keyboardType: TextInputType.text,
         autocorrect: true,
         obscureText: isPass,
-        style: TextStyle(color: Colors.grey[200], fontFamily: 'Roboto', fontSize: 18.0),
+        style: TextStyle(
+            color: Colors.grey[200], fontFamily: 'Roboto', fontSize: 18.0),
         decoration: InputDecoration(
             contentPadding: EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
             labelText: label,

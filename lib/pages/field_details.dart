@@ -4,10 +4,10 @@ import 'package:flutter_app/pages/map_sample.dart';
 import 'package:unicorndial/unicorndial.dart';
 
 import '../main.dart';
+import 'newEntity.dart';
 
 class FieldDetails extends StatefulWidget {
   final Field field;
-
   const FieldDetails({
     Key key,
     @required this.field,
@@ -37,7 +37,10 @@ class _FieldDetailsState extends State<FieldDetails> {
       mini: true,
       child: Icon(Icons.add),
       onPressed: () {
-        Navigator.of(context).push(routeRightToLeft(MapSample()));
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => newEntity()),
+        );
       },
     )));
 
@@ -47,7 +50,8 @@ class _FieldDetailsState extends State<FieldDetails> {
         title: Text(
           widget.field.name.toUpperCase(),
           textAlign: TextAlign.center,
-          style: TextStyle(color: Colors.green[600], fontWeight: FontWeight.w700),
+          style:
+              TextStyle(color: Colors.green[600], fontWeight: FontWeight.w700),
         ),
         actions: [
           IconButton(
@@ -61,7 +65,292 @@ class _FieldDetailsState extends State<FieldDetails> {
         iconTheme: new IconThemeData(color: Colors.green[600]),
       ),
       body: Container(
-        child: Text(widget.field.location),
+        child: Column(
+            //mainAxisAlignment: MainAxisAlignment.center,
+            //crossAxisAlignment: CrossAxisAlignment.center,
+            children: <Widget>[
+              new Text(
+                'AĞAÇ BİLGİSİ',
+                style: TextStyle(
+                    fontSize: 18.0, color: Colors.black.withOpacity(1.0)),
+              ),
+              //Text(widget.field.location),
+              Card(
+                clipBehavior: Clip.antiAlias,
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(8.0)),
+                color: Colors.white,
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: <Widget>[
+                    Container(
+                      color: Colors.amber,
+                      width: 10,
+                    ),
+                    SizedBox(
+                      width: 10.0,
+                    ),
+                    Expanded(
+                      child: GestureDetector(
+                        onTap: () {
+                          print('testing');
+                        },
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            new Text(
+                              'TOPLAM AĞAÇ SAYISI',
+                              style: TextStyle(
+                                  fontSize: 18.0,
+                                  color: Colors.green.withOpacity(1.0)),
+                            ),
+                            new Text(
+                              '220',
+                              style: TextStyle(
+                                fontSize: 18.0,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              Card(
+                clipBehavior: Clip.antiAlias,
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(8.0)),
+                color: Colors.white,
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: <Widget>[
+                    Container(
+                      color: Colors.amber,
+                      width: 10,
+                    ),
+                    SizedBox(
+                      width: 10.0,
+                    ),
+                    Expanded(
+                      child: GestureDetector(
+                        onTap: () {
+                          print('testing');
+                        },
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            new Text(
+                              'TOPLAM HASTA AĞAÇ SAYISI',
+                              style: TextStyle(
+                                  fontSize: 18.0,
+                                  color: Colors.green.withOpacity(1.0)),
+                            ),
+                            new Text(
+                              '5',
+                              style: TextStyle(
+                                fontSize: 18.0,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              Card(
+                clipBehavior: Clip.antiAlias,
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(8.0)),
+                color: Colors.white,
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: <Widget>[
+                    Container(
+                      color: Colors.amber,
+                      width: 10,
+                    ),
+                    SizedBox(
+                      width: 10.0,
+                    ),
+                    Expanded(
+                      child: GestureDetector(
+                        onTap: () {
+                          print('testing');
+                        },
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            new Text(
+                              'BU YIL DİKİLEN AĞAÇ SAYISI',
+                              style: TextStyle(
+                                  fontSize: 18.0,
+                                  color: Colors.green.withOpacity(1.0)),
+                            ),
+                            new Text(
+                              '12',
+                              style: TextStyle(
+                                fontSize: 18.0,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              new Text(
+                'DİĞER BİLGİLER',
+                style: TextStyle(
+                    fontSize: 18.0, color: Colors.black.withOpacity(1.0)),
+              ),
+              Card(
+                clipBehavior: Clip.antiAlias,
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(8.0)),
+                color: Colors.white,
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: <Widget>[
+                    Container(
+                      color: Colors.amber,
+                      width: 10,
+                    ),
+                    SizedBox(
+                      width: 10.0,
+                    ),
+                    Expanded(
+                      child: GestureDetector(
+                        onTap: () {
+                          print('testing');
+                        },
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            new Text(
+                              'SULAMA BİLGİSİ',
+                              style: TextStyle(
+                                  fontSize: 18.0,
+                                  color: Colors.green.withOpacity(1.0)),
+                            ),
+                            new Text(
+                              'SULANDI',
+                              style: TextStyle(
+                                  fontSize: 15.0,
+                                  color: Colors.blue.withOpacity(1.0)),
+                            ),
+                            new Text(
+                              'Sıradaki sulama tarihi 05/12/2020',
+                              style: TextStyle(
+                                fontSize: 12.0,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              Card(
+                clipBehavior: Clip.antiAlias,
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(8.0)),
+                color: Colors.white,
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: <Widget>[
+                    Container(
+                      color: Colors.amber,
+                      width: 10,
+                    ),
+                    SizedBox(
+                      width: 10.0,
+                    ),
+                    Expanded(
+                      child: GestureDetector(
+                        onTap: () {
+                          print('testing');
+                        },
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            new Text(
+                              'GÜBRELEME BİLGİSİ',
+                              style: TextStyle(
+                                  fontSize: 18.0,
+                                  color: Colors.green.withOpacity(1.0)),
+                            ),
+                            new Text(
+                              'GÜBRELENMEDİ',
+                              style: TextStyle(
+                                  fontSize: 15.0,
+                                  color: Colors.red.withOpacity(1.0)),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              Card(
+                clipBehavior: Clip.antiAlias,
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(8.0)),
+                color: Colors.white,
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: <Widget>[
+                    Container(
+                      color: Colors.amber,
+                      width: 10,
+                    ),
+                    SizedBox(
+                      width: 10.0,
+                    ),
+                    Expanded(
+                      child: GestureDetector(
+                        onTap: () {
+                          print('testing');
+                        },
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            new Text(
+                              'İLAÇLAMA BİLGİSİ',
+                              style: TextStyle(
+                                  fontSize: 18.0,
+                                  color: Colors.green.withOpacity(1.0)),
+                            ),
+                            new Text(
+                              'İLAÇLANDI',
+                              style: TextStyle(
+                                  fontSize: 15.0,
+                                  color: Colors.blue.withOpacity(1.0)),
+                            ),
+                            new Text(
+                              'Sıradaki ilaçlama tarihi 05/12/2020',
+                              style: TextStyle(
+                                fontSize: 12.0,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ]),
       ),
       floatingActionButton: UnicornDialer(
           hasBackground: false,

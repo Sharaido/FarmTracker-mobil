@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_app/pages/homepage.dart';
 import 'package:flutter_app/pages/login_page.dart';
 
 void main() {
@@ -15,10 +16,13 @@ class MyApp extends StatelessWidget {
           primarySwatch: Colors.green,
           //primaryColor: Colors.green[500],
           visualDensity: VisualDensity.adaptivePlatformDensity,
-          textTheme: Theme.of(context)
-              .textTheme
-              .apply(fontFamily: 'Roboto', bodyColor: Colors.black, displayColor: Colors.black)),
-      home: LoginPage(),
+          textTheme: Theme.of(context).textTheme.apply(
+              fontFamily: 'Roboto',
+              bodyColor: Colors.black,
+              displayColor: Colors.black)),
+      home: HomePage(
+        title: 'Home',
+      ),
     );
   }
 }
