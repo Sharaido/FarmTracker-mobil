@@ -6,7 +6,6 @@ import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 //import 'package:flutter_app/pages/register_page.dart';
 import 'package:http/http.dart' as http;
-import 'package:video_player/video_player.dart';
 
 import '../main.dart';
 import 'my_fields.dart';
@@ -19,174 +18,92 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
-  VideoPlayerController _controller;
   TextEditingController _usernameController = TextEditingController();
   TextEditingController _passwordController = TextEditingController();
-  bool _visible = false;
-  bool _showError = false;
-  bool _result;
   Future<bool> _loginResult;
 
-  @override
-  void initState() {
-    super.initState();
-    SystemChrome.setPreferredOrientations([
-      DeviceOrientation.portraitUp,
-    ]);
+  final _formKey = new GlobalKey<FormState>();
+  bool _hidePass = true;
 
-    _controller = VideoPlayerController.asset("assets/videos/background.mp4");
-    _controller.initialize().then((_) {
-      _controller.setLooping(true);
-      Timer(Duration(milliseconds: 100), () {
-        setState(() {
-          _controller.play();
-          _visible = true;
-        });
-      });
+  _onLoginPressed() {
+    if (!_formKey.currentState.validate()) return;
+    setState(() {
+      _loginResult =
+          tryLogin(_usernameController.text, _passwordController.text);
     });
   }
 
-  @override
-  void dispose() {
-    super.dispose();
-    if (_controller != null) {
-      _controller.dispose();
-      _controller = null;
-    }
+  _onRegisterPressed() async {
+    await Navigator.of(context).push(routeBottomToUp(RegisterPage()));
   }
 
-  _getVideoBackground() {
-    return AnimatedOpacity(
-      opacity: _visible ? 1.0 : 0.0,
-      duration: Duration(milliseconds: 1000),
-      child: VideoPlayer(_controller),
-    );
-  }
-
-  _getBackgroundColor() {
-    return Container(
-      color: Colors.grey.withAlpha(120),
-    );
-  }
-
-  _getLoginButtons() {
-    return <Widget>[
-      Container(
-        margin: const EdgeInsets.only(left: 20, right: 20),
-        width: double.infinity,
-        child: FlatButton(
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(20.0),
-          ),
-          color: Colors.green,
-          padding: const EdgeInsets.only(top: 15.0, bottom: 15.0),
-          child: const Text(
-            'LOG IN',
-            style: TextStyle(
-              color: Colors.white,
-              fontFamily: 'Roboto',
-              fontWeight: FontWeight.bold,
-            ),
-          ),
-          onPressed: () {
-            setState(() {
-              _loginResult =
-                  tryLogin(_usernameController.text, _passwordController.text);
-            });
-          },
-        ),
-      ),
-      Container(
-        margin: const EdgeInsets.only(top: 10, left: 20, right: 20),
-        width: double.infinity,
-        child: FlatButton(
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(20.0),
-          ),
-          color: Colors.grey[200],
-          padding: const EdgeInsets.only(top: 15.0, bottom: 15.0),
-          child: const Text(
-            'REGISTER',
-            style: TextStyle(
-              color: Colors.black,
-              fontFamily: 'Roboto',
-              fontWeight: FontWeight.bold,
-            ),
-          ),
-          onPressed: () async {
-            _controller.pause();
-            //await Navigator.of(context).push(routeBottomToUp(RegisterPage()));
-            _controller.play();
-          },
-        ),
-      ),
-      Container(
-        margin: const EdgeInsets.only(bottom: 0, top: 20, left: 20, right: 20),
-        width: double.infinity,
-      ),
-      Spacer(),
-    ];
+  _onShowPassClicked() {
+    setState(() {
+      _hidePass = !_hidePass;
+    });
   }
 
   _getContent(bool hasError) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.center,
-      mainAxisAlignment: MainAxisAlignment.start,
-      children: <Widget>[
-        Spacer(),
-        SizedBox(
-          height: 50.0,
-        ),
-        if (hasError)
+    return Form(
+      key: _formKey,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        mainAxisAlignment: MainAxisAlignment.start,
+        children: <Widget>[
+          Spacer(),
           Text(
-            'Wrong username or password',
+            'LOG IN',
             style: TextStyle(
-                fontSize: 17,
+                fontSize: 25,
                 fontFamily: 'Roboto',
-                color: Colors.grey[200],
+                color: Colors.black54,
                 fontWeight: FontWeight.bold),
           ),
-        _getInputField(_usernameController, "USERNAME", false),
-        _getInputField(_passwordController, "PASSWORD", true),
-        SizedBox(
-          height: 50.0,
-        ),
-        ..._getLoginButtons()
-      ],
+          SizedBox(
+            height: 30.0,
+          ),
+          if (hasError)
+            Text(
+              'Wrong username or password',
+              style: TextStyle(
+                  fontSize: 17,
+                  fontFamily: 'Roboto',
+                  color: Colors.red,
+                  fontWeight: FontWeight.bold),
+            ),
+          getTextField(_usernameController, 'USERNAME', false, null, null,
+              _usernameValidator),
+          getTextField(
+              _passwordController,
+              'PASSWORD',
+              _hidePass,
+              Icon(Icons.remove_red_eye),
+              _onShowPassClicked,
+              _passwordValidator),
+          SizedBox(
+            height: 40.0,
+          ),
+          getButton(Colors.green, 'LOG IN', Colors.white, _onLoginPressed),
+          getButton(Colors.white, 'REGISTER', Colors.black, _onRegisterPressed),
+          Container(
+            margin:
+                const EdgeInsets.only(bottom: 0, top: 20, left: 20, right: 20),
+            width: double.infinity,
+          ),
+          Spacer(),
+        ],
+      ),
     );
   }
 
-  _getInputField(TextEditingController controller, String label, bool isPass) {
-    return Container(
-      margin: const EdgeInsets.only(top: 10, left: 20, right: 20),
-      decoration: BoxDecoration(
-        color: Colors.black26,
-        shape: BoxShape.rectangle,
-        borderRadius: BorderRadius.all(Radius.circular(20)),
-      ),
-      child: TextFormField(
-        controller: controller,
-        keyboardType: TextInputType.text,
-        autocorrect: true,
-        obscureText: isPass,
-        style: TextStyle(
-            color: Colors.grey[200], fontFamily: 'Roboto', fontSize: 18.0),
-        decoration: InputDecoration(
-            contentPadding: EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
-            labelText: label,
-            labelStyle: TextStyle(
-              color: Colors.green[400],
-              fontWeight: FontWeight.bold,
-              fontSize: 15,
-            ),
-            hintStyle: TextStyle(color: Colors.grey),
-            border: InputBorder.none),
-        validator: (String value) {
-          if (value.trim().isEmpty) return "Required";
-          return value;
-        },
-      ),
-    );
+  String _usernameValidator(String value) {
+    if (value == '') return 'Required';
+    return null;
+  }
+
+  String _passwordValidator(String value) {
+    if (value == '') return 'Required';
+    return null;
   }
 
   Future<bool> tryLogin(String username, String password) async {
@@ -200,44 +117,131 @@ class _LoginPageState extends State<LoginPage> {
         'Password': password,
       }),
     );
-    print(response.statusCode);
     return response.statusCode == 200;
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Center(
-        child: FutureBuilder(
-          future: _loginResult,
-          builder: (context, snapshot) {
-            if (snapshot.hasData) {
-              if (snapshot.data) {
-                Future.delayed(Duration.zero, () async {
-                  Navigator.of(context).push(routeUpToBottom(MyFields()));
-                });
-              } else {
-                return Stack(
-                  children: <Widget>[
-                    _getVideoBackground(),
-                    _getBackgroundColor(),
-                    _getContent(true),
-                  ],
-                );
-              }
-            } else {
-              return Stack(
-                children: <Widget>[
-                  _getVideoBackground(),
-                  _getBackgroundColor(),
-                  _getContent(false),
-                ],
-              );
-            }
-            return CircularProgressIndicator();
-          },
+      body: SingleChildScrollView(
+        child: Container(
+          height: MediaQuery.of(context).size.height,
+          color: Colors.grey[200],
+          child: Center(
+            child: FutureBuilder(
+              future: _loginResult,
+              builder: (context, snapshot) {
+                if (snapshot.hasData) {
+                  if (snapshot.data) {
+                    Future.delayed(Duration.zero, () async {
+                      _loginResult = Future<bool>.value(false);
+                      Navigator.of(context).push(routeUpToBottom(MyFields()));
+                    });
+                  } else {
+                    return _getContent(true);
+                  }
+                } else {
+                  return _getContent(false);
+                }
+                return CircularProgressIndicator();
+              },
+            ),
+          ),
         ),
       ),
     );
   }
+}
+
+_getLabel(String label) {
+  return Container(
+    margin: const EdgeInsets.only(top: 10, left: 35, right: 20),
+    child: Text(
+      label,
+      style: TextStyle(color: Colors.green, fontWeight: FontWeight.bold),
+    ),
+  );
+}
+
+getTextField(TextEditingController controller, String label, bool hideText,
+    Icon icon, Function iconAction, Function validator) {
+  return Column(
+    crossAxisAlignment: CrossAxisAlignment.start,
+    children: [
+      _getLabel(label),
+      Container(
+        height: 55,
+        margin: const EdgeInsets.only(top: 5, left: 20, right: 20),
+        decoration: BoxDecoration(
+            color: Colors.white,
+            shape: BoxShape.rectangle,
+            borderRadius: BorderRadius.all(Radius.circular(20)),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black,
+                blurRadius: 2.0,
+                spreadRadius: -3,
+                offset: Offset(0, 2),
+              ),
+            ]),
+        child: Row(
+          children: [
+            Flexible(
+              child: TextFormField(
+                autofocus: false,
+                controller: controller,
+                keyboardType: TextInputType.text,
+                autocorrect: true,
+                obscureText: hideText,
+                style: TextStyle(
+                    color: Colors.black, fontFamily: 'Roboto', fontSize: 18.0),
+                decoration: InputDecoration(
+                    contentPadding: EdgeInsets.fromLTRB(20.0, 0, 20.0, 0),
+                    errorStyle: TextStyle(
+                      fontSize: 15,
+                    ),
+                    border: InputBorder.none),
+                validator: validator,
+              ),
+            ),
+            if (icon != null) IconButton(icon: icon, onPressed: iconAction),
+          ],
+        ),
+      ),
+    ],
+  );
+}
+
+getButton(Color color, String text, Color textColor, Function onPressed) {
+  return Container(
+    margin: const EdgeInsets.only(left: 20, right: 20, top: 10),
+    width: double.infinity,
+    decoration: BoxDecoration(
+      borderRadius: BorderRadius.circular(20),
+      boxShadow: [
+        BoxShadow(
+          color: Colors.black,
+          blurRadius: 6.0,
+          spreadRadius: -4,
+          offset: Offset(0, 3),
+        ),
+      ],
+    ),
+    child: FlatButton(
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(20.0),
+      ),
+      color: color,
+      padding: const EdgeInsets.only(top: 15.0, bottom: 15.0),
+      child: Text(
+        text,
+        style: TextStyle(
+          color: textColor,
+          fontFamily: 'Roboto',
+          fontWeight: FontWeight.bold,
+        ),
+      ),
+      onPressed: onPressed,
+    ),
+  );
 }

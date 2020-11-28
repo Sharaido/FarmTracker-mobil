@@ -20,9 +20,15 @@ class MyApp extends StatelessWidget {
               fontFamily: 'Roboto',
               bodyColor: Colors.black,
               displayColor: Colors.black)),
-      home: HomePage(
-        title: 'Home',
-      ),
+
+      // home: HomePage(
+      //   title: 'Home',
+      // ),
+      home: LoginPage(),
+      routes: {
+        '/login': (context) => LoginPage(),
+        '/homepage': (context) => HomePage(),
+      },
     );
   }
 }

@@ -23,10 +23,6 @@ class CustomDrawer extends StatelessWidget {
               icon: Icons.home,
               text: 'HOME',
               onTap: () {
-                // Navigator.of(context).push(routeRightToLeft(MyHomePage(
-                //   title: 'Home',
-                // )));
-                //Navigator.popUntil(context, ModalRoute.withName('/'));
                 Navigator.of(context).push(routeRightToLeft(HomePage(
                   title: 'Home',
                 )));
@@ -78,7 +74,8 @@ class CustomDrawer extends StatelessWidget {
               icon: Icons.logout,
               text: 'LOGOUT',
               onTap: () {
-                Navigator.of(context).push(routeBottomToUp(LoginPage()));
+                Navigator.pushNamedAndRemoveUntil(
+                    context, "/login", (r) => false);
               },
               selected: selected),
         ],
