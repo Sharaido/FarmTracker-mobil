@@ -10,18 +10,21 @@ class CustomDrawerHeader extends StatelessWidget {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.start,
         children: [
-          CircleAvatar(
-            backgroundColor: Colors.transparent,
-            radius: 50,
-            child: GestureDetector(
-              child: Image(
-                image: AssetImage('assets/images/user(1).png'),
-                width: 90,
-              ),
-              onTap: () {
-                Navigator.of(context).push(routeRightToLeft(UserProfile()));
-              },
+          GestureDetector(
+            child: Container(
+              width: 120,
+              height: 100,
+              decoration: new BoxDecoration(
+                  border: Border.all(color: Colors.grey[300], width: 3),
+                  shape: BoxShape.circle,
+                  image: DecorationImage(
+                    fit: BoxFit.fill,
+                    image: AssetImage('assets/images/dwight.jpg'),
+                  )),
             ),
+            onTap: () {
+              Navigator.of(context).push(routeRightToLeft(UserProfile()));
+            },
           ),
           Center(
             widthFactor: 1.1,
@@ -32,22 +35,16 @@ class CustomDrawerHeader extends StatelessWidget {
                   child: Text(
                     'welcome'.toUpperCase(),
                     textAlign: TextAlign.center,
-                    style: TextStyle(
-                        color: Colors.white,
-                        fontFamily: 'Roboto',
-                        fontSize: 13),
+                    style: TextStyle(color: Colors.white, fontFamily: 'Roboto', fontSize: 13),
                   ),
                 ),
                 Container(
                   width: 125,
                   padding: const EdgeInsets.fromLTRB(0, 5, 0, 0),
                   child: Text(
-                    'Name Surname'.toUpperCase(),
+                    'Dwight Schrute'.toUpperCase(),
                     textAlign: TextAlign.center,
-                    style: TextStyle(
-                        color: Colors.white,
-                        fontFamily: 'Roboto',
-                        fontWeight: FontWeight.w700),
+                    style: TextStyle(color: Colors.white, fontFamily: 'Roboto', fontWeight: FontWeight.w700),
                     overflow: TextOverflow.fade,
                   ),
                 ),

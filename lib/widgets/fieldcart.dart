@@ -83,11 +83,11 @@ class _FieldCardState extends State<FieldCard> {
                               }),
                           Expanded(
                             child: Padding(
-                              padding: const EdgeInsets.fromLTRB(0, 12, 0, 0),
+                              padding: const EdgeInsets.fromLTRB(0, 15, 0, 0),
                               child: Text(
                                 widget.field.name.toUpperCase(),
                                 textAlign: TextAlign.center,
-                                style: TextStyle(fontFamily: 'Roboto', fontSize: 20, fontWeight: FontWeight.w600),
+                                style: TextStyle(fontFamily: 'Roboto', fontSize: 16, fontWeight: FontWeight.w600),
                               ),
                             ),
                           ),

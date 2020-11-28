@@ -6,14 +6,16 @@ import 'package:unicorndial/unicorndial.dart';
 
 class MyFields extends StatelessWidget {
   List<Field> fields = [
-    new Field(0, "My Field 1", 40, "6105 Bonita Rd #APT K108 Lake Oswego, Oregon(OR), 97035", [
+    new Field(0, "Schrute Farms", 40,
+        "Golden Oak Ranch, 19802 Placerita Canyon Rd, Newhall, CA.", [
       new Farm(0, "My Farm 1", 40, 5, [
         new Entity(0, "entity1", 1),
         new Entity(1, "entity2", 2),
         new Entity(2, "entity3", 3),
       ]),
     ]),
-    new Field(0, "My Field 2", 120, "11789 Alpine Dr SW Port Orchard, Washington(WA), 98367", [
+    new Field(0, "Aunt Shirley's Neighboring Farm", 120,
+        "11789 Alpine Dr SW Port Orchard, Washington(WA), 98367", [
       new Farm(0, "My Farm 2", 50, 5, [
         new Entity(0, "entity1", 1),
         new Entity(1, "entity2", 2),
@@ -33,54 +35,6 @@ class MyFields extends StatelessWidget {
         new Entity(3, "entity4", 4),
       ]),
     ]),
-    new Field(0, "My Field 3", 130, "135 17th St Wilmette, Illinois(IL), 60091", [
-      new Farm(0, "My Farm 5", 100, 5, [
-        new Entity(0, "entity1", 5),
-        new Entity(1, "entity2", 5),
-        new Entity(2, "entity3", 3),
-        new Entity(3, "entity4", 4),
-      ]),
-      new Farm(0, "My Farm 6", 30, 5, [
-        new Entity(0, "entity1", 5),
-        new Entity(1, "entity2", 5),
-        new Entity(2, "entity3", 3),
-        new Entity(3, "entity4", 4),
-      ]),
-    ]),
-    new Field(0, "My Field 4", 90, "25546 Alisal Ave Laguna Hills, California(CA), 92653", [
-      new Farm(0, "My Farm 7", 30, 5, [
-        new Entity(0, "entity1", 1),
-        new Entity(1, "entity2", 2),
-        new Entity(2, "entity3", 3),
-        new Entity(3, "entity4", 4),
-      ]),
-      new Farm(0, "My Farm 8", 60, 5, [
-        new Entity(0, "entity1", 1),
-        new Entity(1, "entity2", 2),
-        new Entity(2, "entity3", 3),
-        new Entity(3, "entity4", 4),
-      ]),
-    ]),
-    new Field(0, "My Field 5", 150, "765 Union Church Rd #9 Brookhaven, Mississippi(MS), 39601", [
-      new Farm(0, "My Farm 9", 50, 5, [
-        new Entity(0, "entity1", 1),
-        new Entity(1, "entity2", 2),
-        new Entity(2, "entity3", 3),
-        new Entity(3, "entity4", 4),
-      ]),
-      new Farm(0, "My Farm 10", 50, 5, [
-        new Entity(0, "entity1", 1),
-        new Entity(1, "entity2", 2),
-        new Entity(2, "entity3", 3),
-        new Entity(3, "entity4", 1),
-      ]),
-      new Farm(0, "My Farm 11", 50, 5, [
-        new Entity(0, "entity1", 1),
-        new Entity(1, "entity2", 1),
-        new Entity(2, "entity3", 1),
-        new Entity(3, "entity4", 1),
-      ]),
-    ])
   ];
   @override
   Widget build(BuildContext context) {
@@ -110,7 +64,8 @@ class MyFields extends StatelessWidget {
         title: Text(
           'My fields'.toUpperCase(),
           textAlign: TextAlign.center,
-          style: TextStyle(color: Colors.green[600], fontWeight: FontWeight.w700),
+          style:
+              TextStyle(color: Colors.green[600], fontWeight: FontWeight.w700),
         ),
         elevation: 0,
         backgroundColor: Colors.grey[200],

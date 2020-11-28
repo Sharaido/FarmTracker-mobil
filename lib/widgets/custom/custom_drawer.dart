@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_app/pages/homepage.dart';
+import 'package:flutter_app/pages/login_page.dart';
 import 'package:flutter_app/pages/my_fields.dart';
 import 'package:flutter_app/pages/user_profile.dart';
 import 'package:flutter_app/widgets/overriden_default_widgets/my_drawer.dart';
@@ -24,7 +26,10 @@ class CustomDrawer extends StatelessWidget {
                 // Navigator.of(context).push(routeRightToLeft(MyHomePage(
                 //   title: 'Home',
                 // )));
-                Navigator.popUntil(context, ModalRoute.withName('/'));
+                //Navigator.popUntil(context, ModalRoute.withName('/'));
+                Navigator.of(context).push(routeRightToLeft(HomePage(
+                  title: 'Home',
+                )));
               },
               selected: selected),
           _createDrawerItem(
@@ -73,7 +78,7 @@ class CustomDrawer extends StatelessWidget {
               icon: Icons.logout,
               text: 'LOGOUT',
               onTap: () {
-                Navigator.pop(context);
+                Navigator.of(context).push(routeBottomToUp(LoginPage()));
               },
               selected: selected),
         ],
