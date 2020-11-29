@@ -156,7 +156,6 @@ class _LoginPageState extends State<LoginPage> {
 
   @override
   Widget build(BuildContext context) {
-    //storage.read(key: "token").then((value) => print(value));
     return Scaffold(
       body: SingleChildScrollView(
         child: Container(
