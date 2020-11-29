@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_app/pages/homepage.dart';
 import 'package:flutter_app/pages/login_page.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
+final storage = FlutterSecureStorage();
 void main() {
   runApp(MyApp());
 }

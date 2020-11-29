@@ -13,7 +13,7 @@ class FieldCard extends StatefulWidget {
     @required this.field,
   }) : super(key: key);
 
-  final Field field;
+  final Farm field;
   final String image = "assets/images/vector1.jpg"; //randomImage();
   @override
   _FieldCardState createState() => _FieldCardState();
@@ -27,7 +27,8 @@ class _FieldCardState extends State<FieldCard> {
   Widget build(BuildContext context) {
     return Card(
       shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(10), side: BorderSide(width: 0.3, color: Colors.grey)),
+          borderRadius: BorderRadius.circular(10),
+          side: BorderSide(width: 0.3, color: Colors.grey)),
       elevation: 7, //8
       child: Column(
         children: [
@@ -41,10 +42,13 @@ class _FieldCardState extends State<FieldCard> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 ClipRRect(
-                  borderRadius: BorderRadius.only(topLeft: Radius.circular(10), topRight: Radius.circular(10)),
+                  borderRadius: BorderRadius.only(
+                      topLeft: Radius.circular(10),
+                      topRight: Radius.circular(10)),
                   child: GestureDetector(
                     onTap: () {
-                      Navigator.of(context).push(routeRightToLeft(FieldDetails(field: widget.field)));
+                      Navigator.of(context).push(
+                          routeRightToLeft(FieldDetails(field: widget.field)));
                     },
                     child: Image(
                       image: AssetImage(widget.image),
@@ -79,7 +83,8 @@ class _FieldCardState extends State<FieldCard> {
                               alignment: Alignment.centerLeft,
                               icon: Icon(Icons.map),
                               onPressed: () {
-                                Navigator.of(context).push(routeRightToLeft(MapSample()));
+                                Navigator.of(context)
+                                    .push(routeRightToLeft(MapSample()));
                               }),
                           Expanded(
                             child: Padding(
@@ -87,7 +92,10 @@ class _FieldCardState extends State<FieldCard> {
                               child: Text(
                                 widget.field.name.toUpperCase(),
                                 textAlign: TextAlign.center,
-                                style: TextStyle(fontFamily: 'Roboto', fontSize: 16, fontWeight: FontWeight.w600),
+                                style: TextStyle(
+                                    fontFamily: 'Roboto',
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.w600),
                               ),
                             ),
                           ),
@@ -95,7 +103,9 @@ class _FieldCardState extends State<FieldCard> {
                               splashColor: Colors.green,
                               enableFeedback: true,
                               alignment: Alignment.centerRight,
-                              icon: Icon(expanded ? Icons.keyboard_arrow_up : Icons.keyboard_arrow_down),
+                              icon: Icon(expanded
+                                  ? Icons.keyboard_arrow_up
+                                  : Icons.keyboard_arrow_down),
                               onPressed: () {
                                 setState(() {
                                   expanded = !expanded;
@@ -114,13 +124,19 @@ class _FieldCardState extends State<FieldCard> {
                               Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  _createInfo(icon: Icons.location_on, text: widget.field.location),
                                   _createInfo(
-                                      icon: Icons.crop_square, text: "${widget.field.size.toString()} m² of land"),
+                                      icon: Icons.location_on,
+                                      text: widget.field.createdBy),
+                                  _createInfo(
+                                      icon: Icons.crop_square,
+                                      text:
+                                          "${widget.field.createdBy.toString()} m² of land"),
                                   Row(
                                     mainAxisAlignment: MainAxisAlignment.start,
                                     children: <Widget>[
-                                      Padding(padding: const EdgeInsets.only(left: 5)),
+                                      Padding(
+                                          padding:
+                                              const EdgeInsets.only(left: 5)),
                                       Text('#',
                                           style: TextStyle(
                                               fontSize: 16,
@@ -128,10 +144,9 @@ class _FieldCardState extends State<FieldCard> {
                                               fontWeight: FontWeight.w500,
                                               color: Colors.black)),
                                       Padding(
-                                        padding: const EdgeInsets.only(left: 13.0),
-                                        child: Text(
-                                            "Total of ${widget.field.farms.length} farms and " +
-                                                "${widget.field.getTotalEntity().toString()} entities",
+                                        padding:
+                                            const EdgeInsets.only(left: 13.0),
+                                        child: Text("${widget.field.id}",
                                             style: TextStyle(
                                                 fontSize: 15,
                                                 fontFamily: 'Roboto',
@@ -177,7 +192,11 @@ Widget _createInfo({IconData icon, String text}) {
           padding: EdgeInsets.only(left: 8),
           width: 340,
           child: Text(text,
-              style: TextStyle(fontSize: 15, fontFamily: 'Roboto', fontWeight: FontWeight.w500, color: Colors.black)))
+              style: TextStyle(
+                  fontSize: 15,
+                  fontFamily: 'Roboto',
+                  fontWeight: FontWeight.w500,
+                  color: Colors.black)))
     ],
   );
 }

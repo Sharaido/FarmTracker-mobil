@@ -9,21 +9,29 @@ class Field {
 
   int getTotalEntity() {
     int sum = 0;
-    for (var farm in farms) {
-      sum += farm.entityCount;
-    }
+    for (var farm in farms) {}
     return sum;
   }
 }
 
 class Farm {
-  final int id;
+  final String id;
   final String name;
-  final int size;
-  final int entityCount;
-  final List<Entity> entities;
+  final String desc;
+  final String createdBy;
+  final String createdDate;
 
-  Farm(this.id, this.name, this.size, this.entityCount, this.entities);
+  Farm({this.id, this.name, this.desc, this.createdBy, this.createdDate});
+
+  factory Farm.fromJson(Map<String, dynamic> json) {
+    return Farm(
+      id: json['fuid'],
+      name: json['name'],
+      desc: json['description'],
+      createdBy: json['createdByUuid'],
+      createdDate: json['createdDate'],
+    );
+  }
 }
 
 class Entity {

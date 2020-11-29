@@ -7,7 +7,7 @@ import '../main.dart';
 import 'newEntity.dart';
 
 class FieldDetails extends StatefulWidget {
-  final Field field;
+  final Farm field;
   const FieldDetails({
     Key key,
     @required this.field,
@@ -46,6 +46,7 @@ class _FieldDetailsState extends State<FieldDetails> {
 
     return Scaffold(
       appBar: AppBar(
+        automaticallyImplyLeading: true,
         centerTitle: true,
         title: Text(
           widget.field.name.toUpperCase(),
@@ -65,6 +66,7 @@ class _FieldDetailsState extends State<FieldDetails> {
         iconTheme: new IconThemeData(color: Colors.green[600]),
       ),
       body: Container(
+        color: Colors.grey[200],
         child: Column(
             //mainAxisAlignment: MainAxisAlignment.center,
             //crossAxisAlignment: CrossAxisAlignment.center,
@@ -241,9 +243,8 @@ class _FieldDetailsState extends State<FieldDetails> {
                             ),
                             new Text(
                               'SULANDI',
-                              style: TextStyle(
-                                  fontSize: 15.0,
-                                  color: Colors.blue.withOpacity(1.0)),
+                              style:
+                                  TextStyle(fontSize: 15.0, color: Colors.blue),
                             ),
                             new Text(
                               'Sıradaki sulama tarihi 05/12/2020',

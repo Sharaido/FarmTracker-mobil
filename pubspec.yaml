@@ -23,6 +23,8 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
+
+  flutter_secure_storage: ^3.3.5
   weather: ^1.2.3
   expansion_card: ^0.1.0
   unicorndial: ^1.1.5

@@ -31,8 +31,10 @@ class CustomDrawer extends StatelessWidget {
           _createDrawerItem(
               icon: Icons.grass,
               text: 'MY FIELDS',
-              onTap: () {
-                Navigator.of(context).push(routeRightToLeft(MyFields()));
+              onTap: () async {
+                var jwt = await storage.read(key: "token");
+                Navigator.of(context)
+                    .push(routeRightToLeft(MyFields(jwt: jwt)));
               },
               selected: selected),
           _createDrawerItem(
@@ -73,7 +75,9 @@ class CustomDrawer extends StatelessWidget {
           _createDrawerItem(
               icon: Icons.logout,
               text: 'LOGOUT',
-              onTap: () {
+              onTap: () async {
+                await storage.delete(key: "token");
+                await storage.delete(key: "expire");
                 Navigator.pushNamedAndRemoveUntil(
                     context, "/login", (r) => false);
               },

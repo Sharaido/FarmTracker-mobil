@@ -1,10 +1,11 @@
 import 'dart:async';
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
-//import 'package:flutter_app/pages/register_page.dart';
+import 'package:flutter_app/pages/register_page.dart';
 import 'package:http/http.dart' as http;
 
 import '../main.dart';
@@ -20,12 +21,59 @@ class LoginPage extends StatefulWidget {
 class _LoginPageState extends State<LoginPage> {
   TextEditingController _usernameController = TextEditingController();
   TextEditingController _passwordController = TextEditingController();
-  Future<bool> _loginResult;
+
+  Future<String> get _loginResult async {
+    if (__loginResult != null) {
+      return __loginResult;
+    }
+    storage.read(key: "token").then((value) {
+      return value;
+    });
+
+    var jwt = await storage.read(key: "token");
+    var expire = await storage.read(key: "expire");
+    if (DateTime.parse(expire).isAfter(DateTime.now())) {
+      return '{"result": true, "expiration":"$expire", "token":"$jwt"}';
+    }
+
+    return '{"result":false}';
+  }
+
+  Future<String> __loginResult;
+
+  set _loginResult(Future<String> str) {
+    __loginResult = str;
+  }
 
   final _formKey = new GlobalKey<FormState>();
   bool _hidePass = true;
 
-  _onLoginPressed() {
+  Future<String> tryLogin(String username, String password) async {
+    final http.Response response = await http.post(
+      'http://10.0.2.2:8181/api/Members/SignIn',
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+      },
+      body: jsonEncode(<String, String>{
+        'SignInKey': username,
+        'Password': password,
+      }),
+    );
+
+    var body = json.decode(response.body);
+
+    if (body['result']) {
+      var jwt = body['token'];
+      var expires = body['expiration'];
+      await storage.write(key: "token", value: jwt);
+      await storage.write(key: "expire", value: expires);
+      return '{"result": true, "expiration":"$expires", "token":"$jwt"}';
+    }
+
+    return '{"result":false}';
+  }
+
+  _onLoginPressed() async {
     if (!_formKey.currentState.validate()) return;
     setState(() {
       _loginResult =
@@ -106,22 +154,9 @@ class _LoginPageState extends State<LoginPage> {
     return null;
   }
 
-  Future<bool> tryLogin(String username, String password) async {
-    final http.Response response = await http.post(
-      'http://10.0.2.2:8181/api/Members/SignIn',
-      headers: <String, String>{
-        'Content-Type': 'application/json; charset=UTF-8',
-      },
-      body: jsonEncode(<String, String>{
-        'SignInKey': username,
-        'Password': password,
-      }),
-    );
-    return response.statusCode == 200;
-  }
-
   @override
   Widget build(BuildContext context) {
+    //storage.read(key: "token").then((value) => print(value));
     return Scaffold(
       body: SingleChildScrollView(
         child: Container(
@@ -132,10 +167,17 @@ class _LoginPageState extends State<LoginPage> {
               future: _loginResult,
               builder: (context, snapshot) {
                 if (snapshot.hasData) {
-                  if (snapshot.data) {
+                  var data = json.decode(snapshot.data);
+                  if (data['result']) {
                     Future.delayed(Duration.zero, () async {
-                      _loginResult = Future<bool>.value(false);
-                      Navigator.of(context).push(routeUpToBottom(MyFields()));
+                      _loginResult = Future<String>.value(null);
+                      var jwt = data['token'];
+                      Navigator.pushReplacement(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => MyFields(jwt: jwt),
+                        ),
+                      );
                     });
                   } else {
                     return _getContent(true);
@@ -179,7 +221,7 @@ getTextField(TextEditingController controller, String label, bool hideText,
             boxShadow: [
               BoxShadow(
                 color: Colors.black,
-                blurRadius: 2.0,
+                blurRadius: 3.5,
                 spreadRadius: -3,
                 offset: Offset(0, 2),
               ),
