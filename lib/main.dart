@@ -23,10 +23,13 @@ class MyApp extends StatelessWidget {
               bodyColor: Colors.black,
               displayColor: Colors.black)),
 
-      home: HomePage(
+       home: HomePage(
         title: 'Home',
       ),
       //home: LoginPage(),
+
+        //home:ExpensesPage(),
+
       routes: {
         '/login': (context) => LoginPage(),
         '/homepage': (context) => HomePage(),

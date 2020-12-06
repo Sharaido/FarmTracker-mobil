@@ -31,6 +31,9 @@ dependencies:
   google_maps_flutter: ^1.0.6
   video_player: ^1.0.0
   http: ^0.12.2
+  provider: ^4.3.1
+  charts_flutter: ^0.9.0
+  intl: ^0.16.1
 
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
@@ -65,6 +68,16 @@ flutter:
         - asset: fonts/Roboto-Regular.ttf
         - asset: fonts/Roboto-Bold.ttf
           weight: 700
+    - family: Montserrat
+      fonts:
+        - asset: fonts/Montserrat-Regular.ttf
+        - asset: fonts/Montserrat-Bold.ttf
+          weight: 700
+    - family: Quicksand
+      fonts:
+        - asset: fonts/Quicksand-Regular.ttf
+        - asset: fonts/Quicksand-Bold.ttf
+          weight: 700       
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware.
