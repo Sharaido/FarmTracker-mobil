@@ -50,7 +50,7 @@ class _LoginPageState extends State<LoginPage> {
 
   Future<String> tryLogin(String username, String password) async {
     final http.Response response = await http.post(
-      'http://10.0.2.2:8181/api/Members/SignIn',
+      '$BASE_URL/api/Members/SignIn',
       headers: <String, String>{
         'Content-Type': 'application/json; charset=UTF-8',
       },
@@ -119,12 +119,13 @@ class _LoginPageState extends State<LoginPage> {
                   color: Colors.red,
                   fontWeight: FontWeight.bold),
             ),
-          getTextField(_usernameController, 'USERNAME', false, null, null,
-              _usernameValidator),
+          getTextField(_usernameController, 'USERNAME', false,
+              TextInputType.text, null, null, _usernameValidator),
           getTextField(
               _passwordController,
               'PASSWORD',
               _hidePass,
+              TextInputType.text,
               Icon(Icons.remove_red_eye),
               _onShowPassClicked,
               _passwordValidator),
@@ -205,7 +206,7 @@ _getLabel(String label) {
 }
 
 getTextField(TextEditingController controller, String label, bool hideText,
-    Icon icon, Function iconAction, Function validator) {
+    TextInputType type, Icon icon, Function iconAction, Function validator) {
   return Column(
     crossAxisAlignment: CrossAxisAlignment.start,
     children: [
@@ -231,7 +232,7 @@ getTextField(TextEditingController controller, String label, bool hideText,
               child: TextFormField(
                 autofocus: false,
                 controller: controller,
-                keyboardType: TextInputType.text,
+                keyboardType: type,
                 autocorrect: true,
                 obscureText: hideText,
                 style: TextStyle(

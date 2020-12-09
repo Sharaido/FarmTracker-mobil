@@ -5,6 +5,8 @@ import 'package:flutter_app/pages/login_page.dart';
 import 'package:flutter_app/pages/my_fields.dart';
 import 'package:http/http.dart' as http;
 
+import '../main.dart';
+
 class NewFieldModal extends StatefulWidget {
   final String jwt;
   NewFieldModal(this.jwt);
@@ -27,7 +29,7 @@ class _NewFieldModalState extends State<NewFieldModal> {
 
   Future<bool> addFarm(String name, String desc) async {
     final http.Response response = await http.post(
-      'http://10.0.2.2:8181/api/Farms/',
+      '$BASE_URL/api/Farms/',
       headers: <String, String>{
         'Content-Type': 'application/json; charset=UTF-8',
         'Authorization': 'Bearer ${widget.jwt}',
@@ -47,12 +49,7 @@ class _NewFieldModalState extends State<NewFieldModal> {
         setState(() {
           _hasError = false;
         });
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(
-            builder: (context) => MyFields(jwt: widget.jwt),
-          ),
-        );
+        Navigator.pop(context);
       } else {
         setState(() {
           _hasError = true;
@@ -63,48 +60,52 @@ class _NewFieldModalState extends State<NewFieldModal> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      decoration: BoxDecoration(
-        color: Colors.grey[200],
-        borderRadius: BorderRadius.all(Radius.circular(30)),
-      ),
-      height: MediaQuery.of(context).size.height / 2,
-      child: Column(
-        children: <Widget>[
-          Padding(
-            padding: const EdgeInsets.all(12.0),
-            child: Text(
-              'ADD A NEW FIELD',
-              style: TextStyle(
-                color: Colors.black54,
-                fontSize: 25,
-              ),
-            ),
-          ),
-          if (_hasError)
-            Text(
-              'A problem occured, please try again.',
-              style: TextStyle(
-                color: Colors.red,
-                fontSize: 15,
-              ),
-            ),
-          Form(
-            key: _formKey,
-            child: Column(
-              children: [
-                getTextField(
-                    _nameController, 'NAME', false, null, null, _nameValidator),
-                getTextField(
-                    _descController, 'DESCRIPTION', false, null, null, null),
-                SizedBox(
-                  height: 15,
+    return SingleChildScrollView(
+      child: Container(
+        decoration: BoxDecoration(
+          color: Colors.grey[200],
+          borderRadius: BorderRadius.all(Radius.circular(30)),
+        ),
+        height: MediaQuery.of(context).size.height / 1.9,
+        width: MediaQuery.of(context).size.height / 2.3,
+        child: Column(
+          children: <Widget>[
+            Padding(
+              padding: const EdgeInsets.all(12.0),
+              child: Text(
+                'ADD A NEW FIELD',
+                style: TextStyle(
+                  color: Colors.black54,
+                  fontSize: 25,
                 ),
-                getButton(Colors.green, 'ADD', Colors.white, _onAddPressed),
-              ],
+              ),
             ),
-          )
-        ],
+            if (_hasError)
+              Text(
+                'You have reached your max field count. Please upgrade your membership.',
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  color: Colors.red,
+                  fontSize: 15,
+                ),
+              ),
+            Form(
+              key: _formKey,
+              child: Column(
+                children: [
+                  getTextField(_nameController, 'NAME', false,
+                      TextInputType.text, null, null, _nameValidator),
+                  getTextField(_descController, 'DESCRIPTION', false,
+                      TextInputType.text, null, null, null),
+                  SizedBox(
+                    height: 15,
+                  ),
+                  getButton(Colors.green, 'ADD', Colors.white, _onAddPressed),
+                ],
+              ),
+            )
+          ],
+        ),
       ),
     );
   }

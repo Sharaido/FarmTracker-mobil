@@ -50,21 +50,22 @@ class _RegisterPageState extends State<RegisterPage> {
           SizedBox(
             height: 10.0,
           ),
-          getTextField(_usernameController, 'USERNAME', false, null, null,
-              _usernameValidator),
+          getTextField(_usernameController, 'USERNAME', false,
+              TextInputType.text, null, null, _usernameValidator),
           getTextField(
               _passwordController,
               'PASSWORD',
               _hidePass,
+              TextInputType.text,
               Icon(Icons.remove_red_eye),
               _onShowPassClicked,
               _passwordValidator),
-          getTextField(
-              _emailController, 'EMAIL', false, null, null, _emailValidator),
-          getTextField(
-              _nameController, 'NAME', false, null, null, _nameValidator),
-          getTextField(
-              _surnameController, 'SURNAME', false, null, null, _nameValidator),
+          getTextField(_emailController, 'EMAIL', false,
+              TextInputType.emailAddress, null, null, _emailValidator),
+          getTextField(_nameController, 'NAME', false, TextInputType.text, null,
+              null, _nameValidator),
+          getTextField(_surnameController, 'SURNAME', false, TextInputType.text,
+              null, null, _nameValidator),
           SizedBox(
             height: 30.0,
           ),
@@ -137,7 +138,7 @@ class _RegisterPageState extends State<RegisterPage> {
 
   Future<bool> tryLogin(String username, String password) async {
     final http.Response response = await http.post(
-      'http://10.0.2.2:8181/api/Members/SignIn',
+      '$BASE_URL/api/Members/SignIn',
       headers: <String, String>{
         'Content-Type': 'application/json; charset=UTF-8',
       },
@@ -150,26 +151,26 @@ class _RegisterPageState extends State<RegisterPage> {
   }
 
   Future<bool> isUsernameTaken(String username) async {
-    final http.Response response = await http
-        .get("http://10.0.2.2:8181/api/Members/IsUsedUsername/$username");
+    final http.Response response =
+        await http.get("$BASE_URL/api/Members/IsUsedUsername/$username");
     return response.body == 'true';
   }
 
   Future<bool> isEmailTaken(String email) async {
     final http.Response response =
-        await http.get("http://10.0.2.2:8181/api/Members/IsUsedEmail/$email");
+        await http.get("$BASE_URL/api/Members/IsUsedEmail/$email");
     return response.body == 'true';
   }
 
   Future<String> getCodeForRegister() async {
     final http.Response response =
-        await http.get("http://10.0.2.2:8181/api/Members/GetNewUCodeForSignUp");
+        await http.get("$BASE_URL/api/Members/GetNewUCodeForSignUp");
     return json.decode(response.body)['guc'];
   }
 
   Future<bool> tryRegister(User user, String guc) async {
     final http.Response response = await http.post(
-      'http://10.0.2.2:8181/api/Members/SignUp',
+      '$BASE_URL/api/Members/SignUp',
       headers: <String, String>{
         'Content-Type': 'application/json; charset=UTF-8',
       },

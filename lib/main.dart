@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_app/pages/expenses_page.dart';
 import 'package:flutter_app/pages/homepage.dart';
 import 'package:flutter_app/pages/login_page.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 final storage = FlutterSecureStorage();
+const String BASE_URL = "http://10.0.2.2:8181";
 void main() {
   runApp(MyApp());
 }
@@ -23,12 +25,12 @@ class MyApp extends StatelessWidget {
               bodyColor: Colors.black,
               displayColor: Colors.black)),
 
-       home: HomePage(
-        title: 'Home',
-      ),
-      //home: LoginPage(),
+      //  home: HomePage(
+      //   title: 'Home',
+      // ),
+      home: LoginPage(),
 
-        //home:ExpensesPage(),
+      //home: ExpensesPage(),
 
       routes: {
         '/login': (context) => LoginPage(),

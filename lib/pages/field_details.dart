@@ -2,15 +2,16 @@ import 'package:flutter/material.dart';
 import 'package:flutter_app/models/field.dart';
 import 'package:flutter_app/pages/map_sample.dart';
 import 'package:unicorndial/unicorndial.dart';
+import 'package:http/http.dart' as http;
 
 import '../main.dart';
 import 'newEntity.dart';
 
 class FieldDetails extends StatefulWidget {
-  final Farm field;
+  final Property property;
   const FieldDetails({
     Key key,
-    @required this.field,
+    @required this.property,
   }) : super(key: key);
   @override
   _FieldDetailsState createState() => _FieldDetailsState();
@@ -18,62 +19,61 @@ class FieldDetails extends StatefulWidget {
 
 Widget detailCard(String st, int count, var no, context) {
   return Flexible(
-    child: Card(
-      clipBehavior: Clip.antiAlias,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8.0)),
-      color: Colors.white,
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: <Widget>[
-          Container(
-            color: Colors.amber,
-            width: 10,
-          ),
-          SizedBox(
-            width: 10.0,
-          ),
-          Expanded(
-            child: GestureDetector(
-              onTap: () {
-                //print(no);
-                showDialog(
-                    context: context,
-                    builder: (_) => new AlertDialog(
-                          title: new Text("Numaralar"),
-                          content: new Text(no.toString()),
-                          actions: <Widget>[
-                            FlatButton(
-                              child: Text('Tamam'),
-                              onPressed: () {
-                                Navigator.of(context).pop();
-                              },
-                            )
-                          ],
-                        ));
-              },
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  new Text(
-                    st,
-                    style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                        fontSize: 20.0,
-                        color: Colors.green.withOpacity(1.0)),
-                  ),
-                  new Text(""),
-                  new Text(
-                    count.toString(),
-                    style: TextStyle(
-                      fontSize: 30.0,
+    child: Container(
+      height: 110,
+      child: Card(
+        clipBehavior: Clip.antiAlias,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8.0)),
+        color: Colors.white,
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: <Widget>[
+            SizedBox(
+              width: 10.0,
+            ),
+            Expanded(
+              child: GestureDetector(
+                onTap: () {
+                  //print(no);
+                  showDialog(
+                      context: context,
+                      builder: (_) => new AlertDialog(
+                            title: new Text("Numaralar"),
+                            content: new Text(no.toString()),
+                            actions: <Widget>[
+                              FlatButton(
+                                child: Text('Tamam'),
+                                onPressed: () {
+                                  Navigator.of(context).pop();
+                                },
+                              )
+                            ],
+                          ));
+                },
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    new Text(
+                      st,
+                      style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 20.0,
+                          color: Colors.green.withOpacity(1.0)),
                     ),
-                  ),
-                ],
+                    new Text(""),
+                    new Text(
+                      count.toString(),
+                      style: TextStyle(
+                        fontSize: 30.0,
+                      ),
+                    ),
+                  ],
+                ),
               ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     ),
   );
@@ -81,62 +81,62 @@ Widget detailCard(String st, int count, var no, context) {
 
 Widget otherCard(String st, bool bl, DateTime dt) {
   return Flexible(
-    child: Card(
-      clipBehavior: Clip.antiAlias,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8.0)),
-      color: Colors.white,
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: <Widget>[
-          Container(
-            color: Colors.amber,
-            width: 10,
-          ),
-          SizedBox(
-            width: 10.0,
-          ),
-          Expanded(
-            child: GestureDetector(
-              onTap: () {
-                print('testing');
-              },
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  new Text(
-                    st,
-                    style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                        fontSize: 20.0,
-                        color: Colors.green.withOpacity(1.0)),
-                  ),
-                  new Text(""),
-                  if (bl == true)
+    child: Container(
+      height: 130,
+      child: Card(
+        clipBehavior: Clip.antiAlias,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8.0)),
+        color: Colors.white,
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: <Widget>[
+            SizedBox(
+              width: 10.0,
+            ),
+            Expanded(
+              child: GestureDetector(
+                onTap: () {
+                  print('testing');
+                },
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
                     new Text(
-                      'SULANDI',
+                      st,
                       style: TextStyle(
-                          fontSize: 20.0, color: Colors.blue.withOpacity(1.0)),
+                          fontWeight: FontWeight.bold,
+                          fontSize: 20.0,
+                          color: Colors.green.withOpacity(1.0)),
                     ),
-                  if (bl == true) new Text(""),
-                  if (bl == true)
-                    new Text(
-                      'Sıradaki sulama tarihi 05/12/2020',
-                      style: TextStyle(
-                        fontSize: 15.0,
+                    new Text(""),
+                    if (bl == true)
+                      new Text(
+                        'SULANDI',
+                        style: TextStyle(
+                            fontSize: 20.0,
+                            color: Colors.blue.withOpacity(1.0)),
                       ),
-                    ),
-                  if (bl == false)
-                    new Text(
-                      'GÜBRELENMEDİ',
-                      style: TextStyle(
-                          fontSize: 20.0, color: Colors.red.withOpacity(1.0)),
-                    ),
-                ],
+                    if (bl == true) new Text(""),
+                    if (bl == true)
+                      new Text(
+                        'Sıradaki sulama tarihi 05/12/2020',
+                        style: TextStyle(
+                          fontSize: 15.0,
+                        ),
+                      ),
+                    if (bl == false)
+                      new Text(
+                        'GÜBRELENMEDİ',
+                        style: TextStyle(
+                            fontSize: 20.0, color: Colors.red.withOpacity(1.0)),
+                      ),
+                  ],
+                ),
               ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     ),
   );
@@ -172,19 +172,30 @@ class _FieldDetailsState extends State<FieldDetails> {
 
     return Scaffold(
       appBar: AppBar(
-        automaticallyImplyLeading: true,
         centerTitle: true,
         title: Text(
-          widget.field.name.toUpperCase(),
+          widget.property.name.toUpperCase(),
           textAlign: TextAlign.center,
           style:
               TextStyle(color: Colors.green[600], fontWeight: FontWeight.w700),
         ),
         actions: [
           IconButton(
-              icon: Icon(Icons.home),
-              onPressed: () {
-                Navigator.popUntil(context, ModalRoute.withName('/'));
+              icon: Icon(Icons.delete),
+              onPressed: () async {
+                //Navigator.popUntil(context, ModalRoute.withName('/'));
+                var jwt = await storage.read(key: "token");
+
+                final http.Response response = await http.delete(
+                  '$BASE_URL/api/Farms/Properties/${widget.property.id}',
+                  headers: <String, String>{
+                    'Content-Type': 'application/json; charset=UTF-8',
+                    'Authorization': 'Bearer $jwt',
+                  },
+                );
+                if (response.statusCode != 200) return;
+                print(response.request);
+                Navigator.pop(context);
               })
         ],
         elevation: 0,
@@ -193,7 +204,7 @@ class _FieldDetailsState extends State<FieldDetails> {
       ),
       body: Container(
         color: Colors.grey[200],
-        child: Column(mainAxisSize: MainAxisSize.min,
+        child: Column(mainAxisSize: MainAxisSize.max,
             //mainAxisAlignment: MainAxisAlignment.center,
             //crossAxisAlignment: CrossAxisAlignment.center,
             children: <Widget>[
