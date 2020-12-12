@@ -38,9 +38,19 @@ Widget detailCard(String st, int count, var no, context) {
                   showDialog(
                       context: context,
                       builder: (_) => new AlertDialog(
-                            title: new Text("Numaralar"),
+                            title: new Text(st),
                             content: new Text(no.toString()),
                             actions: <Widget>[
+                              FlatButton(
+                                child: Text('Ekle'),
+                                onPressed: () {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) => newEntity()),
+                                  );
+                                },
+                              ),
                               FlatButton(
                                 child: Text('Tamam'),
                                 onPressed: () {
@@ -79,70 +89,144 @@ Widget detailCard(String st, int count, var no, context) {
   );
 }
 
-Widget otherCard(String st, bool bl, DateTime dt) {
-  return Flexible(
-    child: Container(
-      height: 130,
-      child: Card(
-        clipBehavior: Clip.antiAlias,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8.0)),
-        color: Colors.white,
-        child: Row(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: <Widget>[
-            SizedBox(
-              width: 10.0,
-            ),
-            Expanded(
-              child: GestureDetector(
-                onTap: () {
-                  print('testing');
-                },
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    new Text(
-                      st,
-                      style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                          fontSize: 20.0,
-                          color: Colors.green.withOpacity(1.0)),
-                    ),
-                    new Text(""),
-                    if (bl == true)
+class _FieldDetailsState extends State<FieldDetails> {
+  Widget otherCard(String st, bool bl, DateTime dt, context) {
+    return Flexible(
+      child: Container(
+        height: 130,
+        child: Card(
+          clipBehavior: Clip.antiAlias,
+          shape:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(8.0)),
+          color: Colors.white,
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: <Widget>[
+              SizedBox(
+                width: 10.0,
+              ),
+              Expanded(
+                child: GestureDetector(
+                  onTap: () {
+                    //print(no);
+                    showDialog(
+                        context: context,
+                        builder: (_) => new AlertDialog(
+                              title: new Text("Numaralar"),
+                              content: new Text(st.toString()),
+                            ));
+                  },
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
                       new Text(
-                        'SULANDI',
+                        st,
                         style: TextStyle(
+                            fontWeight: FontWeight.bold,
                             fontSize: 20.0,
-                            color: Colors.blue.withOpacity(1.0)),
+                            color: Colors.green.withOpacity(1.0)),
                       ),
-                    if (bl == true) new Text(""),
-                    if (bl == true)
-                      new Text(
-                        'Sıradaki sulama tarihi 05/12/2020',
-                        style: TextStyle(
-                          fontSize: 15.0,
+                      new Text(""),
+                      if (bl == true && st.contains("SU"))
+                        new Text(
+                          'SULANDI',
+                          style: TextStyle(
+                              fontSize: 20.0,
+                              color: Colors.blue.withOpacity(1.0)),
                         ),
-                      ),
-                    if (bl == false)
-                      new Text(
-                        'GÜBRELENMEDİ',
-                        style: TextStyle(
-                            fontSize: 20.0, color: Colors.red.withOpacity(1.0)),
-                      ),
-                  ],
+                      if (bl == true && st.contains("SU")) new Text(""),
+                      if (bl == true && st.contains("SU"))
+                        new Text(
+                          'Sıradaki sulama tarihi 05/12/2020',
+                          style: TextStyle(
+                            fontSize: 15.0,
+                          ),
+                        ),
+                      if (bl == false && st.contains("SU"))
+                        new Text(
+                          'SULANMADI',
+                          style: TextStyle(
+                              fontSize: 20.0,
+                              color: Colors.red.withOpacity(1.0)),
+                        )
+                      else if (bl == true && st.contains("GÜBRE"))
+                        new Text(
+                          'GÜBRELENDİ',
+                          style: TextStyle(
+                              fontSize: 20.0,
+                              color: Colors.blue.withOpacity(1.0)),
+                        ),
+                      if (bl == true && st.contains("GÜBRE")) new Text(""),
+                      if (bl == true && st.contains("GÜBRE"))
+                        new Text(
+                          'Sıradaki gübreleme tarihi 05/12/2020',
+                          style: TextStyle(
+                            fontSize: 15.0,
+                          ),
+                        ),
+                      if (bl == false && st.contains("GÜBRE"))
+                        new Text(
+                          'GÜBRELENMEDİ',
+                          style: TextStyle(
+                              fontSize: 20.0,
+                              color: Colors.red.withOpacity(1.0)),
+                        )
+                      else if (bl == true && st.contains("İLAÇ"))
+                        new Text(
+                          'İLAÇLANDI',
+                          style: TextStyle(
+                              fontSize: 20.0,
+                              color: Colors.blue.withOpacity(1.0)),
+                        ),
+                      if (bl == true && st.contains("İLAÇ")) new Text(""),
+                      if (bl == true && st.contains("İLAÇ"))
+                        new Text(
+                          'Sıradaki ilaçlama tarihi 05/12/2020',
+                          style: TextStyle(
+                            fontSize: 15.0,
+                          ),
+                        ),
+                      if (bl == false && st.contains("İLAÇ"))
+                        new Text(
+                          'İLAÇLANMADI',
+                          style: TextStyle(
+                              fontSize: 20.0,
+                              color: Colors.red.withOpacity(1.0)),
+                        )
+                      else if (bl == true && st.contains("TOPLA"))
+                        new Text(
+                          'TOPLANDI',
+                          style: TextStyle(
+                              fontSize: 20.0,
+                              color: Colors.blue.withOpacity(1.0)),
+                        ),
+                      if (bl == true && st.contains("TOPLA")) new Text(""),
+                      if (bl == true && st.contains("TOPLA"))
+                        new Text(
+                          'Sıradaki toplama tarihi 05/12/2020',
+                          style: TextStyle(
+                            fontSize: 15.0,
+                          ),
+                        ),
+                      if (bl == false && st.contains("TOPLA"))
+                        new Text(
+                          'TOPLANMADI',
+                          style: TextStyle(
+                              fontSize: 20.0,
+                              color: Colors.red.withOpacity(1.0)),
+                        ),
+                    ],
+                  ),
                 ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
-    ),
-  );
-}
+    );
+  }
 
-class _FieldDetailsState extends State<FieldDetails> {
   @override
   Widget build(BuildContext context) {
     var childButtons = List<UnicornButton>();
@@ -240,12 +324,13 @@ class _FieldDetailsState extends State<FieldDetails> {
                     color: Colors.black.withOpacity(1.0)),
               ),
               Row(mainAxisSize: MainAxisSize.min, children: <Widget>[
-                otherCard("SULAMA BİLGİSİ", true, DateTime.now()),
-                otherCard("GÜBRE BİLGİSİ", true, DateTime.now()),
+                otherCard("SULAMA BİLGİSİ", true, DateTime.now(), context),
+                otherCard("GÜBRE BİLGİSİ", true, DateTime.now(), context),
               ]),
               Row(mainAxisSize: MainAxisSize.min, children: <Widget>[
-                otherCard("İLAÇLAMA BİLGİSİ", false, DateTime.now()),
-                otherCard("ÜRÜN TOPLAMA BİLGİSİ", false, DateTime.now()),
+                otherCard("İLAÇLAMA BİLGİSİ", false, DateTime.now(), context),
+                otherCard(
+                    "ÜRÜN TOPLAMA BİLGİSİ", false, DateTime.now(), context),
               ]),
             ]),
       ),

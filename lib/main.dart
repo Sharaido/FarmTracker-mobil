@@ -1,11 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_app/pages/expenses_page.dart';
+import 'package:flutter_app/pages/field_details.dart';
 import 'package:flutter_app/pages/homepage.dart';
 import 'package:flutter_app/pages/login_page.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
+import 'models/field.dart';
+
 final storage = FlutterSecureStorage();
-const String BASE_URL = "http://10.0.2.2:8181";
+//const String BASE_URL = "http://10.0.2.2:8181";
+const String BASE_URL = "http://192.168.0.18:8181";
 void main() {
   runApp(MyApp());
 }
@@ -28,7 +32,17 @@ class MyApp extends StatelessWidget {
       //  home: HomePage(
       //   title: 'Home',
       // ),
-      home: LoginPage(),
+      //home: LoginPage(),
+      home: FieldDetails(
+        property: new Property(
+            categoryID: 2,
+            createdBy: "asd",
+            id: "asd",
+            name: "asd",
+            desc: "asd",
+            createdDate: "asd",
+            farmID: "asd"),
+      ),
 
       //home: ExpensesPage(),
 
