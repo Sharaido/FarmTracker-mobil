@@ -3,9 +3,14 @@ import 'package:provider/provider.dart';
 import '../customs/new_transaction.dart';
 import '../customs/header.dart';
 import '../customs/transaction_card.dart';
-import '../providers/transactions.dart';
+import '../models/transactions.dart';
 
 class ExpensesPage extends StatefulWidget {
+  
+   final String title;
+
+   const ExpensesPage({Key key,@required this.title}) : super(key: key);
+
    static const Map<int,Color> colorMap={
     50:Color.fromRGBO(42, 54, 59, 0.1),
     100:Color.fromRGBO(42, 54, 59, 0.2),
@@ -21,7 +26,7 @@ class ExpensesPage extends StatefulWidget {
   
   static const MaterialColor _2A3638= MaterialColor(0xFF2A3638, colorMap);
   
-  Widget build(BuildContext context) {
+  /*Widget build(BuildContext context) {
     return ChangeNotifierProvider(
       create:(context) => Transactions(),
       child: MaterialApp(
@@ -34,7 +39,7 @@ class ExpensesPage extends StatefulWidget {
           ),
         ),
       );
-  }
+  }*/
 
 
   @override
@@ -65,25 +70,17 @@ class _ExpensesState extends State<ExpensesPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.black,
+      extendBodyBehindAppBar: true,
       appBar: AppBar(
-        elevation: 0,
-        leading: IconButton(
-          icon: const Icon(Icons.short_text),
-          onPressed: () {},
-        ),
         centerTitle: true,
-        title: const Text('Personal Finance',
-        style: TextStyle(
-          fontSize: 16,
-          fontFamily: 'MontSerrat',
-          fontWeight: FontWeight.bold,
-          ),
-          ),
-          actions: <Widget>[
-            IconButton(
-              icon: const Icon(Icons.person_outline), 
-              onPressed: (){})
-          ],
+        elevation: 0,
+        backgroundColor: Colors.transparent,
+        iconTheme: new IconThemeData(color: Colors.green),
+        title: Text(
+          widget.title.toUpperCase(),
+          textAlign: TextAlign.center,
+          style: TextStyle(color: Colors.green, fontWeight: FontWeight.w700),
+        ),
       ),
       body: Stack(
           children:<Widget>[

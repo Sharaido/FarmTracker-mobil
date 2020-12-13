@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:provider/provider.dart';
-import '../providers/transactions.dart';
-import '../customs/transaction_item.dart';
+
 
 class TransactionCard extends StatefulWidget {
   final double height;
@@ -18,7 +16,7 @@ class _TransactionCardState extends State<TransactionCard> {
   @override
   Widget build(BuildContext context) {
     final mediaQuery = MediaQuery.of(context);
-    final providedTransactions=Provider.of<Transactions>(context);
+    //final providedTransactions=Provider.of<Transactions>(context);
 
     return Positioned(
       bottom: 0,
@@ -38,7 +36,7 @@ class _TransactionCardState extends State<TransactionCard> {
         child: Column(          
           children: <Widget>[
             Container(
-              height: 60,
+              height: 58,
               child: Column(
               mainAxisAlignment: MainAxisAlignment.end,
               crossAxisAlignment: CrossAxisAlignment.end,
@@ -83,9 +81,9 @@ class _TransactionCardState extends State<TransactionCard> {
               ),
             Expanded(
             child: ListView.builder(
-          itemCount: providedTransactions.transactions.length,
+          //itemCount: providedTransactions.transactions.length,
           itemBuilder: (context,i){
-            return TransactionItem(providedTransactions.transactions[i]);
+            //return TransactionItem(providedTransactions.transactions[i]);
               },
              ),
             ),
