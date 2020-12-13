@@ -1,5 +1,6 @@
 import 'package:datetime_picker_formfield/datetime_picker_formfield.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_app/widgets/custom/custom_drawer.dart';
 import 'package:intl/intl.dart';
 
 class ExpensePage extends StatefulWidget {
@@ -70,7 +71,7 @@ class _ExpensePageState extends State<ExpensePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      extendBodyBehindAppBar: true,
+      drawer: CustomDrawer('INCOME - EXPANSE'),
       appBar: AppBar(
         centerTitle: true,
         elevation: 0,
@@ -136,69 +137,68 @@ class _ExpensePageState extends State<ExpensePage> {
                     borderRadius: BorderRadius.circular(20.0)),
                 title: StatefulBuilder(
                   builder: (BuildContext context, StateSetter setState) {
-                    return Column(
-                      children: <Widget>[
-                        Container(
-                          height: 540,
-                          child: Padding(
-                            padding: const EdgeInsets.all(1.0),
-                            child: SingleChildScrollView(
-                              child: Column(
-                                children: [
-                                  Text('Add Income/Expense'),
-                                  TextField(
-                                    controller: title,
-                                    decoration: InputDecoration(
-                                      border: OutlineInputBorder(),
-                                      labelText: 'Title',
+                    return Expanded(
+                      child: Container(
+                        height: MediaQuery.of(context).size.height / 1.3,
+                        child: Padding(
+                          padding: const EdgeInsets.all(1.0),
+                          child: SingleChildScrollView(
+                            child: Column(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Text('Add Income/Expense'),
+                                TextField(
+                                  controller: title,
+                                  decoration: InputDecoration(
+                                    border: OutlineInputBorder(),
+                                    labelText: 'Title',
+                                  ),
+                                ),
+                                TextField(
+                                  keyboardType: TextInputType.multiline,
+                                  maxLines: 5,
+                                  controller: description,
+                                  decoration: InputDecoration(
+                                    border: OutlineInputBorder(),
+                                    labelText: 'Description',
+                                  ),
+                                ),
+                                TextField(
+                                  controller: amount,
+                                  keyboardType: TextInputType.number,
+                                  decoration: InputDecoration(
+                                    border: OutlineInputBorder(),
+                                    labelText: 'Amount',
+                                  ),
+                                ),
+                                BasicDateField(),
+                                SizedBox(height: 15),
+                                CheckboxListTile(
+                                  title: const Text('Is it an expense?'),
+                                  value: isExpense,
+                                  onChanged: (bool value) {
+                                    setState(() {
+                                      isExpense = value;
+                                      print(isExpense);
+                                    });
+                                  },
+                                ),
+                                SizedBox(
+                                  width: 320.0,
+                                  child: RaisedButton(
+                                    color: Colors.green,
+                                    onPressed: () {},
+                                    child: Text(
+                                      "Submit",
+                                      style: TextStyle(color: Colors.white),
                                     ),
                                   ),
-                                  TextField(
-                                    keyboardType: TextInputType.multiline,
-                                    maxLines: 5,
-                                    controller: description,
-                                    decoration: InputDecoration(
-                                      border: OutlineInputBorder(),
-                                      labelText: 'Description',
-                                    ),
-                                  ),
-                                  TextField(
-                                    controller: amount,
-                                    keyboardType: TextInputType.number,
-                                    decoration: InputDecoration(
-                                      border: OutlineInputBorder(),
-                                      labelText: 'Amount',
-                                    ),
-                                  ),
-                                  BasicDateField(),
-                                  SizedBox(height: 15),
-                                  CheckboxListTile(
-                                    title: const Text('Is it an expense?'),
-                                    value: isExpense,
-                                    onChanged: (bool value) {
-                                      setState(() {
-                                        isExpense = value;
-                                        print(isExpense);
-                                      });
-                                    },
-                                  ),
-                                  SizedBox(
-                                    width: 320.0,
-                                    child: RaisedButton(
-                                      color: Colors.green,
-                                      onPressed: () {},
-                                      child: Text(
-                                        "Submit",
-                                        style: TextStyle(color: Colors.white),
-                                      ),
-                                    ),
-                                  ),
-                                ],
-                              ),
+                                ),
+                              ],
                             ),
                           ),
                         ),
-                      ],
+                      ),
                     );
                   },
                 ),

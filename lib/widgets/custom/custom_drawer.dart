@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_app/pages/expensepage.dart';
 import 'package:flutter_app/pages/homepage.dart';
 import 'package:flutter_app/pages/login_page.dart';
 import 'package:flutter_app/pages/my_fields.dart';
@@ -55,7 +56,9 @@ class CustomDrawer extends StatelessWidget {
               icon: Icons.multiline_chart,
               text: 'INCOME - EXPANSE',
               onTap: () {
-                Navigator.pop(context);
+                Navigator.of(context).push(routeRightToLeft(ExpensePage(
+                  title: 'Expenses',
+                )));
               },
               selected: selected),
           _createDrawerItem(
