@@ -373,6 +373,7 @@ FocusNode myFocusNode;
                                           title: Text('Error'),
                                         );
                                       }
+                                      Navigator.of(context, rootNavigator: true).pop();
                                     },
                                     child: Text(
                                       "Submit",
