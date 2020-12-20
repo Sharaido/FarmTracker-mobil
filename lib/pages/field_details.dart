@@ -1,6 +1,8 @@
+import 'package:datetime_picker_formfield/datetime_picker_formfield.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_app/models/field.dart';
 import 'package:flutter_app/pages/map_sample.dart';
+import 'package:intl/intl.dart';
 import 'package:unicorndial/unicorndial.dart';
 import 'package:http/http.dart' as http;
 
@@ -15,6 +17,24 @@ class FieldDetails extends StatefulWidget {
   }) : super(key: key);
   @override
   _FieldDetailsState createState() => _FieldDetailsState();
+}
+
+String st = "";
+Widget noButton(st) {
+  return MaterialButton(
+    padding: EdgeInsets.zero,
+    materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+    color: Colors.blue,
+    shape: CircleBorder(),
+    onPressed: () {},
+    child: Padding(
+      padding: EdgeInsets.zero,
+      child: Text(
+        st,
+        style: TextStyle(color: Colors.white, fontSize: 18),
+      ),
+    ),
+  );
 }
 
 Widget detailCard(String st, int count, var no, context) {
@@ -38,8 +58,20 @@ Widget detailCard(String st, int count, var no, context) {
                   showDialog(
                       context: context,
                       builder: (_) => new AlertDialog(
-                            title: new Text(st),
-                            content: new Text(no.toString()),
+                            title: new Text(
+                              st.toString().replaceAll('SAYISI', 'NUMARALARI'),
+                            ),
+                            content: Container(
+                              width: MediaQuery.of(context).size.width * .0,
+                              color: Colors.grey[200],
+                              child: GridView.count(
+                                childAspectRatio: 1,
+                                crossAxisCount: (no.length / 20).toInt() + 5,
+                                children: List.generate(no.length, (index) {
+                                  return noButton(no[index].toString());
+                                }),
+                              ),
+                            ),
                             actions: <Widget>[
                               FlatButton(
                                 child: Text('Ekle'),
@@ -90,6 +122,38 @@ Widget detailCard(String st, int count, var no, context) {
 }
 
 class _FieldDetailsState extends State<FieldDetails> {
+  bool checkedValue = false;
+  Widget chckbx(txt) {
+    return CheckboxListTile(
+      title: Text(txt),
+      value: checkedValue,
+      onChanged: (newValue) {
+        setState(() {
+          checkedValue = newValue;
+        });
+      },
+      controlAffinity: ListTileControlAffinity.leading, //  <-- leading Checkbox
+    );
+  }
+
+  Widget datepck() {
+    return DateTimeField(
+      format: DateFormat("yyyy-MM-dd"),
+      onShowPicker: (context, currentValue) {
+        return showDatePicker(
+            context: context,
+            helpText: 'Time',
+            fieldHintText: 'Time',
+            confirmText: 'Tamam',
+            cancelText: 'İptal',
+            fieldLabelText: 'Tarih giriniz.',
+            firstDate: DateTime(1900),
+            initialDate: currentValue ?? DateTime.now(),
+            lastDate: DateTime(2100));
+      },
+    );
+  }
+
   Widget otherCard(String st, bool bl, DateTime dt, context) {
     return Flexible(
       child: Container(
@@ -110,11 +174,58 @@ class _FieldDetailsState extends State<FieldDetails> {
                   onTap: () {
                     //print(no);
                     showDialog(
-                        context: context,
-                        builder: (_) => new AlertDialog(
-                              title: new Text("Numaralar"),
-                              content: new Text(st.toString()),
-                            ));
+                      context: context,
+                      builder: (_) => new AlertDialog(
+                        title: new Text(st.toString()),
+                        content: Column(
+                          children: [
+                            if (1 == 1 && st.contains("SU")) chckbx("SULANDI"),
+                            if (1 == 1 && st.contains("SU"))
+                              Text(
+                                "\n Sıradaki Sulama tarihi:",
+                                style: TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 20.0,
+                                    color: Colors.blue.withOpacity(1.0)),
+                              ),
+                            if (1 == 1 && st.contains("SU")) datepck(),
+                            if (1 == 1 && st.contains("GÜBRE"))
+                              chckbx("GÜBRELENDİ"),
+                            if (1 == 1 && st.contains("GÜBRE"))
+                              Text(
+                                "\n Sıradaki Gübreleme tarihi:",
+                                style: TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 20.0,
+                                    color: Colors.blue.withOpacity(1.0)),
+                              ),
+                            if (1 == 1 && st.contains("GÜBRE")) datepck(),
+                            if (1 == 1 && st.contains("İLAÇ"))
+                              chckbx("İLAÇLANDI"),
+                            if (1 == 1 && st.contains("İLAÇ"))
+                              Text(
+                                "\n Sıradaki İlaçlama tarihi:",
+                                style: TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 20.0,
+                                    color: Colors.blue.withOpacity(1.0)),
+                              ),
+                            if (1 == 1 && st.contains("İLAÇ")) datepck(),
+                            if (1 == 1 && st.contains("TOPLA"))
+                              chckbx("TOPLANDI"),
+                            if (1 == 1 && st.contains("TOPLA"))
+                              Text(
+                                "\n Sıradaki Ürün toplama tarihi:",
+                                style: TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 20.0,
+                                    color: Colors.blue.withOpacity(1.0)),
+                              ),
+                            if (1 == 1 && st.contains("TOPLA")) datepck(),
+                          ],
+                        ),
+                      ),
+                    );
                   },
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
@@ -304,8 +415,32 @@ class _FieldDetailsState extends State<FieldDetails> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   mainAxisSize: MainAxisSize.min,
                   children: <Widget>[
-                    detailCard("TOPLAM AĞAÇ SAYISI", 220,
-                        [1, 2, 3, 6, 1, 8, 13], context),
+                    detailCard(
+                        "TOPLAM AĞAÇ SAYISI",
+                        220,
+                        [
+                          1,
+                          2,
+                          3,
+                          4,
+                          5,
+                          6,
+                          7,
+                          8,
+                          9,
+                          10,
+                          11,
+                          12,
+                          13,
+                          14,
+                          15,
+                          16,
+                          17,
+                          18,
+                          19,
+                          20
+                        ],
+                        context),
                     detailCard("TOPLAM HASTA AĞAÇ SAYISI", 5, [3, 6, 1, 8, 13],
                         context),
                   ]),
