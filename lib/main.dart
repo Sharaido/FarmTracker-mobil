@@ -46,7 +46,7 @@ class MyApp extends StatelessWidget {
             farmID: "asd"),
       ),*/
 
-      home: ExpensesPage(
+      home: ExpensePage(
         title: 'Expenses',
       ),
 

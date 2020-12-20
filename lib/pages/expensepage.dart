@@ -2,6 +2,7 @@ import 'package:datetime_picker_formfield/datetime_picker_formfield.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_app/widgets/custom/custom_drawer.dart';
 import 'package:intl/intl.dart';
+import '../models/transactions.dart' as transactions;
 
 class ExpensePage extends StatefulWidget {
   final String title;
@@ -12,6 +13,18 @@ class ExpensePage extends StatefulWidget {
   _ExpensePageState createState() => _ExpensePageState();
 }
 
+class DescExtend extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      height: 20,
+    );
+  }
+}
+
+DateTime date;
+
+// ignore: must_be_immutable
 class BasicDateField extends StatelessWidget {
   final format = DateFormat("dd-MM-yyyy");
 
@@ -19,13 +32,16 @@ class BasicDateField extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       children: <Widget>[
-        Text(
-          'Select Date',
-        ),
         DateTimeField(
+          decoration: InputDecoration(
+            labelText: 'Date',
+            border: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(10),
+            ),
+          ),
           format: format,
           onShowPicker: (context, currentValue) async {
-            final date = await showDatePicker(
+            date = await showDatePicker(
                 context: context,
                 firstDate: DateTime(1900),
                 initialDate: currentValue ?? DateTime.now(),
@@ -42,29 +58,67 @@ class BasicDateField extends StatelessWidget {
 }
 
 class _ExpensePageState extends State<ExpensePage> {
-  final title = TextEditingController();
+  final about = TextEditingController();
   final description = TextEditingController();
   final amount = TextEditingController();
+  int i = 0;
   bool isExpense = false;
 
-  final List<String> names = <String>[
-    'Aby',
-    'Aish',
-    'Ayan',
-    'Ben',
-    'Bob',
-    'Charlie',
-    'Cook',
-    'Carline'
+  final List<String> titles = <String>[
+    'Dayıoğluna borç',
   ];
-  final List<int> msgCount = <int>[2, 0, 10, 6, 52, 4, 0, 2];
+  final List<String> desc = <String>[
+    'Aga beee böyle de borç yapılır mı',
+  ];
+  final List<String> checkexpense = <String>[
+    'true',
+  ];
+  final List<double> addamount = <double>[
+    45,
+  ];
+  final List<int> dates = <int>[
+    22051997,
+  ];
 
-  TextEditingController nameController = TextEditingController();
+
+FocusNode myFocusNode;
+
+  @override
+  void initState() {
+    super.initState();
+
+    myFocusNode = FocusNode();
+  }
+
+  @override
+  void dispose() {
+    // Clean up the focus node when the Form is disposed.
+    myFocusNode.dispose();
+
+    super.dispose();
+  }
+
 
   void addItemToList() {
     setState(() {
-      names.insert(0, nameController.text);
-      msgCount.insert(0, 0);
+      titles.insert(0, about.text);
+      desc.insert(0, description.text);
+      checkexpense.insert(0, isExpense.toString());
+      addamount.insert(0, double.parse(amount.text));
+      var x = date.day.toString();
+      var y = date.month.toString();
+      var z = date.year.toString();
+      var f = x + y + z;
+      dates.insert(0, int.parse(f));
+
+      transactions.Transaction(
+        title: about.text,
+        description: description.text,
+        amount: double.parse(amount.text),
+        isexpense: isExpense.toString(),
+        date: int.parse(f),
+      );
+      i++;
     });
   }
 
@@ -88,40 +142,134 @@ class _ExpensePageState extends State<ExpensePage> {
           Expanded(
             child: ListView.builder(
               padding: const EdgeInsets.all(8),
-              itemCount: names.length,
+              itemCount: titles.length,
               itemBuilder: (BuildContext context, int index) {
                 return Container(
-                  height: 50,
+                  decoration: BoxDecoration(
+                      color: checkexpense[i] == 'true'
+                          ? Colors.red[500]
+                          : Colors.green[500],
+                      borderRadius: BorderRadius.all(Radius.circular(20))),
+                  height: 70,
                   margin: EdgeInsets.all(2),
-                  color: msgCount[index] >= 10
-                      ? Colors.blue[400]
-                      : msgCount[index] > 3
-                          ? Colors.blue[100]
-                          : Colors.grey,
                   child: Center(
-                      child: Text(
-                    '${names[index]} (${msgCount[index]})',
-                    style: TextStyle(fontSize: 18),
-                  )),
+                    child: SizedBox(
+                      height: 70,
+                      width: 340,
+                      child: FlatButton(
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.all(Radius.circular(20)),
+                          side: BorderSide(
+                            width: 1,
+                            color: Colors.black,
+                          ),
+                        ),
+                        onPressed: () {
+                          DescExtend();
+                        },
+                        child: Text(
+                          '${titles[index]}',
+                          style: TextStyle(
+                            fontSize: 18,
+                            color: Colors.black,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
                 );
               },
             ),
           ),
-          Padding(
-            padding: EdgeInsets.all(20),
-            child: TextField(
-              controller: nameController,
-              decoration: InputDecoration(
-                border: OutlineInputBorder(),
-                labelText: 'Contact Name',
+          Material(
+            elevation: 10,
+            shadowColor: Color(0xFFFF8C3B),
+            child: Padding(
+              padding: EdgeInsets.all(15),
+              child: Row(
+                children: <Widget>[
+                  Text('Sort by:'),
+                  Material(
+                    elevation: 10,
+                    shape: CircleBorder(
+                      side: BorderSide(width: 0),
+                    ),
+                    shadowColor: Colors.black,
+                    child: ButtonTheme(
+                      minWidth: 7,
+                      child: FlatButton(
+                        onPressed: () {},
+                        padding: EdgeInsets.all(20.0),
+                        color: Colors.green,
+                        shape: CircleBorder(
+                          side: BorderSide(
+                            width: 0,
+                          ),
+                        ),
+                        child: Text(
+                          'Date',
+                          style: TextStyle(
+                            color: Colors.white,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                  Material(
+                    elevation: 10,
+                    shape: CircleBorder(
+                      side: BorderSide(width: 0),
+                    ),
+                    shadowColor: Colors.black,
+                    child: ButtonTheme(
+                      minWidth: 7,
+                      child: FlatButton(
+                        onPressed: () {},
+                        padding: EdgeInsets.all(20.0),
+                        color: Colors.green,
+                        shape: CircleBorder(
+                          side: BorderSide(
+                            width: 0,
+                          ),
+                        ),
+                        child: Text(
+                          'Expe',
+                          style: TextStyle(
+                            color: Colors.white,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                  Material(
+                    elevation: 10,
+                    shape: CircleBorder(
+                      side: BorderSide(width: 0),
+                    ),
+                    shadowColor: Colors.black,
+                    child: ButtonTheme(
+                      minWidth: 7,
+                      child: FlatButton(
+                        onPressed: () {},
+                        padding: EdgeInsets.all(20.0),
+                        color: Colors.green,
+                        shape: CircleBorder(
+                          side: BorderSide(
+                            width: 0,
+                          ),
+                        ),
+                        child: Text(
+                          'Amnt',
+                          style: TextStyle(
+                            color: Colors.white,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
               ),
             ),
-          ),
-          RaisedButton(
-            child: Text('Add'),
-            onPressed: () {
-              addItemToList();
-            },
           ),
         ],
       ),
@@ -132,45 +280,57 @@ class _ExpensePageState extends State<ExpensePage> {
           showDialog(
             context: context,
             builder: (BuildContext context) {
-              return SimpleDialog(
+              return AlertDialog(
+                scrollable: true,
+                elevation: 10,
                 shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(20.0)),
                 title: StatefulBuilder(
                   builder: (BuildContext context, StateSetter setState) {
-                    return Expanded(
-                      child: Container(
-                        height: MediaQuery.of(context).size.height / 1.3,
+                    return Container(
+                        height: MediaQuery.of(context).size.height / 1.25,
                         child: Padding(
-                          padding: const EdgeInsets.all(1.0),
-                          child: SingleChildScrollView(
+                          padding: const EdgeInsets.all(0),
                             child: Column(
                               mainAxisSize: MainAxisSize.min,
                               children: [
                                 Text('Add Income/Expense'),
+                                SizedBox(height: 15),
                                 TextField(
-                                  controller: title,
+                                  controller: about,
                                   decoration: InputDecoration(
-                                    border: OutlineInputBorder(),
+                                    border: OutlineInputBorder(
+                                      borderRadius: BorderRadius.circular(10),
+                                    ),
                                     labelText: 'Title',
                                   ),
                                 ),
+                                SizedBox(height: 10),
                                 TextField(
+                                  controller: description,
                                   keyboardType: TextInputType.multiline,
                                   maxLines: 5,
-                                  controller: description,
                                   decoration: InputDecoration(
-                                    border: OutlineInputBorder(),
+                                    border: OutlineInputBorder(
+                                      borderRadius: BorderRadius.circular(10),
+                                    ),
                                     labelText: 'Description',
                                   ),
                                 ),
+                                SizedBox(height: 10),
                                 TextField(
+                                  onTap: () => myFocusNode.requestFocus(),
                                   controller: amount,
+                                  focusNode: myFocusNode,
                                   keyboardType: TextInputType.number,
                                   decoration: InputDecoration(
-                                    border: OutlineInputBorder(),
+                                    border: OutlineInputBorder(
+                                      borderRadius: BorderRadius.circular(10),
+                                    ),
                                     labelText: 'Amount',
                                   ),
                                 ),
+                                SizedBox(height: 15),
                                 BasicDateField(),
                                 SizedBox(height: 15),
                                 CheckboxListTile(
@@ -179,26 +339,53 @@ class _ExpensePageState extends State<ExpensePage> {
                                   onChanged: (bool value) {
                                     setState(() {
                                       isExpense = value;
-                                      print(isExpense);
                                     });
                                   },
                                 ),
                                 SizedBox(
                                   width: 320.0,
-                                  child: RaisedButton(
+                                  child: Row(children: [
+                                    RaisedButton(
+                                    shape: RoundedRectangleBorder(
+                                        borderRadius:
+                                            BorderRadius.circular(10)),
+                                    color: Colors.red,
+                                    onPressed: () {
+                                      Navigator.of(context, rootNavigator: true).pop();
+                                    },
+                                    child: Text(
+                                      "Cancel",
+                                      style: TextStyle(color: Colors.white),
+                                    ),
+                                  ),
+                                  SizedBox(width: 50),
+                                   RaisedButton(
+                                    shape: RoundedRectangleBorder(
+                                        borderRadius:
+                                            BorderRadius.circular(10)),
                                     color: Colors.green,
-                                    onPressed: () {},
+                                    onPressed: () {
+                                      if (about.text != '') {
+                                        addItemToList();
+                                        print(dates);
+                                      } else {
+                                        AlertDialog(
+                                          title: Text('Error'),
+                                        );
+                                      }
+                                    },
                                     child: Text(
                                       "Submit",
                                       style: TextStyle(color: Colors.white),
                                     ),
                                   ),
+                                  
+                                  ],
+                                ),
                                 ),
                               ],
                             ),
                           ),
-                        ),
-                      ),
                     );
                   },
                 ),
@@ -210,7 +397,3 @@ class _ExpensePageState extends State<ExpensePage> {
     );
   }
 }
-
-// Navigator.push(
-//             context,
-//             MaterialPageRoute(builder: (context) => PromtPage()))
