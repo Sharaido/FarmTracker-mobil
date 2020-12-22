@@ -1,88 +1,222 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_app/models/category.dart';
+import 'package:flutter_app/models/field.dart';
+import 'package:http/http.dart' as http;
+import 'package:provider/provider.dart';
+import '../main.dart';
+import 'login_page.dart';
+
+class CategoryProvider extends ChangeNotifier {
+  Future<List<Category>> firstFuture;
+  Future<List<Category>> secondFuture = Future.value([]);
+  Future<List<Category>> thirdFuture = Future.value([]);
+  List<Future> futureList;
+
+  CategoryProvider(Future first) {
+    this.firstFuture = first;
+    this.secondFuture = Future.value([]);
+    this.thirdFuture = Future.value([]);
+    futureList = [firstFuture, secondFuture, thirdFuture];
+  }
+
+  void setFuture(Future newFuture, int order) {
+    futureList[order] = newFuture;
+    if (order == 1) {
+      thirdFuture = Future.value([]);
+    }
+    notifyListeners();
+  }
+}
 
 // ignore: camel_case_types
 
 // ignore: camel_case_types
 class newEntity extends StatefulWidget {
+  const newEntity({Key key, this.property}) : super(key: key);
+
   @override
   _MyHomePageState createState() => _MyHomePageState();
+  final Property property;
 }
 
 class _MyHomePageState extends State<newEntity> {
-  int _counter = 0;
+  final _formKey = new GlobalKey<FormState>();
+  TextEditingController _countController = TextEditingController();
+  TextEditingController _idController = TextEditingController();
 
-  void _incrementCounter() {
-    setState(() {
-      _counter++;
-    });
-  }
+  Category c1;
+  Category c2;
+  Category c3;
 
-  String dropdownValue = '(Boş)';
-  String dropdownType = '(Boş)';
-  String dropdownSpecies = '(Boş)';
+  List<DropdownMenuItem<int>> firstCategories;
+  List<DropdownMenuItem<int>> secondCategories;
+  List<DropdownMenuItem<int>> thirdCategories;
+  List<List<DropdownMenuItem<int>>> categoryList;
+  List<Category> selectedCategoryList = [];
+  List<int> selectedCategoryIndex;
+  List<bool> dropdownVisibilities = [true, false, false];
   bool checkBoxValue = false;
   bool checkBoxValueNew = false;
+  bool hasError = false;
+  bool succesful = false;
 
-  Widget dropDownwidget(context, {List<DropdownMenuItem<String>> items}) {
-    return DropdownButton<String>(
-      value: dropdownValue,
-      icon: Icon(Icons.arrow_downward),
-      iconSize: 24,
-      elevation: 16,
-      style: TextStyle(color: Colors.deepPurple),
-      underline: Container(
-        height: 2,
-        color: Colors.deepPurpleAccent,
-      ),
-      onChanged: (String newValue) {
-        setState(() {
-          dropdownValue = newValue;
-        });
+  bool get _addDisabled {
+    return entityCategory == null;
+  }
+
+  String get _health {
+    return checkBoxValue ? "Diseased" : "Healty";
+  }
+
+  Category get entityCategory {
+    if (selectedCategoryIndex[2] != 0) return selectedCategoryList[2];
+    if (selectedCategoryIndex[1] != 0) return selectedCategoryList[1];
+    if (selectedCategoryIndex[0] != 0) return selectedCategoryList[0];
+    return null;
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    firstCategories = [new DropdownMenuItem(child: Text("-"), value: 0)];
+    secondCategories = [new DropdownMenuItem(child: Text("-"), value: 0)];
+    thirdCategories = [new DropdownMenuItem(child: Text("-"), value: 0)];
+    categoryList = [firstCategories, secondCategories, thirdCategories];
+    selectedCategoryList = [c1, c2, c3];
+    selectedCategoryIndex = [0, 0, 0];
+  }
+
+  Future<List<Category>> _getCategories(int id) async {
+    var jwt = await storage.read(key: "token");
+    final response =
+        await http.get('$BASE_URL/api/Farms/SubCategories/$id', headers: {
+      'Content-Type': 'application/json',
+      'Accept': 'application/json',
+      'Authorization': 'Bearer $jwt',
+    });
+    return parseProperties(response.body);
+  }
+
+  Future<bool> _addCOPValue(String entityID, int copID, String value) async {
+    var jwt = await storage.read(key: "token");
+    final http.Response response = await http.post(
+      '$BASE_URL/api/Farms/Properties/Entities/COPValues/',
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+        'Authorization': 'Bearer $jwt',
       },
-      items: items,
+      body: jsonEncode(<String, dynamic>{
+        'EUID': entityID,
+        'PUID': copID,
+        'Value': value,
+      }),
+    );
+    return response.statusCode == 201;
+  }
+
+  Future<Entity> _addEntity(int categoryID, String propertyID, String id,
+      String name, String desc, int count) async {
+    var jwt = await storage.read(key: "token");
+    final http.Response response = await http.post(
+      '$BASE_URL/api/Farms/Properties/Entities/',
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+        'Authorization': 'Bearer $jwt',
+      },
+      body: jsonEncode(<String, dynamic>{
+        "CUID": categoryID,
+        "PUID": propertyID,
+        "ID": id,
+        "Name": name,
+        "Description": desc,
+        "Count": count,
+        "PurchasedDate": null,
+        "Cost": 0
+      }),
+    );
+
+    if (response.statusCode == 201) return parseEntity(response.body);
+    return null;
+  }
+
+  List<Category> parseProperties(String responseBody) {
+    final parsed = jsonDecode(responseBody).cast<Map<String, dynamic>>();
+    return parsed.map<Category>((json) => Category.fromJson(json)).toList();
+  }
+
+  Entity parseEntity(String responseBody) {
+    var parsed = Map<String, dynamic>.from(jsonDecode(responseBody));
+    return Entity.fromJson(parsed);
+  }
+
+  Widget dropDown(int order, context) {
+    var provider = Provider.of<CategoryProvider>(context, listen: false);
+    return FutureBuilder<List<Category>>(
+      future: provider.futureList[order],
+      builder: (context, snapshot) {
+        if (snapshot.hasError) {
+          return new Container();
+        } else if (snapshot.hasData) {
+          categoryList[order].clear();
+          var dropDownItemsMap = new Map();
+          categoryList[order]
+              .add(new DropdownMenuItem(child: Text('-'), value: 0));
+          snapshot.data.forEach((category) {
+            int index = snapshot.data.indexOf(category);
+            dropDownItemsMap[index + 1] = category;
+            categoryList[order].add(new DropdownMenuItem(
+                child: Text(category.name), value: index + 1));
+          });
+          return DropdownButton(
+            items: categoryList[order],
+            value: selectedCategoryIndex[order],
+            onChanged: (int selectedIndex) {
+              setState(() {
+                selectedCategoryIndex[order] = selectedIndex;
+                selectedCategoryList[order] = dropDownItemsMap[
+                    selectedIndex]; //categoryList[order][selectedIndex].value
+                switch (order) {
+                  case 0:
+                    dropdownVisibilities[1] = selectedIndex != 0;
+                    dropdownVisibilities[2] = false;
+                    selectedCategoryIndex[1] = 0;
+                    selectedCategoryIndex[2] = 0;
+                    break;
+                  case 1:
+                    dropdownVisibilities[2] = selectedIndex != 0;
+                    selectedCategoryIndex[2] = 0;
+                    break;
+                  default:
+                }
+                if (order != 2 && selectedIndex != 0) {
+                  provider.setFuture(
+                      _getCategories(selectedCategoryList[order].id),
+                      order + 1);
+                }
+              });
+            },
+          );
+        } else {
+          return CircularProgressIndicator();
+        }
+      },
     );
   }
 
-  Widget dropDownwidgetType(context, {List<DropdownMenuItem<String>> items}) {
-    return DropdownButton<String>(
-      value: dropdownType,
-      icon: Icon(Icons.arrow_downward),
-      iconSize: 24,
-      elevation: 16,
-      style: TextStyle(color: Colors.deepPurple),
-      underline: Container(
-        height: 2,
-        color: Colors.deepPurpleAccent,
-      ),
-      onChanged: (String newValue) {
-        setState(() {
-          dropdownType = newValue;
-        });
-      },
-      items: items,
-    );
-  }
-
-  Widget dropDownwidgetSpecies(context,
-      {List<DropdownMenuItem<String>> items}) {
-    return DropdownButton<String>(
-      value: dropdownSpecies,
-      icon: Icon(Icons.arrow_downward),
-      iconSize: 24,
-      elevation: 16,
-      style: TextStyle(color: Colors.deepPurple),
-      underline: Container(
-        height: 2,
-        color: Colors.deepPurpleAccent,
-      ),
-      onChanged: (String newValue) {
-        setState(() {
-          dropdownSpecies = newValue;
-        });
-      },
-      items: items,
-    );
+  List<DropdownMenuItem<Category>> buildDropDownMenuItems(List listItems) {
+    List<DropdownMenuItem<Category>> items = List();
+    for (Category listItem in listItems) {
+      items.add(
+        DropdownMenuItem(
+          child: Text(listItem.name),
+          value: listItem,
+        ),
+      );
+    }
+    return items;
   }
 
   Widget checkWidget(String value) {
@@ -105,91 +239,147 @@ class _MyHomePageState extends State<newEntity> {
         });
   }
 
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            new Text(
-              'ÜRÜN EKLE',
-              style: TextStyle(
-                  fontSize: 20.0,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.black.withOpacity(1.0)),
-            ),
-            dropDownwidget(context,
-                items: <String>['(Boş)', 'Ağaç', 'Çiçek']
-                    .map<DropdownMenuItem<String>>((String value) {
-                  return DropdownMenuItem<String>(
-                    value: value,
-                    child: Text(value),
-                  );
-                }).toList()),
-            dropDownwidgetType(context,
-                items: <String>[
-                  '(Boş)',
-                  'Ceviz Ağacı',
-                  'Ihlamur Ağacı',
-                  'Meşe Ağacı',
-                  'Zeytin Ağacı'
-                ].map<DropdownMenuItem<String>>((String value) {
-                  return DropdownMenuItem<String>(
-                    value: value,
-                    child: Text(value),
-                  );
-                }).toList()),
-            dropDownwidgetSpecies(context,
-                items: <String>['(Boş)', 'Kara Ceviz', 'Boz Ceviz']
-                    .map<DropdownMenuItem<String>>((String value) {
-                  return DropdownMenuItem<String>(
-                    value: value,
-                    child: Text(value),
-                  );
-                }).toList()),
-            Container(
-                padding: const EdgeInsets.fromLTRB(160, 0, 160, 0),
-                child: new Column(
-                  children: <Widget>[
-                    new TextField(
-                      decoration: new InputDecoration(labelText: "Adet"),
-                      keyboardType: TextInputType.number,
-                      inputFormatters: <TextInputFormatter>[
-                        FilteringTextInputFormatter.digitsOnly
-                      ], // Only numbers can be entered
-                    ),
-                  ],
-                )),
-            Container(
-                padding: const EdgeInsets.fromLTRB(140, 0, 140, 0),
-                child: new Column(
-                  children: <Widget>[
-                    new TextField(
-                      decoration:
-                          new InputDecoration(labelText: "Numara (Sayı-Sayı)"),
-                      keyboardType: TextInputType.number,
-                      inputFormatters: <
-                          TextInputFormatter>[], // Only numbers can be entered
-                    ),
-                  ],
-                )),
-            Row(mainAxisAlignment: MainAxisAlignment.center, children: <Widget>[
-              checkWidget("Hasta"),
-              Text("Hasta"),
-            ]),
-            Row(mainAxisAlignment: MainAxisAlignment.center, children: <Widget>[
-              checkWidgetNew("Yeni"),
-              Text("Yeni"),
-            ]),
-          ],
+  _onAddButtonClicked() async {
+    if (!_formKey.currentState.validate()) return;
+    _addEntity(entityCategory.id, widget.property.id, _idController.text,
+            'name', 'desc', int.parse(_countController.text))
+        .then((value) {
+      setState(() {
+        if (value == null) {
+          hasError = true;
+          return;
+        }
+        _addCOPValue(value.id, 3, _health).then((value) => onAddSuccesful());
+      });
+    });
+  }
+
+  onAddSuccesful() {
+    setState(() {
+      _idController.clear();
+      _countController.clear();
+      selectedCategoryIndex[0] = 0;
+      dropdownVisibilities[1] = false;
+      dropdownVisibilities[2] = false;
+      checkBoxValue = false;
+      hasError = false;
+      succesful = true;
+    });
+  }
+
+  _getAddButton() {
+    return FlatButton(
+      disabledColor: Colors.green[200],
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(20.0),
+      ),
+      color: Colors.green,
+      padding: const EdgeInsets.only(top: 15.0, bottom: 15.0),
+      child: Text(
+        'EKLE',
+        style: TextStyle(
+          color: Colors.white,
+          fontFamily: 'Roboto',
+          fontWeight: FontWeight.bold,
         ),
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _incrementCounter,
-        tooltip: 'Increment',
-        child: Icon(Icons.add),
-      ),
+      onPressed: _addDisabled ? null : _onAddButtonClicked,
     );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return ChangeNotifierProvider(
+        create: (_) => CategoryProvider(_getCategories(1)),
+        builder: (ctx, wid) {
+          return Scaffold(
+            body: Center(
+              child: SingleChildScrollView(
+                child: Form(
+                  key: _formKey,
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: <Widget>[
+                      if (hasError)
+                        Text(
+                          'Bir hata oluştu, lütfen tekrar deneyin.',
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                            color: Colors.red,
+                            fontSize: 15,
+                          ),
+                        ),
+                      if (succesful)
+                        Text(
+                          'Ekleme başarıyla tamamlandı.',
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                            color: Colors.green,
+                            fontSize: 15,
+                          ),
+                        ),
+                      new Text(
+                        'ÜRÜN EKLE',
+                        style: TextStyle(
+                            fontSize: 20.0,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.black.withOpacity(1.0)),
+                      ),
+                      if (dropdownVisibilities[0]) dropDown(0, ctx),
+                      if (dropdownVisibilities[1]) dropDown(1, ctx),
+                      if (dropdownVisibilities[2]) dropDown(2, ctx),
+                      Container(
+                          padding: const EdgeInsets.fromLTRB(160, 0, 160, 0),
+                          child: new Column(
+                            children: <Widget>[
+                              new TextFormField(
+                                controller: _countController,
+                                validator: (String value) {
+                                  if (value.isEmpty) return "Boş kalamaz";
+                                  return null;
+                                },
+                                decoration:
+                                    new InputDecoration(labelText: "Adet"),
+                                keyboardType: TextInputType.number,
+                                inputFormatters: <TextInputFormatter>[
+                                  FilteringTextInputFormatter.digitsOnly
+                                ], // Only numbers can be entered
+                              ),
+                            ],
+                          )),
+                      Container(
+                          padding: const EdgeInsets.fromLTRB(140, 0, 140, 0),
+                          child: new Column(
+                            children: <Widget>[
+                              new TextFormField(
+                                controller: _idController,
+                                decoration: new InputDecoration(
+                                    labelText: "Numara (Sayı-Sayı)"),
+                                keyboardType: TextInputType.number,
+                                inputFormatters: <
+                                    TextInputFormatter>[], // Only numbers can be entered
+                              ),
+                            ],
+                          )),
+                      Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: <Widget>[
+                            checkWidget("Hasta"),
+                            Text("Hasta"),
+                          ]),
+                      Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: <Widget>[
+                            checkWidgetNew("Yeni"),
+                            Text("Yeni"),
+                          ]),
+                      _getAddButton(),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+          );
+        });
   }
 }

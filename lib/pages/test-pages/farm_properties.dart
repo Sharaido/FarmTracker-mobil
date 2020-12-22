@@ -23,8 +23,8 @@ class PropertyProvider extends ChangeNotifier {
   void updateFuture(String id) async {
     var jwt = await storage.read(key: 'token');
 
-    final response = await http
-        .get('http://10.0.2.2:8181/api/Farms/Properties/$id', headers: {
+    final response =
+        await http.get('$BASE_URL/api/Farms/Properties/$id', headers: {
       'Content-Type': 'application/json',
       'Accept': 'application/json',
       'Authorization': 'Bearer $jwt',

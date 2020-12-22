@@ -10,8 +10,8 @@ import './pages/expensepage.dart';
 import 'models/field.dart';
 
 final storage = FlutterSecureStorage();
-//const String BASE_URL = "http://10.0.2.2:8181";
-const String BASE_URL = "http://192.168.0.18:8181";
+const String BASE_URL = "http://10.0.2.2:8181";
+//const String BASE_URL = "http://192.168.0.18:8181";
 void main() {
   runApp(MyApp());
 }
@@ -31,11 +31,11 @@ class MyApp extends StatelessWidget {
               bodyColor: Colors.black,
               displayColor: Colors.black)),
 
-      //  home: HomePage(
+      // home: HomePage(
       //   title: 'Home',
       // ),
-      //home: LoginPage(),
-     /* home: FieldDetails(
+      home: LoginPage(),
+      /* home: FieldDetails(
         property: new Property(
             categoryID: 2,
             createdBy: "asd",
@@ -46,10 +46,9 @@ class MyApp extends StatelessWidget {
             farmID: "asd"),
       ),*/
 
-      home: ExpensePage(
-        title: 'Expenses',
-      ),
-
+      // home: ExpensePage(
+      //   title: 'Expenses',
+      // ),
 
       routes: {
         '/login': (context) => LoginPage(),

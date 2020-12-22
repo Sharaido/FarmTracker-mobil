@@ -80,8 +80,7 @@ class _ExpensePageState extends State<ExpensePage> {
     22051997,
   ];
 
-
-FocusNode myFocusNode;
+  FocusNode myFocusNode;
 
   @override
   void initState() {
@@ -97,7 +96,6 @@ FocusNode myFocusNode;
 
     super.dispose();
   }
-
 
   void addItemToList() {
     setState(() {
@@ -146,10 +144,12 @@ FocusNode myFocusNode;
               itemBuilder: (BuildContext context, int index) {
                 return Container(
                   decoration: BoxDecoration(
-                      color: checkexpense[i] == 'true'
-                          ? Colors.red[500]
-                          : Colors.green[500],
-                      borderRadius: BorderRadius.all(Radius.circular(20))),
+                    color: checkexpense[i] == 'true'
+                        ? Colors.red[500]
+                        : Colors.green[500],
+                    borderRadius: BorderRadius.all(Radius.circular(20)),
+                    border: Border.all(color: Colors.black),
+                  ),
                   height: 70,
                   margin: EdgeInsets.all(2),
                   child: Center(
@@ -157,13 +157,6 @@ FocusNode myFocusNode;
                       height: 70,
                       width: 340,
                       child: FlatButton(
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.all(Radius.circular(20)),
-                          side: BorderSide(
-                            width: 1,
-                            color: Colors.black,
-                          ),
-                        ),
                         onPressed: () {
                           DescExtend();
                         },
@@ -288,70 +281,72 @@ FocusNode myFocusNode;
                 title: StatefulBuilder(
                   builder: (BuildContext context, StateSetter setState) {
                     return Container(
-                        height: MediaQuery.of(context).size.height / 1.25,
-                        child: Padding(
-                          padding: const EdgeInsets.all(0),
-                            child: Column(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                Text('Add Income/Expense'),
-                                SizedBox(height: 15),
-                                TextField(
-                                  controller: about,
-                                  decoration: InputDecoration(
-                                    border: OutlineInputBorder(
-                                      borderRadius: BorderRadius.circular(10),
-                                    ),
-                                    labelText: 'Title',
-                                  ),
+                      height: MediaQuery.of(context).size.height / 1.25,
+                      child: Padding(
+                        padding: const EdgeInsets.all(0),
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Text('Add Income/Expense'),
+                            SizedBox(height: 15),
+                            TextField(
+                              controller: about,
+                              decoration: InputDecoration(
+                                border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(10),
                                 ),
-                                SizedBox(height: 10),
-                                TextField(
-                                  controller: description,
-                                  keyboardType: TextInputType.multiline,
-                                  maxLines: 5,
-                                  decoration: InputDecoration(
-                                    border: OutlineInputBorder(
-                                      borderRadius: BorderRadius.circular(10),
-                                    ),
-                                    labelText: 'Description',
-                                  ),
+                                labelText: 'Title',
+                              ),
+                            ),
+                            SizedBox(height: 10),
+                            TextField(
+                              controller: description,
+                              keyboardType: TextInputType.multiline,
+                              maxLines: 5,
+                              decoration: InputDecoration(
+                                border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(10),
                                 ),
-                                SizedBox(height: 10),
-                                TextField(
-                                  onTap: () => myFocusNode.requestFocus(),
-                                  controller: amount,
-                                  focusNode: myFocusNode,
-                                  keyboardType: TextInputType.number,
-                                  decoration: InputDecoration(
-                                    border: OutlineInputBorder(
-                                      borderRadius: BorderRadius.circular(10),
-                                    ),
-                                    labelText: 'Amount',
-                                  ),
+                                labelText: 'Description',
+                              ),
+                            ),
+                            SizedBox(height: 10),
+                            TextField(
+                              onTap: () => myFocusNode.requestFocus(),
+                              controller: amount,
+                              focusNode: myFocusNode,
+                              keyboardType: TextInputType.number,
+                              decoration: InputDecoration(
+                                border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(10),
                                 ),
-                                SizedBox(height: 15),
-                                BasicDateField(),
-                                SizedBox(height: 15),
-                                CheckboxListTile(
-                                  title: const Text('Is it an expense?'),
-                                  value: isExpense,
-                                  onChanged: (bool value) {
-                                    setState(() {
-                                      isExpense = value;
-                                    });
-                                  },
-                                ),
-                                SizedBox(
-                                  width: 320.0,
-                                  child: Row(children: [
-                                    RaisedButton(
+                                labelText: 'Amount',
+                              ),
+                            ),
+                            SizedBox(height: 15),
+                            BasicDateField(),
+                            SizedBox(height: 15),
+                            CheckboxListTile(
+                              title: const Text('Is it an expense?'),
+                              value: isExpense,
+                              onChanged: (bool value) {
+                                setState(() {
+                                  isExpense = value;
+                                });
+                              },
+                            ),
+                            SizedBox(
+                              width: 320.0,
+                              child: Row(
+                                children: [
+                                  RaisedButton(
                                     shape: RoundedRectangleBorder(
                                         borderRadius:
                                             BorderRadius.circular(10)),
                                     color: Colors.red,
                                     onPressed: () {
-                                      Navigator.of(context, rootNavigator: true).pop();
+                                      Navigator.of(context, rootNavigator: true)
+                                          .pop();
                                     },
                                     child: Text(
                                       "Cancel",
@@ -359,7 +354,7 @@ FocusNode myFocusNode;
                                     ),
                                   ),
                                   SizedBox(width: 50),
-                                   RaisedButton(
+                                  RaisedButton(
                                     shape: RoundedRectangleBorder(
                                         borderRadius:
                                             BorderRadius.circular(10)),
@@ -369,24 +364,28 @@ FocusNode myFocusNode;
                                         addItemToList();
                                         print(dates);
                                       } else {
-                                        AlertDialog(
-                                          title: Text('Error'),
-                                        );
+                                        showDialog(
+                                            context: context,
+                                            builder: (BuildContext context) {
+                                              return AlertDialog(
+                                                title: Text('Error'),
+                                              );
+                                            });
                                       }
-                                      Navigator.of(context, rootNavigator: true).pop();
+                                      Navigator.of(context, rootNavigator: true)
+                                          .pop();
                                     },
                                     child: Text(
                                       "Submit",
                                       style: TextStyle(color: Colors.white),
                                     ),
                                   ),
-                                  
-                                  ],
-                                ),
-                                ),
-                              ],
+                                ],
+                              ),
                             ),
-                          ),
+                          ],
+                        ),
+                      ),
                     );
                   },
                 ),

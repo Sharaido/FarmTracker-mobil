@@ -1,3 +1,8 @@
+import 'dart:convert';
+
+import '../main.dart';
+import 'package:http/http.dart' as http;
+
 class Farm {
   final String id;
   final String name;
@@ -26,6 +31,62 @@ class Property {
   final String farmID;
   final String createdBy;
   final String createdDate;
+
+  List<Entity> all = [];
+  List<Entity> diseased = [];
+  List<Entity> dead = [];
+
+  Future<List<Entity>> getAllEntities() async {
+    var jwt = await storage.read(key: "token");
+    final response =
+        await http.get('$BASE_URL/api/Farms/Properties/Entities/$id', headers: {
+      'Content-Type': 'application/json',
+      'Accept': 'application/json',
+      'Authorization': 'Bearer $jwt',
+    });
+    if (response.statusCode == 404) return [];
+    return parseEntities(response.body);
+  }
+
+  List<Entity> parseEntities(String responseBody) {
+    final parsed = jsonDecode(responseBody).cast<Map<String, dynamic>>();
+    return parsed.map<Entity>((json) => Entity.fromJson(json)).toList();
+  }
+
+  Future<List<COPValue>> getCOPValues(String id) async {
+    var jwt = await storage.read(key: "token");
+    final response = await http
+        .get('$BASE_URL/api/Farms/Properties/Entities/COPValues/$id', headers: {
+      'Content-Type': 'application/json',
+      'Accept': 'application/json',
+      'Authorization': 'Bearer $jwt',
+    });
+    return parseCOPValues(response.body);
+  }
+
+  List<COPValue> parseCOPValues(String responseBody) {
+    final parsed = jsonDecode(responseBody).cast<Map<String, dynamic>>();
+    return parsed.map<COPValue>((json) => COPValue.fromJson(json)).toList();
+  }
+
+  Future<bool> setEntitiesList() async {
+    diseased.clear();
+    dead.clear();
+    all.forEach((element) {
+      getCOPValues(element.id).then((value) {
+        value.forEach((cop) {
+          if (cop.propertyCategoryID == 3) {
+            if (cop.value == "Diseased") {
+              diseased.add(element);
+            } else if (cop.value == "Dead") {
+              dead.add(element);
+            }
+          }
+        });
+      });
+    });
+    return true;
+  }
 
   Property(
       {this.id,
@@ -86,8 +147,22 @@ class Entity {
       count: json['count'],
       purchaseDate: json['purchaseDate'],
       cost: json['cost'],
-      createdBy: json['createdByUuid'],
-      createdDate: json['createdDate'],
+    );
+  }
+}
+
+class COPValue {
+  final String entityID;
+  final int propertyCategoryID;
+  final String value;
+
+  COPValue({this.entityID, this.propertyCategoryID, this.value});
+
+  factory COPValue.fromJson(Map<String, dynamic> json) {
+    return COPValue(
+      entityID: json['euid'],
+      propertyCategoryID: json['puid'],
+      value: json['value'],
     );
   }
 }
