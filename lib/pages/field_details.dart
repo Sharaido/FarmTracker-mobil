@@ -1,5 +1,6 @@
 import 'package:datetime_picker_formfield/datetime_picker_formfield.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_app/models/field.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
@@ -63,18 +64,52 @@ Widget noButton(st) {
 }
 
 class _FieldDetailsState extends State<FieldDetails> {
-  bool checkedValue = false;
-  Widget chckbx(txt) {
-    return CheckboxListTile(
-      title: Text(txt),
-      value: checkedValue,
-      onChanged: (newValue) {
-        setState(() {
-          checkedValue = newValue;
+  bool fertilizerValue = false;
+  bool sprayValue = false;
+  bool irrigationValue = false;
+  bool harvestValue = false;
+  TextEditingController kgController = TextEditingController();
+  TextEditingController valueController = TextEditingController();
+  TextEditingController skgController = TextEditingController();
+  TextEditingController svalueController = TextEditingController();
+  Widget fertilizerCheck() {
+    return Checkbox(
+        value: fertilizerValue,
+        onChanged: (bool value) {
+          setState(() {
+            fertilizerValue = value;
+          });
         });
-      },
-      controlAffinity: ListTileControlAffinity.leading, //  <-- leading Checkbox
-    );
+  }
+
+  Widget sprayCheck() {
+    return Checkbox(
+        value: sprayValue,
+        onChanged: (bool value) {
+          setState(() {
+            sprayValue = value;
+          });
+        });
+  }
+
+  Widget irrigationCheck() {
+    return Checkbox(
+        value: irrigationValue,
+        onChanged: (bool value) {
+          setState(() {
+            irrigationValue = value;
+          });
+        });
+  }
+
+  Widget harvestCheck() {
+    return Checkbox(
+        value: harvestValue,
+        onChanged: (bool value) {
+          setState(() {
+            harvestValue = value;
+          });
+        });
   }
 
   Widget detailCard(String st, int count, List<Entity> no, context) {
@@ -103,6 +138,7 @@ class _FieldDetailsState extends State<FieldDetails> {
                                 st
                                     .toString()
                                     .replaceAll('SAYISI', 'NUMARALARI'),
+                                textAlign: TextAlign.center,
                               ),
                               content: Container(
                                 width: MediaQuery.of(context).size.width * .0,
@@ -148,10 +184,12 @@ class _FieldDetailsState extends State<FieldDetails> {
                             fontWeight: FontWeight.bold,
                             fontSize: 20.0,
                             color: Colors.green.withOpacity(1.0)),
+                        textAlign: TextAlign.center,
                       ),
                       new Text(""),
                       new Text(
                         count.toString(),
+                        textAlign: TextAlign.center,
                         style: TextStyle(
                           fontSize: 30.0,
                         ),
@@ -167,7 +205,7 @@ class _FieldDetailsState extends State<FieldDetails> {
     );
   }
 
-  Widget datepck() {
+  Widget seasonPick() {
     return DateTimeField(
       format: DateFormat("yyyy-MM-dd"),
       onShowPicker: (context, currentValue) {
@@ -185,7 +223,143 @@ class _FieldDetailsState extends State<FieldDetails> {
     );
   }
 
-  Widget otherCard(String st, bool bl, DateTime dt, context) {
+  Widget irrigationPick() {
+    return DateTimeField(
+      format: DateFormat("yyyy-MM-dd"),
+      onShowPicker: (context, currentValue) {
+        return showDatePicker(
+            context: context,
+            helpText: 'Time',
+            fieldHintText: 'Time',
+            confirmText: 'Tamam',
+            cancelText: 'İptal',
+            fieldLabelText: 'Tarih giriniz.',
+            firstDate: DateTime(1900),
+            initialDate: currentValue ?? DateTime.now(),
+            lastDate: DateTime(2100));
+      },
+    );
+  }
+
+  Widget fertilizerPick() {
+    return DateTimeField(
+      format: DateFormat("yyyy-MM-dd"),
+      onShowPicker: (context, currentValue) {
+        return showDatePicker(
+            context: context,
+            helpText: 'Time',
+            fieldHintText: 'Time',
+            confirmText: 'Tamam',
+            cancelText: 'İptal',
+            fieldLabelText: 'Tarih giriniz.',
+            firstDate: DateTime(1900),
+            initialDate: currentValue ?? DateTime.now(),
+            lastDate: DateTime(2100));
+      },
+    );
+  }
+
+  Widget sprayPick() {
+    return DateTimeField(
+      format: DateFormat("yyyy-MM-dd"),
+      onShowPicker: (context, currentValue) {
+        return showDatePicker(
+            context: context,
+            helpText: 'Time',
+            fieldHintText: 'Time',
+            confirmText: 'Tamam',
+            cancelText: 'İptal',
+            fieldLabelText: 'Tarih giriniz.',
+            firstDate: DateTime(1900),
+            initialDate: currentValue ?? DateTime.now(),
+            lastDate: DateTime(2100));
+      },
+    );
+  }
+
+  Widget harvestPick() {
+    return DateTimeField(
+      format: DateFormat("yyyy-MM-dd"),
+      onShowPicker: (context, currentValue) {
+        return showDatePicker(
+            context: context,
+            helpText: 'Time',
+            fieldHintText: 'Time',
+            confirmText: 'Tamam',
+            cancelText: 'İptal',
+            fieldLabelText: 'Tarih giriniz.',
+            firstDate: DateTime(1900),
+            initialDate: currentValue ?? DateTime.now(),
+            lastDate: DateTime(2100));
+      },
+    );
+  }
+
+  Widget productEntry() {
+    return new Column(
+      children: [
+        new TextFormField(
+          controller: kgController,
+          validator: (String value) {
+            if (value.isEmpty) return "Boş kalamaz";
+            return null;
+          },
+          decoration: new InputDecoration(labelText: "KG"),
+          keyboardType: TextInputType.number,
+          inputFormatters: <TextInputFormatter>[
+            FilteringTextInputFormatter.digitsOnly
+          ], // Only numbers can be entered
+        ),
+        new TextFormField(
+          controller: valueController,
+          validator: (String value) {
+            if (value.isEmpty) return "Boş kalamaz";
+            return null;
+          },
+          decoration: new InputDecoration(labelText: "Değeri"),
+          keyboardType: TextInputType.number,
+          inputFormatters: <TextInputFormatter>[
+            FilteringTextInputFormatter.digitsOnly
+          ], // Only numbers can be entered
+        ),
+        seasonPick(),
+      ],
+    );
+  }
+
+  Widget seasonEntry() {
+    return new Column(
+      children: [
+        new TextFormField(
+          controller: skgController,
+          validator: (String value) {
+            if (value.isEmpty) return "Boş kalamaz";
+            return null;
+          },
+          decoration: new InputDecoration(labelText: "KG"),
+          keyboardType: TextInputType.number,
+          inputFormatters: <TextInputFormatter>[
+            FilteringTextInputFormatter.digitsOnly
+          ], // Only numbers can be entered
+        ),
+        new TextFormField(
+          controller: svalueController,
+          validator: (String value) {
+            if (value.isEmpty) return "Boş kalamaz";
+            return null;
+          },
+          decoration: new InputDecoration(labelText: "Değeri"),
+          keyboardType: TextInputType.number,
+          inputFormatters: <TextInputFormatter>[
+            FilteringTextInputFormatter.digitsOnly
+          ], // Only numbers can be entered
+        ),
+        seasonPick(),
+      ],
+    );
+  }
+
+  Widget productCard(String st, bool bl, context, kg, value, harvestDate) {
     return Flexible(
       child: Container(
         height: 130,
@@ -207,52 +381,18 @@ class _FieldDetailsState extends State<FieldDetails> {
                     showDialog(
                       context: context,
                       builder: (_) => new AlertDialog(
-                        title: new Text(st.toString()),
+                        title: new Text(
+                          st.toString(),
+                          style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              fontSize: 20.0,
+                              color: Colors.green.withOpacity(1.0)),
+                        ),
                         content: Column(
                           children: [
-                            if (1 == 1 && st.contains("SU")) chckbx("SULANDI"),
-                            if (1 == 1 && st.contains("SU"))
-                              Text(
-                                "\n Sıradaki Sulama tarihi:",
-                                style: TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: 20.0,
-                                    color: Colors.blue.withOpacity(1.0)),
-                              ),
-                            if (1 == 1 && st.contains("SU")) datepck(),
-                            if (1 == 1 && st.contains("GÜBRE"))
-                              chckbx("GÜBRELENDİ"),
-                            if (1 == 1 && st.contains("GÜBRE"))
-                              Text(
-                                "\n Sıradaki Gübreleme tarihi:",
-                                style: TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: 20.0,
-                                    color: Colors.blue.withOpacity(1.0)),
-                              ),
-                            if (1 == 1 && st.contains("GÜBRE")) datepck(),
-                            if (1 == 1 && st.contains("İLAÇ"))
-                              chckbx("İLAÇLANDI"),
-                            if (1 == 1 && st.contains("İLAÇ"))
-                              Text(
-                                "\n Sıradaki İlaçlama tarihi:",
-                                style: TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: 20.0,
-                                    color: Colors.blue.withOpacity(1.0)),
-                              ),
-                            if (1 == 1 && st.contains("İLAÇ")) datepck(),
-                            if (1 == 1 && st.contains("TOPLA"))
-                              chckbx("TOPLANDI"),
-                            if (1 == 1 && st.contains("TOPLA"))
-                              Text(
-                                "\n Sıradaki Ürün toplama tarihi:",
-                                style: TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: 20.0,
-                                    color: Colors.blue.withOpacity(1.0)),
-                              ),
-                            if (1 == 1 && st.contains("TOPLA")) datepck(),
+                            if (st.toString().contains("TOPLAM"))
+                              productEntry(),
+                            if (st.toString().contains("DÖNEM")) seasonEntry(),
                           ],
                         ),
                       ),
@@ -268,92 +408,249 @@ class _FieldDetailsState extends State<FieldDetails> {
                             fontWeight: FontWeight.bold,
                             fontSize: 20.0,
                             color: Colors.green.withOpacity(1.0)),
+                        textAlign: TextAlign.center,
+                      ),
+                      new Text(
+                        "KG: " + kg.toString(),
+                        style: TextStyle(fontSize: 18.0, color: Colors.black),
+                        textAlign: TextAlign.center,
+                      ),
+                      new Text(
+                        "Değeri: " + value.toString(),
+                        style: TextStyle(fontSize: 18.0, color: Colors.black),
+                        textAlign: TextAlign.center,
+                      ),
+                      new Text(
+                        "Hasat Tarihi: " + harvestDate.toString(),
+                        style: TextStyle(fontSize: 18.0, color: Colors.black),
+                        textAlign: TextAlign.center,
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget otherCard(String st, isBool, otherDate, context) {
+    return Flexible(
+      child: Container(
+        height: 130,
+        child: Card(
+          clipBehavior: Clip.antiAlias,
+          shape:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(8.0)),
+          color: Colors.white,
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: <Widget>[
+              SizedBox(
+                width: 10.0,
+              ),
+              Expanded(
+                child: GestureDetector(
+                  onTap: () {
+                    //print(no);
+                    showDialog(
+                      context: context,
+                      builder: (context) => new AlertDialog(
+                        title: new Text(st.toString()),
+                        content: Column(
+                          children: [
+                            if (1 == 1 && st.contains("SU"))
+                              Column(children: <Widget>[
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: <Widget>[
+                                    irrigationCheck(),
+                                    Text("Sulandı"),
+                                  ],
+                                ),
+                                Text(
+                                  "\n Sıradaki Sulama tarihi:",
+                                  style: TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 20.0,
+                                      color: Colors.blue.withOpacity(1.0)),
+                                  textAlign: TextAlign.center,
+                                ),
+                                irrigationPick(),
+                              ]),
+                            if (1 == 1 && st.contains("GÜBRE"))
+                              Column(children: <Widget>[
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: <Widget>[
+                                    fertilizerCheck(),
+                                    Text("Gübrelendi"),
+                                  ],
+                                ),
+                                Text(
+                                  "\n Sıradaki Gübreleme tarihi:",
+                                  style: TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 20.0,
+                                      color: Colors.blue.withOpacity(1.0)),
+                                  textAlign: TextAlign.center,
+                                ),
+                                fertilizerPick(),
+                              ]),
+                            if (1 == 1 && st.contains("İLAÇ"))
+                              Column(children: <Widget>[
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: <Widget>[
+                                    sprayCheck(),
+                                    Text("İlaçlandı"),
+                                  ],
+                                ),
+                                Text(
+                                  "\n Sıradaki İlaçlama tarihi:",
+                                  style: TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 20.0,
+                                      color: Colors.blue.withOpacity(1.0)),
+                                  textAlign: TextAlign.center,
+                                ),
+                                sprayPick()
+                              ]),
+                            if (1 == 1 && st.contains("HASAT"))
+                              Column(children: <Widget>[
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: <Widget>[
+                                    harvestCheck(),
+                                    Text("Toplandı"),
+                                  ],
+                                ),
+                                Text(
+                                  "\n Sıradaki Ürün toplama tarihi:",
+                                  style: TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 20.0,
+                                      color: Colors.blue.withOpacity(1.0)),
+                                  textAlign: TextAlign.center,
+                                ),
+                                harvestPick()
+                              ]),
+                          ],
+                        ),
+                      ),
+                    );
+                  },
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      new Text(
+                        st,
+                        style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 20.0,
+                            color: Colors.green.withOpacity(1.0)),
+                        textAlign: TextAlign.center,
                       ),
                       new Text(""),
-                      if (bl == true && st.contains("SU"))
+                      if (isBool == true && st.contains("SU"))
                         new Text(
                           'SULANDI',
                           style: TextStyle(
                               fontSize: 20.0,
                               color: Colors.blue.withOpacity(1.0)),
+                          textAlign: TextAlign.center,
                         ),
-                      if (bl == true && st.contains("SU")) new Text(""),
-                      if (bl == true && st.contains("SU"))
+                      if (isBool == true && st.contains("SU")) new Text(""),
+                      if (isBool == true && st.contains("SU"))
                         new Text(
-                          'Sıradaki sulama tarihi 05/12/2020',
+                          'Sıradaki sulama tarihi: ' + otherDate,
+                          textAlign: TextAlign.center,
                           style: TextStyle(
                             fontSize: 15.0,
                           ),
                         ),
-                      if (bl == false && st.contains("SU"))
+                      if (isBool == false && st.contains("SU"))
                         new Text(
                           'SULANMADI',
                           style: TextStyle(
                               fontSize: 20.0,
                               color: Colors.red.withOpacity(1.0)),
+                          textAlign: TextAlign.center,
                         )
-                      else if (bl == true && st.contains("GÜBRE"))
+                      else if (isBool == true && st.contains("GÜBRE"))
                         new Text(
                           'GÜBRELENDİ',
                           style: TextStyle(
                               fontSize: 20.0,
                               color: Colors.blue.withOpacity(1.0)),
+                          textAlign: TextAlign.center,
                         ),
-                      if (bl == true && st.contains("GÜBRE")) new Text(""),
-                      if (bl == true && st.contains("GÜBRE"))
+                      if (isBool == true && st.contains("GÜBRE")) new Text(""),
+                      if (isBool == true && st.contains("GÜBRE"))
                         new Text(
-                          'Sıradaki gübreleme tarihi 05/12/2020',
+                          'Sıradaki gübreleme tarihi: ' + otherDate,
+                          textAlign: TextAlign.center,
                           style: TextStyle(
                             fontSize: 15.0,
                           ),
                         ),
-                      if (bl == false && st.contains("GÜBRE"))
+                      if (isBool == false && st.contains("GÜBRE"))
                         new Text(
                           'GÜBRELENMEDİ',
                           style: TextStyle(
                               fontSize: 20.0,
                               color: Colors.red.withOpacity(1.0)),
+                          textAlign: TextAlign.center,
                         )
-                      else if (bl == true && st.contains("İLAÇ"))
+                      else if (isBool == true && st.contains("İLAÇ"))
                         new Text(
                           'İLAÇLANDI',
+                          textAlign: TextAlign.center,
                           style: TextStyle(
                               fontSize: 20.0,
                               color: Colors.blue.withOpacity(1.0)),
                         ),
-                      if (bl == true && st.contains("İLAÇ")) new Text(""),
-                      if (bl == true && st.contains("İLAÇ"))
+                      if (isBool == true && st.contains("İLAÇ")) new Text(""),
+                      if (isBool == true && st.contains("İLAÇ"))
                         new Text(
-                          'Sıradaki ilaçlama tarihi 05/12/2020',
+                          'Sıradaki ilaçlama tarihi: ' + otherDate,
+                          textAlign: TextAlign.center,
                           style: TextStyle(
                             fontSize: 15.0,
                           ),
                         ),
-                      if (bl == false && st.contains("İLAÇ"))
+                      if (isBool == false && st.contains("İLAÇ"))
                         new Text(
                           'İLAÇLANMADI',
+                          textAlign: TextAlign.center,
                           style: TextStyle(
                               fontSize: 20.0,
                               color: Colors.red.withOpacity(1.0)),
                         )
-                      else if (bl == true && st.contains("TOPLA"))
+                      else if (isBool == true && st.contains("HASAT"))
                         new Text(
                           'TOPLANDI',
                           style: TextStyle(
                               fontSize: 20.0,
                               color: Colors.blue.withOpacity(1.0)),
+                          textAlign: TextAlign.center,
                         ),
-                      if (bl == true && st.contains("TOPLA")) new Text(""),
-                      if (bl == true && st.contains("TOPLA"))
+                      if (isBool == true && st.contains("HASAT")) new Text(""),
+                      if (isBool == true && st.contains("HASAT"))
                         new Text(
-                          'Sıradaki toplama tarihi 05/12/2020',
+                          'Sıradaki toplama tarihi: ' + otherDate,
+                          textAlign: TextAlign.center,
                           style: TextStyle(
                             fontSize: 15.0,
                           ),
                         ),
-                      if (bl == false && st.contains("TOPLA"))
+                      if (isBool == false && st.contains("HASAT"))
                         new Text(
                           'TOPLANMADI',
+                          textAlign: TextAlign.center,
                           style: TextStyle(
                               fontSize: 20.0,
                               color: Colors.red.withOpacity(1.0)),
@@ -371,6 +668,18 @@ class _FieldDetailsState extends State<FieldDetails> {
 
   @override
   Widget build(BuildContext context) {
+    int kg = 0;
+    int value = 0;
+    DateTime now = new DateTime.now();
+    String harvestDate = DateFormat('yMd').format(now);
+    String whenHarvestDate = DateFormat('yMd').format(now);
+    bool isHarvest = true;
+    String irrigationDate = DateFormat('yMd').format(now);
+    bool isIrrigation = true;
+    String sprayDate = DateFormat('yMd').format(now);
+    bool isSpray = true;
+    String fertilizerDate = DateFormat('yMd').format(now);
+    bool isFertilizer = true;
     return ChangeNotifierProvider(
       create: (context) => EntityProvider(widget.property),
       builder: (context, wid) {
@@ -462,6 +771,20 @@ class _FieldDetailsState extends State<FieldDetails> {
                         ]),
                         new Text(""),
                         new Text(
+                          'ÜRÜN BİLGİSİ',
+                          style: TextStyle(
+                              fontSize: 20.0,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.black.withOpacity(1.0)),
+                        ),
+                        Row(mainAxisSize: MainAxisSize.min, children: <Widget>[
+                          productCard("BU DÖNEM", true, context, kg, value,
+                              harvestDate),
+                          productCard(
+                              "TOPLAM", true, context, kg, value, harvestDate),
+                        ]),
+                        new Text(""),
+                        new Text(
                           'DİĞER BİLGİLER',
                           style: TextStyle(
                               fontSize: 20.0,
@@ -469,16 +792,16 @@ class _FieldDetailsState extends State<FieldDetails> {
                               color: Colors.black.withOpacity(1.0)),
                         ),
                         Row(mainAxisSize: MainAxisSize.min, children: <Widget>[
-                          otherCard(
-                              "SULAMA BİLGİSİ", true, DateTime.now(), context),
-                          otherCard(
-                              "GÜBRE BİLGİSİ", true, DateTime.now(), context),
+                          otherCard("SULAMA BİLGİSİ", isIrrigation,
+                              irrigationDate, context),
+                          otherCard("GÜBRE BİLGİSİ", isFertilizer,
+                              fertilizerDate, context),
                         ]),
                         Row(mainAxisSize: MainAxisSize.min, children: <Widget>[
-                          otherCard("İLAÇLAMA BİLGİSİ", false, DateTime.now(),
+                          otherCard(
+                              "İLAÇLAMA BİLGİSİ", isSpray, sprayDate, context),
+                          otherCard("HASAT BİLGİSİ", isHarvest, whenHarvestDate,
                               context),
-                          otherCard("ÜRÜN TOPLAMA BİLGİSİ", false,
-                              DateTime.now(), context),
                         ]),
                       ]),
                 );

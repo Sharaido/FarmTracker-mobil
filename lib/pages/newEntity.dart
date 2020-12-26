@@ -219,7 +219,7 @@ class _MyHomePageState extends State<newEntity> {
     return items;
   }
 
-  Widget checkWidget(String value) {
+  Widget checkWidget() {
     return Checkbox(
         value: checkBoxValue,
         onChanged: (bool value) {
@@ -229,7 +229,7 @@ class _MyHomePageState extends State<newEntity> {
         });
   }
 
-  Widget checkWidgetNew(String value) {
+  Widget checkWidgetNew() {
     return Checkbox(
         value: checkBoxValueNew,
         onChanged: (bool value) {
@@ -364,13 +364,13 @@ class _MyHomePageState extends State<newEntity> {
                       Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: <Widget>[
-                            checkWidget("Hasta"),
+                            checkWidget(),
                             Text("Hasta"),
                           ]),
                       Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: <Widget>[
-                            checkWidgetNew("Yeni"),
+                            checkWidgetNew(),
                             Text("Yeni"),
                           ]),
                       _getAddButton(),
