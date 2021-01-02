@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_app/pages/expenses_page.dart';
 import 'package:flutter_app/pages/field_details.dart';
 import 'package:flutter_app/pages/homepage.dart';
 import 'package:flutter_app/pages/login_page.dart';
-import 'package:flutter_app/pages/promptpage.dart';
+
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import './pages/expensepage.dart';
 
@@ -35,7 +34,7 @@ class MyApp extends StatelessWidget {
       //   title: 'Home',
       // ),
       //home: LoginPage(),
-      home: FieldDetails(
+     /* home: FieldDetails(
         property: new Property(
             categoryID: 2,
             createdBy: "asd",
@@ -44,11 +43,11 @@ class MyApp extends StatelessWidget {
             desc: "asd",
             createdDate: "asd",
             farmID: "asd"),
-      ),
+      ),*/
 
-      // home: ExpensePage(
-      //   title: 'Expenses',
-      // ),
+       home: ExpensePage(
+        title: 'Expenses',
+       ),
 
       routes: {
         '/login': (context) => LoginPage(),
