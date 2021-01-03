@@ -120,7 +120,7 @@ class _FieldDetailsState extends State<FieldDetails> {
           clipBehavior: Clip.antiAlias,
           shape:
               RoundedRectangleBorder(borderRadius: BorderRadius.circular(8.0)),
-          color: Colors.white,
+          color: Color.fromARGB(255, 66, 105, 47),
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: <Widget>[
@@ -183,7 +183,7 @@ class _FieldDetailsState extends State<FieldDetails> {
                         style: TextStyle(
                             fontWeight: FontWeight.bold,
                             fontSize: 20.0,
-                            color: Colors.green.withOpacity(1.0)),
+                            color: Colors.white),
                         textAlign: TextAlign.center,
                       ),
                       new Text(""),
@@ -191,6 +191,7 @@ class _FieldDetailsState extends State<FieldDetails> {
                         count.toString(),
                         textAlign: TextAlign.center,
                         style: TextStyle(
+                          color: Colors.white,
                           fontSize: 30.0,
                         ),
                       ),
@@ -367,7 +368,7 @@ class _FieldDetailsState extends State<FieldDetails> {
           clipBehavior: Clip.antiAlias,
           shape:
               RoundedRectangleBorder(borderRadius: BorderRadius.circular(8.0)),
-          color: Colors.white,
+          color: Color.fromARGB(255, 93, 67, 44),
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: <Widget>[
@@ -407,22 +408,22 @@ class _FieldDetailsState extends State<FieldDetails> {
                         style: TextStyle(
                             fontWeight: FontWeight.bold,
                             fontSize: 20.0,
-                            color: Colors.green.withOpacity(1.0)),
+                            color: Colors.white),
                         textAlign: TextAlign.center,
                       ),
                       new Text(
                         "KG: " + kg.toString(),
-                        style: TextStyle(fontSize: 18.0, color: Colors.black),
+                        style: TextStyle(fontSize: 18.0, color: Colors.white),
                         textAlign: TextAlign.center,
                       ),
                       new Text(
                         "Değeri: " + value.toString(),
-                        style: TextStyle(fontSize: 18.0, color: Colors.black),
+                        style: TextStyle(fontSize: 18.0, color: Colors.white),
                         textAlign: TextAlign.center,
                       ),
                       new Text(
                         "Hasat Tarihi: " + harvestDate.toString(),
-                        style: TextStyle(fontSize: 18.0, color: Colors.black),
+                        style: TextStyle(fontSize: 18.0, color: Colors.white),
                         textAlign: TextAlign.center,
                       ),
                     ],
@@ -436,7 +437,7 @@ class _FieldDetailsState extends State<FieldDetails> {
     );
   }
 
-  Widget otherCard(String st, isBool, otherDate, context) {
+  Widget otherCard(String st, isBool, otherDate, context, Color color) {
     return Flexible(
       child: Container(
         height: 130,
@@ -444,7 +445,7 @@ class _FieldDetailsState extends State<FieldDetails> {
           clipBehavior: Clip.antiAlias,
           shape:
               RoundedRectangleBorder(borderRadius: BorderRadius.circular(8.0)),
-          color: Colors.white,
+          color: color,
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: <Widget>[
@@ -551,7 +552,7 @@ class _FieldDetailsState extends State<FieldDetails> {
                         style: TextStyle(
                             fontWeight: FontWeight.bold,
                             fontSize: 20.0,
-                            color: Colors.green.withOpacity(1.0)),
+                            color: Colors.white),
                         textAlign: TextAlign.center,
                       ),
                       new Text(""),
@@ -559,8 +560,7 @@ class _FieldDetailsState extends State<FieldDetails> {
                         new Text(
                           'SULANDI',
                           style: TextStyle(
-                              fontSize: 20.0,
-                              color: Colors.blue.withOpacity(1.0)),
+                              fontSize: 20.0, color: Colors.purple[800]),
                           textAlign: TextAlign.center,
                         ),
                       if (isBool == true && st.contains("SU")) new Text(""),
@@ -570,6 +570,7 @@ class _FieldDetailsState extends State<FieldDetails> {
                           textAlign: TextAlign.center,
                           style: TextStyle(
                             fontSize: 15.0,
+                            color: Colors.white,
                           ),
                         ),
                       if (isBool == false && st.contains("SU"))
@@ -584,8 +585,7 @@ class _FieldDetailsState extends State<FieldDetails> {
                         new Text(
                           'GÜBRELENDİ',
                           style: TextStyle(
-                              fontSize: 20.0,
-                              color: Colors.blue.withOpacity(1.0)),
+                              fontSize: 20.0, color: Colors.purple[800]),
                           textAlign: TextAlign.center,
                         ),
                       if (isBool == true && st.contains("GÜBRE")) new Text(""),
@@ -595,6 +595,7 @@ class _FieldDetailsState extends State<FieldDetails> {
                           textAlign: TextAlign.center,
                           style: TextStyle(
                             fontSize: 15.0,
+                            color: Colors.white,
                           ),
                         ),
                       if (isBool == false && st.contains("GÜBRE"))
@@ -610,8 +611,7 @@ class _FieldDetailsState extends State<FieldDetails> {
                           'İLAÇLANDI',
                           textAlign: TextAlign.center,
                           style: TextStyle(
-                              fontSize: 20.0,
-                              color: Colors.blue.withOpacity(1.0)),
+                              fontSize: 20.0, color: Colors.purple[800]),
                         ),
                       if (isBool == true && st.contains("İLAÇ")) new Text(""),
                       if (isBool == true && st.contains("İLAÇ"))
@@ -620,6 +620,7 @@ class _FieldDetailsState extends State<FieldDetails> {
                           textAlign: TextAlign.center,
                           style: TextStyle(
                             fontSize: 15.0,
+                            color: Colors.white,
                           ),
                         ),
                       if (isBool == false && st.contains("İLAÇ"))
@@ -634,8 +635,7 @@ class _FieldDetailsState extends State<FieldDetails> {
                         new Text(
                           'TOPLANDI',
                           style: TextStyle(
-                              fontSize: 20.0,
-                              color: Colors.blue.withOpacity(1.0)),
+                              fontSize: 20.0, color: Colors.purple[800]),
                           textAlign: TextAlign.center,
                         ),
                       if (isBool == true && st.contains("HASAT")) new Text(""),
@@ -645,6 +645,7 @@ class _FieldDetailsState extends State<FieldDetails> {
                           textAlign: TextAlign.center,
                           style: TextStyle(
                             fontSize: 15.0,
+                            color: Colors.white,
                           ),
                         ),
                       if (isBool == false && st.contains("HASAT"))
@@ -792,16 +793,24 @@ class _FieldDetailsState extends State<FieldDetails> {
                               color: Colors.black.withOpacity(1.0)),
                         ),
                         Row(mainAxisSize: MainAxisSize.min, children: <Widget>[
-                          otherCard("SULAMA BİLGİSİ", isIrrigation,
-                              irrigationDate, context),
-                          otherCard("GÜBRE BİLGİSİ", isFertilizer,
-                              fertilizerDate, context),
+                          otherCard(
+                              "SULAMA BİLGİSİ",
+                              isIrrigation,
+                              irrigationDate,
+                              context,
+                              Color.fromARGB(255, 99, 181, 246)),
+                          otherCard(
+                              "GÜBRE BİLGİSİ",
+                              isFertilizer,
+                              fertilizerDate,
+                              context,
+                              Color.fromARGB(255, 141, 110, 99)),
                         ]),
                         Row(mainAxisSize: MainAxisSize.min, children: <Widget>[
-                          otherCard(
-                              "İLAÇLAMA BİLGİSİ", isSpray, sprayDate, context),
+                          otherCard("İLAÇLAMA BİLGİSİ", isSpray, sprayDate,
+                              context, Color.fromARGB(255, 249, 168, 39)),
                           otherCard("HASAT BİLGİSİ", isHarvest, whenHarvestDate,
-                              context),
+                              context, Color.fromARGB(255, 229, 115, 115)),
                         ]),
                       ]),
                 );
