@@ -15,41 +15,6 @@ class ExpensePage extends StatefulWidget {
   _ExpensePageState createState() => _ExpensePageState();
 }
 
-DateTime date;
-
-// ignore: must_be_immutable
-class BasicDateField extends StatelessWidget {
-  final format = DateFormat("dd-MM-yyyy");
-
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      children: <Widget>[
-        DateTimeField(
-          decoration: InputDecoration(
-            labelText: 'Date',
-            border: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(10),
-            ),
-          ),
-          format: format,
-          onShowPicker: (context, currentValue) async {
-            date = await showDatePicker(
-                context: context,
-                firstDate: DateTime(1900),
-                initialDate: currentValue ?? DateTime.now(),
-                lastDate: DateTime(2100));
-            print(date.day);
-            print(date.month);
-            print(date.year);
-            return date;
-          },
-        ),
-      ],
-    );
-  }
-}
-
 class AlwaysDisabledFocusNode extends FocusNode {
   @override
   bool get hasFocus => false;
@@ -57,6 +22,9 @@ class AlwaysDisabledFocusNode extends FocusNode {
 
 class _ExpensePageState extends State<ExpensePage> {
   final about = TextEditingController();
+  final format = DateFormat("dd-MM-yyyy");
+  final _formKey = GlobalKey<FormState>();
+  DateTime date;
   final description = TextEditingController();
   final amount = TextEditingController();
   int i = 0;
@@ -66,7 +34,7 @@ class _ExpensePageState extends State<ExpensePage> {
     'Dayıoğluna borç',
   ];
   final List<String> desc = <String>[
-    'Aga beee böyle de borç yapılır mı',
+    'Aga beee böyle de borç yapılır mı beeeeeeeeeeeeeeeeeeeeeeeeeeeeee',
   ];
   final List<String> checkexpense = <String>[
     'true',
@@ -78,23 +46,6 @@ class _ExpensePageState extends State<ExpensePage> {
     22051997,
   ];
 
-  FocusNode myFocusNode;
-
-  @override
-  void initState() {
-    super.initState();
-
-    myFocusNode = FocusNode();
-  }
-
-  @override
-  void dispose() {
-    // Clean up the focus node when the Form is disposed.
-    myFocusNode.dispose();
-
-    super.dispose();
-  }
-
   void addItemToList() {
     i++;
     setState(() {
@@ -105,7 +56,7 @@ class _ExpensePageState extends State<ExpensePage> {
       var x = date.day.toString();
       var y = date.month.toString();
       var z = date.year.toString();
-      var f = x+'/'+ y +'/'+ z;
+      var f = x + y + z;
       dates.insert(0, int.parse(f));
       log(i.toString());
       transactions.Transaction(
@@ -133,297 +84,269 @@ class _ExpensePageState extends State<ExpensePage> {
           style: TextStyle(color: Colors.green, fontWeight: FontWeight.w700),
         ),
       ),
-      bottomSheet: BottomSheet(
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(10),
-        ),
-        onClosing: () {},
-        enableDrag: false,
-        elevation: 100,
-        builder: (BuildContext context) {
-          return Container(
-            height: MediaQuery.of(context).size.height * 0.09,
-            child: Scaffold(
-              floatingActionButtonLocation:
-                  FloatingActionButtonLocation.centerFloat,
-              backgroundColor: Colors.grey[200],
-              floatingActionButton: FloatingActionButton(
-                elevation: 10,
-                tooltip: 'Add',
-                child: Icon(Icons.add),
-                onPressed: () {
-                  showDialog(
-                    context: context,
-                    builder: (BuildContext context) {
-                      return AlertDialog(
-                        scrollable: true,
-                        elevation: 12,
-                        shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(20.0)),
-                        title: StatefulBuilder(
-                          builder:
-                              (BuildContext context, StateSetter setState) {
-                            return Container(
-                              height: MediaQuery.of(context).size.height / 1.25,
-                              child: Padding(
-                                padding: const EdgeInsets.all(0),
-                                child: Column(
-                                  mainAxisSize: MainAxisSize.min,
-                                  children: [
-                                    Text('Add Income/Expense'),
-                                    SizedBox(height: 15),
-                                    TextField(
-                                      controller: about,
-                                      decoration: InputDecoration(
-                                        border: OutlineInputBorder(
-                                          borderRadius:
-                                              BorderRadius.circular(10),
-                                        ),
-                                        labelText: 'Title',
-                                      ),
-                                    ),
-                                    SizedBox(height: 10),
-                                    TextField(
-                                      controller: description,
-                                      keyboardType: TextInputType.multiline,
-                                      maxLines: 5,
-                                      decoration: InputDecoration(
-                                        border: OutlineInputBorder(
-                                          borderRadius:
-                                              BorderRadius.circular(10),
-                                        ),
-                                        labelText: 'Description',
-                                      ),
-                                    ),
-                                    SizedBox(height: 10),
-                                    TextField(
-                                      onTap: () => myFocusNode.requestFocus(),
-                                      controller: amount,
-                                      focusNode: myFocusNode,
-                                      keyboardType: TextInputType.number,
-                                      decoration: InputDecoration(
-                                        border: OutlineInputBorder(
-                                          borderRadius:
-                                              BorderRadius.circular(10),
-                                        ),
-                                        labelText: 'Amount',
-                                      ),
-                                    ),
-                                    SizedBox(height: 15),
-                                    BasicDateField(),
-                                    SizedBox(height: 15),
-                                    CheckboxListTile(
-                                      title: const Text('Is it an expense?'),
-                                      value: isExpense,
-                                      onChanged: (bool value) {
-                                        setState(() {
-                                          isExpense = value;
-                                        });
-                                      },
-                                    ),
-                                    SizedBox(
-                                      width: 320.0,
-                                      child: Row(
-                                        children: [
-                                          RaisedButton(
-                                            shape: RoundedRectangleBorder(
-                                                borderRadius:
-                                                    BorderRadius.circular(10)),
-                                            color: Colors.red,
-                                            onPressed: () {
-                                              Navigator.of(context,
-                                                      rootNavigator: true)
-                                                  .pop();
-                                            },
-                                            child: Text(
-                                              "Cancel",
-                                              style: TextStyle(
-                                                  color: Colors.white),
-                                            ),
-                                          ),
-                                          SizedBox(width: 50),
-                                          RaisedButton(
-                                            shape: RoundedRectangleBorder(
-                                                borderRadius:
-                                                    BorderRadius.circular(10)),
-                                            color: Colors.green,
-                                            onPressed: () {
-                                              if (about.text != '') {
-                                                addItemToList();
-                                                print(dates);
-                                              } else {
-                                                showDialog(
-                                                    context: context,
-                                                    builder:
-                                                        (BuildContext context) {
-                                                      return AlertDialog(
-                                                        title: Text('Error'),
-                                                      );
-                                                    });
-                                              }
-                                              Navigator.of(context,
-                                                      rootNavigator: true)
-                                                  .pop();
-                                            },
-                                            child: Text(
-                                              "Submit",
-                                              style: TextStyle(
-                                                  color: Colors.white),
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                  ],
-                                ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
+      floatingActionButton: FloatingActionButton(
+        elevation: 10,
+        tooltip: 'Add',
+        child: Icon(Icons.add),
+        onPressed: () {
+          showDialog(
+            context: context,
+            builder: (BuildContext context) {
+              description.text = '';
+              amount.text = '';
+              about.text = '';
+              return AlertDialog(
+                scrollable: true,
+                elevation: 12,
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(20.0)),
+                title: StatefulBuilder(
+                  builder: (BuildContext context, StateSetter setState) {
+                    return Form(
+                      key: _formKey,
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Text('Add Income/Expense'),
+                          SizedBox(height: 15),
+                          TextFormField(
+                            validator: (value) {
+                              if (value.isEmpty) {
+                                return 'Please enter the title';
+                              }
+                              return null;
+                            },
+                            controller: about,
+                            decoration: InputDecoration(
+                              border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(10),
                               ),
-                            );
-                          },
-                        ),
-                      );
-                    },
-                  );
-                },
-              ),
-            ),
+                              labelText: 'Title',
+                            ),
+                          ),
+                          SizedBox(height: 10),
+                          TextFormField(
+                            validator: (value) {
+                              if (value.isEmpty) {
+                                return 'Please enter the description';
+                              }
+                              return null;
+                            },
+                            controller: description,
+                            maxLines: 4,
+                            decoration: InputDecoration(
+                              border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(10),
+                              ),
+                              labelText: 'Description',
+                            ),
+                          ),
+                          SizedBox(height: 10),
+                          TextFormField(
+                            validator: (value) {
+                              if (value.isEmpty) {
+                                return 'Please enter the amount';
+                              }
+                              return null;
+                            },
+                            controller: amount,
+                            keyboardType: TextInputType.number,
+                            decoration: InputDecoration(
+                              border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(10),
+                              ),
+                              labelText: 'Amount',
+                            ),
+                          ),
+                          SizedBox(height: 15),
+                          DateTimeField(
+                            validator: (value) {
+                              if (value == null) {
+                                return 'Please choose a date';
+                              }
+                              return null;
+                            },
+                            decoration: InputDecoration(
+                              labelText: 'Date',
+                              border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(10),
+                              ),
+                            ),
+                            format: format,
+                            onShowPicker: (context, currentValue) async {
+                              date = await showDatePicker(
+                                  context: context,
+                                  firstDate: DateTime(1900),
+                                  initialDate: currentValue ?? DateTime.now(),
+                                  lastDate: DateTime(2100));
+                              return date;
+                            },
+                          ),
+                          SizedBox(height: 15),
+                          CheckboxListTile(
+                            title: const Text('Is it an expense?'),
+                            value: isExpense,
+                            onChanged: (bool value) {
+                              setState(() {
+                                isExpense = value;
+                              });
+                            },
+                          ),
+                          SizedBox(
+                            width: 320.0,
+                            child: Row(
+                              children: [
+                                RaisedButton(
+                                  shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(10)),
+                                  color: Colors.red,
+                                  onPressed: () {
+                                    Navigator.of(context, rootNavigator: true)
+                                        .pop();
+                                  },
+                                  child: Text(
+                                    "Cancel",
+                                    style: TextStyle(color: Colors.white),
+                                  ),
+                                ),
+                                SizedBox(width: 50),
+                                RaisedButton(
+                                  shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(10)),
+                                  color: Colors.green,
+                                  onPressed: () {
+                                    if (!_formKey.currentState.validate()) {
+                                      return;
+                                    }
+                                    addItemToList();
+                                    Navigator.of(context, rootNavigator: true)
+                                        .pop();
+                                  },
+                                  child: Text(
+                                    "Submit",
+                                    style: TextStyle(color: Colors.white),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
+                    );
+                  },
+                ),
+              );
+            },
           );
         },
       ),
       body: Container(
-        color: Colors.white10,
-        child: ListView.builder(
+        child: GridView.count(
+          childAspectRatio: 1.25,
+          mainAxisSpacing: 5,
+          crossAxisSpacing: 5,
+          crossAxisCount: 2,
           padding: const EdgeInsets.all(15),
-          itemCount: titles.length,
-          itemBuilder: (BuildContext context, int index) {
-            return Container(
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.all(Radius.circular(10)),
-                border: Border.all(color: Colors.black),
-                gradient: LinearGradient(
-                  colors: [Colors.lime, Colors.green],
-                  begin: Alignment.topCenter,
-                  end: Alignment.bottomCenter,
-                ),
-              ),
-              height: 50,
-              margin: EdgeInsets.all(3),
-              child: Center(
-                child: SizedBox(
-                  height: 50,
-                  width: 325,
-                  child: FlatButton(
-                    child: Text(
-                      '${titles[index]}',
-                      style: TextStyle(
-                        fontSize: 18,
-                        color: Colors.black,
-                      ),
+          children: List.generate(
+            titles.length,
+            (index) {
+              return Container(
+                padding: const EdgeInsets.all(3),
+                child: FlatButton(
+                  color: Colors.redAccent,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.all(Radius.circular(20)),
+                    side: BorderSide(
+                      color: Colors.red,
+                      width: 4,
                     ),
-                    onPressed: () {
-                      showDialog(
+                  ),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      SizedBox(height: 10),
+                      Text(
+                        '${titles[index]}',
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          fontFamily: 'Montserrat',
+                          fontWeight: FontWeight.bold,
+                          fontSize: 15,
+                          color: Colors.white,
+                        ),
+                      ),
+                      SizedBox(height: 10),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Text(
+                            '${addamount[index]}',
+                            style: TextStyle(
+                                color: Colors.white,
+                                fontFamily: 'Montserrat',
+                                fontWeight: FontWeight.bold,
+                                fontSize: 15),
+                          ),
+                          SizedBox(width: 10),
+                          Text(
+                            'TL',
+                            style: TextStyle(
+                                color: Colors.white,
+                                fontFamily: 'Montserrat',
+                                fontWeight: FontWeight.bold,
+                                fontSize: 15),
+                          ),
+                        ],
+                      ),
+                      SizedBox(height: 10),
+                      Text(
+                        '${dates[index]}',
+                        style: TextStyle(
+                          fontFamily: 'Montserrat',
+                          fontSize: 15,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.white,
+                        ),
+                      ),
+                    ],
+                  ),
+                  onPressed: () {
+                    showDialog(
                         context: context,
                         builder: (BuildContext context) {
                           return AlertDialog(
-                            scrollable: true,
-                            backgroundColor: Colors.black12,
                             elevation: 10,
-                            shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(20.0)),
-                            title: StatefulBuilder(
-                              builder:
-                                  (BuildContext context, StateSetter setState) {
-                                return Container(
-                                  decoration: BoxDecoration(
-                                      color: Colors.grey[750],
-                                      borderRadius: BorderRadius.all(
-                                          Radius.circular(10.0))),
-                                  height:
-                                      MediaQuery.of(context).size.height / 2,
-                                  child: Padding(
-                                    padding: const EdgeInsets.all(0),
-                                    child: Column(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.start,
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        Text(
-                                          '${titles[i]}',
-                                          style: TextStyle(color: Colors.white),
-                                        ),
-                                        SizedBox(height: 45),
-                                        Text(
-                                          '${desc[i]}',
-                                          style: TextStyle(color: Colors.white),
-                                        ),
-                                        SizedBox(height: 30),
-                                        Text(
-                                          '${addamount[i]}',
-                                          style: TextStyle(color: Colors.white),
-                                        ),
-                                        SizedBox(height: 30),
-                                        Text(
-                                          '${dates[i]}',
-                                          style: TextStyle(color: Colors.white),
-                                        ),
-                                        SizedBox(height: 45),
-                                        SizedBox(
-                                          width: 320.0,
-                                          child: Row(
-                                            children: [
-                                              RaisedButton(
-                                                shape: RoundedRectangleBorder(
-                                                    borderRadius:
-                                                        BorderRadius.circular(
-                                                            10)),
-                                                color: Colors.red,
-                                                onPressed: () {
-                                                  Navigator.of(context,
-                                                          rootNavigator: true)
-                                                      .pop();
-                                                },
-                                                child: Text(
-                                                  "Delete",
-                                                  style: TextStyle(
-                                                      color: Colors.white),
-                                                ),
-                                              ),
-                                              SizedBox(width: 50),
-                                              RaisedButton(
-                                                shape: RoundedRectangleBorder(
-                                                    borderRadius:
-                                                        BorderRadius.circular(
-                                                            10)),
-                                                color: Colors.green,
-                                                onPressed: () {
-                                                  Navigator.of(context,
-                                                          rootNavigator: true)
-                                                      .pop();
-                                                },
-                                                child: Text(
-                                                  "Ok",
-                                                  style: TextStyle(
-                                                      color: Colors.white),
-                                                ),
-                                              ),
-                                            ],
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                );
+                            titlePadding: const EdgeInsets.fromLTRB(0, 0, 240, 0),
+                            contentPadding: const EdgeInsets.all(5),
+                            title: IconButton(
+                              alignment: Alignment.topLeft,
+                              padding: const EdgeInsets.all(0),
+                              iconSize: 30,
+                              icon: Icon(
+                                Icons.cancel,
+                                color: Colors.red,
+                              ),
+                              onPressed: () {
+                                Navigator.of(context, rootNavigator: true)
+                                    .pop();
                               },
                             ),
+                            content: Text(
+                              '${desc[index]}',
+                              textAlign: TextAlign.center,
+                              style: TextStyle(
+                                  fontFamily: 'Montserrat', fontSize: 16),
+                            ),
+                            shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(20.0)),
                           );
-                        },
-                      );
-                    },
-                  ),
+                        });
+                  },
                 ),
-              ),
-            );
-          },
+              );
+            },
+          ),
         ),
       ),
     );
