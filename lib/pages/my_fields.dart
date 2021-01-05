@@ -85,7 +85,7 @@ class _MyFieldsState extends State<MyFields> {
             appBar: AppBar(
               centerTitle: true,
               title: Text(
-                'My fields'.toUpperCase(),
+                'Tarlalarım'.toUpperCase(),
                 textAlign: TextAlign.center,
                 style: TextStyle(
                     color: Colors.green[600], fontWeight: FontWeight.w700),
@@ -134,11 +134,10 @@ class _MyFieldsState extends State<MyFields> {
                     color: Colors.grey[200],
                     child: Center(
                       child: Text(
-                        'No Farms',
+                        'TARLA BULUNAMADI',
                         style: TextStyle(
                           color: Colors.black87,
                           fontSize: 30,
-                          fontFamily: 'Roboto',
                           fontWeight: FontWeight.bold,
                         ),
                       ),
@@ -147,7 +146,7 @@ class _MyFieldsState extends State<MyFields> {
                 );
               },
             ),
-            drawer: CustomDrawer('MY FIELDS'),
+            drawer: CustomDrawer('TARLALARIM'),
             floatingActionButton: FloatingActionButton(
               onPressed: () {
                 _onAddField(context);

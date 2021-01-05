@@ -22,16 +22,16 @@ class CustomDrawer extends StatelessWidget {
           Padding(padding: EdgeInsets.only(top: 10)),
           _createDrawerItem(
               icon: Icons.home,
-              text: 'HOME',
+              text: 'ANASAYFA',
               onTap: () {
                 Navigator.of(context).push(routeRightToLeft(HomePage(
-                  title: 'Home',
+                  title: 'Anasayfa',
                 )));
               },
               selected: selected),
           _createDrawerItem(
               icon: Icons.grass,
-              text: 'MY FIELDS',
+              text: 'TARLALARIM',
               onTap: () async {
                 var jwt = await storage.read(key: "token");
                 Navigator.of(context)
@@ -39,45 +39,31 @@ class CustomDrawer extends StatelessWidget {
               },
               selected: selected),
           _createDrawerItem(
-              icon: Icons.message,
-              text: 'MESSAGES',
-              onTap: () {
-                Navigator.pop(context);
-              },
-              selected: selected),
-          _createDrawerItem(
-              icon: Icons.shopping_cart,
-              text: 'SHOP',
-              onTap: () {
-                Navigator.pop(context);
-              },
-              selected: selected),
-          _createDrawerItem(
               icon: Icons.multiline_chart,
-              text: 'INCOME - EXPANSE',
+              text: 'GELİR - GİDER',
               onTap: () {
                 Navigator.of(context).push(routeRightToLeft(ExpensePage(
-                  title: 'Expenses',
+                  title: 'Gelir - Gider',
                 )));
               },
               selected: selected),
           _createDrawerItem(
               icon: Icons.person,
-              text: 'PROFILE',
+              text: 'PROFIL',
               onTap: () {
                 Navigator.of(context).push(routeRightToLeft(UserProfile()));
               },
               selected: selected),
           _createDrawerItem(
               icon: Icons.settings,
-              text: 'SETTINGS',
+              text: 'AYARLAR',
               onTap: () {
                 Navigator.pop(context);
               },
               selected: selected),
           _createDrawerItem(
               icon: Icons.logout,
-              text: 'LOGOUT',
+              text: 'ÇIKIŞ YAP',
               onTap: () async {
                 await storage.delete(key: "token");
                 await storage.delete(key: "expire");
@@ -85,6 +71,7 @@ class CustomDrawer extends StatelessWidget {
                     context, "/login", (r) => false);
               },
               selected: selected),
+          _createLogo(),
         ],
       ),
     );
@@ -104,15 +91,29 @@ Widget _createDrawerItem(
           size: 30,
         ),
         Padding(
-          padding: EdgeInsets.only(left: 18.0),
+          padding: EdgeInsets.only(left: 15.0),
           child: Text(text,
               style: TextStyle(
-                  fontFamily: 'Roboto',
                   fontWeight: FontWeight.w700,
                   color: isSelected ? Colors.green : Colors.black)),
         )
       ],
     ),
     onTap: onTap,
+  );
+}
+
+Widget _createLogo() {
+  return Column(
+    children: [
+      SizedBox(
+        height: 35,
+      ),
+      Text(
+        'Farm Tracker',
+        style: TextStyle(fontSize: 25, color: Colors.green),
+      ),
+      Text('version 0.9b'),
+    ],
   );
 }

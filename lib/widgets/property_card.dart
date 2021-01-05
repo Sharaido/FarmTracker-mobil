@@ -21,7 +21,7 @@ class PropertyCard extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.all(20.0),
       child: GestureDetector(
-        onTap: () {
+        onTap: () async {
           Navigator.of(context)
               .push(routeRightToLeft(FieldDetails(
             property: property,

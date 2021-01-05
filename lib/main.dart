@@ -23,10 +23,11 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
           primarySwatch: Colors.green,
+          fontFamily: 'Montserrat',
           //primaryColor: Colors.green[500],
           visualDensity: VisualDensity.adaptivePlatformDensity,
           textTheme: Theme.of(context).textTheme.apply(
-              fontFamily: 'Roboto',
+              fontFamily: 'Montserrat',
               bodyColor: Colors.black,
               displayColor: Colors.black)),
 
@@ -34,7 +35,7 @@ class MyApp extends StatelessWidget {
       //   title: 'Home',
       // ),
       //home: LoginPage(),
-     /* home: FieldDetails(
+      /* home: FieldDetails(
         property: new Property(
             categoryID: 2,
             createdBy: "asd",
@@ -45,9 +46,9 @@ class MyApp extends StatelessWidget {
             farmID: "asd"),
       ),*/
 
-       home: ExpensePage(
+      home: ExpensePage(
         title: 'Expenses',
-       ),
+      ),
 
       routes: {
         '/login': (context) => LoginPage(),

@@ -25,8 +25,8 @@ class _NewPropertyModalState extends State<NewPropertyModal> {
   var selectedValue = 1;
 
   String _nameValidator(String value) {
-    if (value == '') return 'Required';
-    if (value.length < 3) return 'Must be at least 3 characters';
+    if (value == '') return 'Boş kalamaz';
+    if (value.length < 3) return 'En az 3 karakter olmalı';
     return null;
   }
 
@@ -57,15 +57,7 @@ class _NewPropertyModalState extends State<NewPropertyModal> {
         setState(() {
           _hasError = false;
         });
-        // Navigator.pushReplacement(
-        //   context,
-        //   MaterialPageRoute(
-        //     builder: (context) => FarmProperties(
-        //       jwt: widget.jwt,
-        //       farm: widget.farm,
-        //     ),
-        //   ),
-        // );
+
         Navigator.pop(context);
       } else {
         setState(() {
@@ -85,7 +77,7 @@ class _NewPropertyModalState extends State<NewPropertyModal> {
     return ButtonBar(
       alignment: MainAxisAlignment.center,
       children: <Widget>[
-        Text('PLANT'),
+        Text('BİTKİ'),
         Radio(
           value: 1,
           groupValue: selectedValue,
@@ -94,7 +86,7 @@ class _NewPropertyModalState extends State<NewPropertyModal> {
             _setSelectedRadio(val);
           },
         ),
-        Text('ANIMAL'),
+        Text('HAYVAN'),
         Radio(
           value: 2,
           groupValue: selectedValue,
@@ -115,23 +107,23 @@ class _NewPropertyModalState extends State<NewPropertyModal> {
           color: Colors.grey[200],
           borderRadius: BorderRadius.all(Radius.circular(30)),
         ),
-        height: MediaQuery.of(context).size.height / 1.7,
+        height: MediaQuery.of(context).size.height / 1.9,
         width: MediaQuery.of(context).size.height / 2.3,
         child: Column(
           children: <Widget>[
             Padding(
               padding: const EdgeInsets.all(12.0),
               child: Text(
-                'ADD A NEW PROPERTY',
+                'YENİ ALAN EKLE',
                 style: TextStyle(
                   color: Colors.black54,
-                  fontSize: 25,
+                  fontSize: 20,
                 ),
               ),
             ),
             if (_hasError)
               Text(
-                'You have reached your max property count. Please upgrade your membership.',
+                'Bu üyelik türü için maksimum alan limitine ulaştınız.',
                 textAlign: TextAlign.center,
                 style: TextStyle(
                   color: Colors.red,
@@ -142,12 +134,12 @@ class _NewPropertyModalState extends State<NewPropertyModal> {
               key: _formKey,
               child: Column(
                 children: [
-                  getTextField(_nameController, 'NAME', false,
+                  getTextField(_nameController, 'İSİM', false,
                       TextInputType.text, null, null, _nameValidator),
-                  getTextField(_descController, 'DESCRIPTION', false,
+                  getTextField(_descController, 'AÇIKLAMA', false,
                       TextInputType.text, null, null, null),
                   _getRadioButtons(),
-                  getButton(Colors.green, 'ADD', Colors.white, _onAddPressed),
+                  getButton(Colors.green, 'EKLE', Colors.white, _onAddPressed),
                 ],
               ),
             )

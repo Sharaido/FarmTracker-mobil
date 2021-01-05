@@ -22,8 +22,8 @@ class _NewFieldModalState extends State<NewFieldModal> {
   bool _hasError = false;
 
   String _nameValidator(String value) {
-    if (value == '') return 'Required';
-    if (value.length < 3) return 'Must be at least 3 characters';
+    if (value == '') return 'Boş bırakılamaz';
+    if (value.length < 3) return 'En az 3 karakter giriniz';
     return null;
   }
 
@@ -66,23 +66,23 @@ class _NewFieldModalState extends State<NewFieldModal> {
           color: Colors.grey[200],
           borderRadius: BorderRadius.all(Radius.circular(30)),
         ),
-        height: MediaQuery.of(context).size.height / 1.9,
+        height: MediaQuery.of(context).size.height / 2.1,
         width: MediaQuery.of(context).size.height / 2.3,
         child: Column(
           children: <Widget>[
             Padding(
               padding: const EdgeInsets.all(12.0),
               child: Text(
-                'ADD A NEW FIELD',
+                'Yeni Tarla Ekle'.toUpperCase(),
                 style: TextStyle(
                   color: Colors.black54,
-                  fontSize: 25,
+                  fontSize: 20,
                 ),
               ),
             ),
             if (_hasError)
               Text(
-                'You have reached your max field count. Please upgrade your membership.',
+                'Bu üyelik türü için maksimum tarla limitine ulaştınız.',
                 textAlign: TextAlign.center,
                 style: TextStyle(
                   color: Colors.red,
@@ -93,14 +93,14 @@ class _NewFieldModalState extends State<NewFieldModal> {
               key: _formKey,
               child: Column(
                 children: [
-                  getTextField(_nameController, 'NAME', false,
+                  getTextField(_nameController, 'İSİM', false,
                       TextInputType.text, null, null, _nameValidator),
-                  getTextField(_descController, 'DESCRIPTION', false,
+                  getTextField(_descController, 'AÇIKLAMA', false,
                       TextInputType.text, null, null, null),
                   SizedBox(
                     height: 15,
                   ),
-                  getButton(Colors.green, 'ADD', Colors.white, _onAddPressed),
+                  getButton(Colors.green, 'EKLE', Colors.white, _onAddPressed),
                 ],
               ),
             )

@@ -33,18 +33,21 @@ class CustomDrawerHeader extends StatelessWidget {
                 Padding(
                   padding: const EdgeInsets.fromLTRB(0, 5, 0, 0),
                   child: Text(
-                    'welcome'.toUpperCase(),
+                    'hoşgeldin'.toUpperCase(),
                     textAlign: TextAlign.center,
-                    style: TextStyle(color: Colors.white, fontFamily: 'Roboto', fontSize: 13),
+                    style: TextStyle(color: Colors.white, fontSize: 13),
                   ),
                 ),
                 Container(
                   width: 125,
-                  padding: const EdgeInsets.fromLTRB(0, 5, 0, 0),
+                  padding: const EdgeInsets.fromLTRB(0, 0, 0, 0),
                   child: Text(
                     'Dwight Schrute'.toUpperCase(),
                     textAlign: TextAlign.center,
-                    style: TextStyle(color: Colors.white, fontFamily: 'Roboto', fontWeight: FontWeight.w700),
+                    style: TextStyle(
+                        fontSize: 12.3,
+                        color: Colors.white,
+                        fontWeight: FontWeight.w700),
                     overflow: TextOverflow.fade,
                   ),
                 ),

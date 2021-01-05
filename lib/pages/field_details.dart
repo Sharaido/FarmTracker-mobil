@@ -7,6 +7,7 @@ import 'package:provider/provider.dart';
 import 'package:http/http.dart' as http;
 
 import '../main.dart';
+import 'entity_details.dart';
 import 'newEntity.dart';
 
 class EntityProvider extends ChangeNotifier {
@@ -46,17 +47,38 @@ class FieldDetails extends StatefulWidget {
 }
 
 String st = "";
-Widget noButton(st) {
+Widget noButton(Entity entity, context) {
+  Color color;
+  switch (entity.health) {
+    case HealthStatus.HEALTHY:
+      color = Colors.green;
+      break;
+    case HealthStatus.DISEASED:
+      color = Colors.orange;
+      break;
+    case HealthStatus.DEAD:
+      color = Colors.black;
+      break;
+  }
   return Padding(
     padding: const EdgeInsets.all(4.0),
     child: MaterialButton(
       padding: EdgeInsets.zero,
       materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-      color: Colors.green,
+      color: color,
       shape: CircleBorder(),
-      onPressed: () {},
+      onPressed: () {
+        print("come on");
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+              builder: (context) => EntityDetails(
+                    entity: entity,
+                  )),
+        );
+      },
       child: Text(
-        st,
+        entity.fakeID,
         style: TextStyle(color: Colors.white, fontSize: 18),
       ),
     ),
@@ -148,7 +170,7 @@ class _FieldDetailsState extends State<FieldDetails> {
                                   crossAxisCount:
                                       6, //(no.length / 20).toInt() + 5 ibret alın
                                   children: List.generate(no.length, (index) {
-                                    return noButton(no[index].fakeID);
+                                    return noButton(no[index], context);
                                   }),
                                 ),
                               ),
@@ -685,51 +707,52 @@ class _FieldDetailsState extends State<FieldDetails> {
       create: (context) => EntityProvider(widget.property),
       builder: (context, wid) {
         return Scaffold(
-            appBar: AppBar(
-              centerTitle: true,
-              title: Text(
-                widget.property.name.toUpperCase(),
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                    color: Colors.green[600], fontWeight: FontWeight.w700),
-              ),
-              actions: [
-                IconButton(
-                    icon: Icon(Icons.delete),
-                    onPressed: () async {
-                      //Navigator.popUntil(context, ModalRoute.withName('/'));
-                      var jwt = await storage.read(key: "token");
-
-                      final http.Response response = await http.delete(
-                        '$BASE_URL/api/Farms/Properties/${widget.property.id}',
-                        headers: <String, String>{
-                          'Content-Type': 'application/json; charset=UTF-8',
-                          'Authorization': 'Bearer $jwt',
-                        },
-                      );
-                      if (response.statusCode != 200) return;
-                      Navigator.pop(context);
-                    })
-              ],
-              elevation: 0,
-              backgroundColor: Colors.grey[200],
-              iconTheme: new IconThemeData(color: Colors.green[600]),
+          appBar: AppBar(
+            centerTitle: true,
+            title: Text(
+              widget.property.name.toUpperCase(),
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                  color: Colors.green[600], fontWeight: FontWeight.w700),
             ),
-            body: FutureBuilder(
-              future: Provider.of<EntityProvider>(context).future,
-              builder: (context, snapshot) {
-                if (snapshot.connectionState == ConnectionState.waiting) {
-                  return Container(
-                    color: Colors.grey[200],
-                    child: Center(
-                      child: CircularProgressIndicator(
-                        strokeWidth: 5,
-                      ),
-                    ),
-                  );
-                }
+            actions: [
+              IconButton(
+                  icon: Icon(Icons.delete),
+                  onPressed: () async {
+                    //Navigator.popUntil(context, ModalRoute.withName('/'));
+                    var jwt = await storage.read(key: "token");
 
+                    final http.Response response = await http.delete(
+                      '$BASE_URL/api/Farms/Properties/${widget.property.id}',
+                      headers: <String, String>{
+                        'Content-Type': 'application/json; charset=UTF-8',
+                        'Authorization': 'Bearer $jwt',
+                      },
+                    );
+                    if (response.statusCode != 200) return;
+                    Navigator.pop(context);
+                  })
+            ],
+            elevation: 0,
+            backgroundColor: Colors.grey[200],
+            iconTheme: new IconThemeData(color: Colors.green[600]),
+          ),
+          body: FutureBuilder(
+            future: Provider.of<EntityProvider>(context).future,
+            builder: (context, snapshot) {
+              if (snapshot.connectionState == ConnectionState.waiting) {
                 return Container(
+                  color: Colors.grey[200],
+                  child: Center(
+                    child: CircularProgressIndicator(
+                      strokeWidth: 5,
+                    ),
+                  ),
+                );
+              }
+
+              return SingleChildScrollView(
+                child: Container(
                   color: Colors.grey[200],
                   child: Column(mainAxisSize: MainAxisSize.max,
                       //mainAxisAlignment: MainAxisAlignment.center,
@@ -813,10 +836,11 @@ class _FieldDetailsState extends State<FieldDetails> {
                               context, Color.fromARGB(255, 229, 115, 115)),
                         ]),
                       ]),
-                );
-              },
-            ),
-            floatingActionButton: FloatingActionButton(
+                ),
+              );
+            },
+          ),
+          /*floatingActionButton: FloatingActionButton(
               heroTag: "add",
               backgroundColor: Colors.green,
               child: Icon(Icons.add),
@@ -835,7 +859,8 @@ class _FieldDetailsState extends State<FieldDetails> {
                   });
                 });
               },
-            ));
+            )*/
+        );
       },
     );
   }

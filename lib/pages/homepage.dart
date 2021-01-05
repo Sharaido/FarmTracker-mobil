@@ -63,7 +63,7 @@ class _HomePageState extends State<HomePage> {
           ],
         ),
       ),
-      drawer: CustomDrawer('HOME'),
+      drawer: CustomDrawer('ANASAYFA'),
       floatingActionButton: FloatingActionButton(
         onPressed: queryWeather,
         tooltip: 'Increment',

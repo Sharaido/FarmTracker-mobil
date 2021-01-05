@@ -7,7 +7,6 @@ import 'package:flutter_app/models/field.dart';
 import 'package:http/http.dart' as http;
 import 'package:provider/provider.dart';
 import '../main.dart';
-import 'login_page.dart';
 
 class CategoryProvider extends ChangeNotifier {
   Future<List<Category>> firstFuture;
@@ -138,7 +137,11 @@ class _MyHomePageState extends State<newEntity> {
       }),
     );
 
-    if (response.statusCode == 201) return parseEntity(response.body);
+    if (response.statusCode == 201) {
+      var entity = parseEntity(response.body);
+      entity.creadeInitialDetails();
+      return entity;
+    }
     return null;
   }
 

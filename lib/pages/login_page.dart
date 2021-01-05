@@ -100,10 +100,9 @@ class _LoginPageState extends State<LoginPage> {
         children: <Widget>[
           Spacer(),
           Text(
-            'LOG IN',
+            'Farm Tracker',
             style: TextStyle(
                 fontSize: 25,
-                fontFamily: 'Roboto',
                 color: Colors.black54,
                 fontWeight: FontWeight.bold),
           ),
@@ -112,18 +111,15 @@ class _LoginPageState extends State<LoginPage> {
           ),
           if (hasError)
             Text(
-              'Wrong username or password',
+              'Üye bilgileri bulunamadı',
               style: TextStyle(
-                  fontSize: 17,
-                  fontFamily: 'Roboto',
-                  color: Colors.red,
-                  fontWeight: FontWeight.bold),
+                  fontSize: 17, color: Colors.red, fontWeight: FontWeight.bold),
             ),
-          getTextField(_usernameController, 'USERNAME', false,
+          getTextField(_usernameController, 'KULLANICI ADI', false,
               TextInputType.text, null, null, _usernameValidator),
           getTextField(
               _passwordController,
-              'PASSWORD',
+              'ŞİFRE',
               _hidePass,
               TextInputType.text,
               Icon(Icons.remove_red_eye),
@@ -132,8 +128,8 @@ class _LoginPageState extends State<LoginPage> {
           SizedBox(
             height: 40.0,
           ),
-          getButton(Colors.green, 'LOG IN', Colors.white, _onLoginPressed),
-          getButton(Colors.white, 'REGISTER', Colors.black, _onRegisterPressed),
+          getButton(Colors.green, 'GİRİŞ YAP', Colors.white, _onLoginPressed),
+          getButton(Colors.white, 'KAYIT OL', Colors.black, _onRegisterPressed),
           Container(
             margin:
                 const EdgeInsets.only(bottom: 0, top: 20, left: 20, right: 20),
@@ -146,12 +142,12 @@ class _LoginPageState extends State<LoginPage> {
   }
 
   String _usernameValidator(String value) {
-    if (value == '') return 'Required';
+    if (value == '') return 'Boş kalamaz';
     return null;
   }
 
   String _passwordValidator(String value) {
-    if (value == '') return 'Required';
+    if (value == '') return 'Boş kalamaz';
     return null;
   }
 
@@ -212,7 +208,7 @@ getTextField(TextEditingController controller, String label, bool hideText,
     children: [
       _getLabel(label),
       Container(
-        height: 55,
+        height: 50,
         margin: const EdgeInsets.only(top: 5, left: 20, right: 20),
         decoration: BoxDecoration(
             color: Colors.white,
@@ -235,8 +231,7 @@ getTextField(TextEditingController controller, String label, bool hideText,
                 keyboardType: type,
                 autocorrect: true,
                 obscureText: hideText,
-                style: TextStyle(
-                    color: Colors.black, fontFamily: 'Roboto', fontSize: 18.0),
+                style: TextStyle(color: Colors.black, fontSize: 18.0),
                 decoration: InputDecoration(
                     contentPadding: EdgeInsets.fromLTRB(20.0, 0, 20.0, 0),
                     errorStyle: TextStyle(
@@ -279,7 +274,6 @@ getButton(Color color, String text, Color textColor, Function onPressed) {
         text,
         style: TextStyle(
           color: textColor,
-          fontFamily: 'Roboto',
           fontWeight: FontWeight.bold,
         ),
       ),

@@ -31,13 +31,13 @@ class _ExpensePageState extends State<ExpensePage> {
   bool isExpense = false;
 
   final List<String> titles = <String>[
-    'Dayıoğluna borç',
+    'Test',
   ];
   final List<String> desc = <String>[
-    'Aga beee böyle de borç yapılır mı beeeeeeeeeeeeeeeeeeeeeeeeeeeeee',
+    'Description',
   ];
   final List<String> checkexpense = <String>[
-    'true',
+    'false',
   ];
   final List<double> addamount = <double>[
     45,
@@ -69,10 +69,101 @@ class _ExpensePageState extends State<ExpensePage> {
     });
   }
 
+  Widget getBox(int index) {
+    return Container(
+      padding: const EdgeInsets.all(3),
+      child: FlatButton(
+        color: checkexpense[index] == 'true'
+            ? Colors.redAccent
+            : Colors.greenAccent[400],
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.all(Radius.circular(20)),
+          side: BorderSide(
+            color: checkexpense[index] == 'true' ? Colors.red : Colors.green,
+            width: 4,
+          ),
+        ),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            SizedBox(height: 10),
+            Text(
+              '${titles[index]}',
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                fontFamily: 'Montserrat',
+                fontWeight: FontWeight.bold,
+                fontSize: 15,
+                color: Colors.white,
+              ),
+            ),
+            SizedBox(height: 10),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text(
+                  '${addamount[index]}',
+                  style: TextStyle(
+                      color: Colors.white,
+                      fontFamily: 'Montserrat',
+                      fontWeight: FontWeight.bold,
+                      fontSize: 15),
+                ),
+                SizedBox(width: 10),
+                Text(
+                  'TL',
+                  style: TextStyle(
+                      color: Colors.white,
+                      fontFamily: 'Montserrat',
+                      fontWeight: FontWeight.bold,
+                      fontSize: 15),
+                ),
+              ],
+            ),
+            SizedBox(height: 10),
+            Text(
+              '${dates[index]}',
+              style: TextStyle(
+                fontFamily: 'Montserrat',
+                fontSize: 15,
+                fontWeight: FontWeight.bold,
+                color: Colors.white,
+              ),
+            ),
+          ],
+        ),
+        onPressed: () {
+          showDialog(
+              context: context,
+              builder: (BuildContext context) {
+                return AlertDialog(
+                  elevation: 10,
+                  titlePadding: const EdgeInsets.fromLTRB(0, 0, 240, 0),
+                  contentPadding: const EdgeInsets.all(5),
+                  content: Container(
+                    height: 50,
+                    child: Center(
+                      child: Text(
+                        '${desc[index]}',
+                        textAlign: TextAlign.center,
+                        style:
+                            TextStyle(fontFamily: 'Montserrat', fontSize: 16),
+                      ),
+                    ),
+                  ),
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(20.0)),
+                );
+              });
+        },
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      drawer: CustomDrawer('INCOME - EXPANSE'),
+      drawer: CustomDrawer('GELİR - GİDER'),
       appBar: AppBar(
         centerTitle: true,
         elevation: 0,
@@ -251,100 +342,7 @@ class _ExpensePageState extends State<ExpensePage> {
           children: List.generate(
             titles.length,
             (index) {
-              return Container(
-                padding: const EdgeInsets.all(3),
-                child: FlatButton(
-                  color: Colors.redAccent,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.all(Radius.circular(20)),
-                    side: BorderSide(
-                      color: Colors.red,
-                      width: 4,
-                    ),
-                  ),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      SizedBox(height: 10),
-                      Text(
-                        '${titles[index]}',
-                        textAlign: TextAlign.center,
-                        style: TextStyle(
-                          fontFamily: 'Montserrat',
-                          fontWeight: FontWeight.bold,
-                          fontSize: 15,
-                          color: Colors.white,
-                        ),
-                      ),
-                      SizedBox(height: 10),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Text(
-                            '${addamount[index]}',
-                            style: TextStyle(
-                                color: Colors.white,
-                                fontFamily: 'Montserrat',
-                                fontWeight: FontWeight.bold,
-                                fontSize: 15),
-                          ),
-                          SizedBox(width: 10),
-                          Text(
-                            'TL',
-                            style: TextStyle(
-                                color: Colors.white,
-                                fontFamily: 'Montserrat',
-                                fontWeight: FontWeight.bold,
-                                fontSize: 15),
-                          ),
-                        ],
-                      ),
-                      SizedBox(height: 10),
-                      Text(
-                        '${dates[index]}',
-                        style: TextStyle(
-                          fontFamily: 'Montserrat',
-                          fontSize: 15,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.white,
-                        ),
-                      ),
-                    ],
-                  ),
-                  onPressed: () {
-                    showDialog(
-                        context: context,
-                        builder: (BuildContext context) {
-                          return AlertDialog(
-                            elevation: 10,
-                            titlePadding: const EdgeInsets.fromLTRB(0, 0, 240, 0),
-                            contentPadding: const EdgeInsets.all(5),
-                            title: IconButton(
-                              alignment: Alignment.topLeft,
-                              padding: const EdgeInsets.all(0),
-                              iconSize: 30,
-                              icon: Icon(
-                                Icons.cancel,
-                                color: Colors.red,
-                              ),
-                              onPressed: () {
-                                Navigator.of(context, rootNavigator: true)
-                                    .pop();
-                              },
-                            ),
-                            content: Text(
-                              '${desc[index]}',
-                              textAlign: TextAlign.center,
-                              style: TextStyle(
-                                  fontFamily: 'Montserrat', fontSize: 16),
-                            ),
-                            shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(20.0)),
-                          );
-                        });
-                  },
-                ),
-              );
+              return getBox(index);
             },
           ),
         ),

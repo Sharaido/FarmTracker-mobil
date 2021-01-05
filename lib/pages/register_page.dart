@@ -40,36 +40,35 @@ class _RegisterPageState extends State<RegisterPage> {
         children: <Widget>[
           Spacer(),
           Text(
-            'REGISTER',
+            'KAYIT',
             style: TextStyle(
                 fontSize: 25,
-                fontFamily: 'Roboto',
                 color: Colors.black54,
                 fontWeight: FontWeight.bold),
           ),
           SizedBox(
             height: 10.0,
           ),
-          getTextField(_usernameController, 'USERNAME', false,
+          getTextField(_usernameController, 'KULLANICI ADI', false,
               TextInputType.text, null, null, _usernameValidator),
           getTextField(
               _passwordController,
-              'PASSWORD',
+              'ŞİFRE',
               _hidePass,
               TextInputType.text,
               Icon(Icons.remove_red_eye),
               _onShowPassClicked,
               _passwordValidator),
-          getTextField(_emailController, 'EMAIL', false,
+          getTextField(_emailController, 'E-POSTA', false,
               TextInputType.emailAddress, null, null, _emailValidator),
-          getTextField(_nameController, 'NAME', false, TextInputType.text, null,
+          getTextField(_nameController, 'İSİM', false, TextInputType.text, null,
               null, _nameValidator),
-          getTextField(_surnameController, 'SURNAME', false, TextInputType.text,
+          getTextField(_surnameController, 'SOYİSİM', false, TextInputType.text,
               null, null, _nameValidator),
           SizedBox(
             height: 30.0,
           ),
-          getButton(Colors.green, 'REGISTER', Colors.white, _onRegisterClicked),
+          getButton(Colors.green, 'KAYIT OL', Colors.white, _onRegisterClicked),
           Container(
             margin:
                 const EdgeInsets.only(bottom: 0, top: 20, left: 20, right: 20),
@@ -88,20 +87,20 @@ class _RegisterPageState extends State<RegisterPage> {
   }
 
   String _passwordValidator(String value) {
-    if (value.trim().isEmpty) return "Required";
-    if (value.length < 6) return "Must be longer than 6 characters";
+    if (value.trim().isEmpty) return "Boş kalamaz";
+    if (value.length < 6) return "En az 6 karakter olmalı";
     return null;
   }
 
   String _emailValidator(String value) {
-    if (value.trim().isEmpty) return "Required";
-    if (!isEmailValid(value)) return "Email not valid";
+    if (value.trim().isEmpty) return "Boş kalamaz";
+    if (!isEmailValid(value)) return "Lütfen e-posta adresi yazınız";
     return _emailError;
   }
 
   String _nameValidator(String value) {
-    if (value.trim().isEmpty) return "Required";
-    if (value.length < 1) return "Must be longer than 1 character";
+    if (value.trim().isEmpty) return "Boş kalamaz";
+    if (value.length < 1) return "Boş kalamaz";
     return null;
   }
 
@@ -113,10 +112,10 @@ class _RegisterPageState extends State<RegisterPage> {
 
   _onRegisterClicked() async {
     bool r = await isEmailTaken(_emailController.text);
-    _emailError = r ? "Email is already in use" : null;
+    _emailError = r ? "Bu e-posta alınmış" : null;
 
     r = await isUsernameTaken(_usernameController.text);
-    _usernameError = r ? "Username is already in use" : null;
+    _usernameError = r ? "Bu kullanıcı adı alınmış" : null;
 
     if (!_formKey.currentState.validate()) return;
 

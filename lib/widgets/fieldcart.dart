@@ -74,8 +74,9 @@ class _FieldCardState extends State<FieldCard> {
                     child: const Text("DELETE")),
                 FlatButton(
                   onPressed: () => Navigator.of(context).pop(false),
-                  child: const Text("CANCEL",
-                      style: TextStyle(fontFamily: 'RobotoMono')),
+                  child: const Text(
+                    "CANCEL",
+                  ),
                 ),
               ],
             );
@@ -158,7 +159,6 @@ class _FieldCardState extends State<FieldCard> {
                                   widget.field.name.toUpperCase(),
                                   textAlign: TextAlign.center,
                                   style: TextStyle(
-                                      fontFamily: 'Roboto',
                                       fontSize: 16,
                                       fontWeight: FontWeight.w600),
                                 ),
@@ -167,7 +167,6 @@ class _FieldCardState extends State<FieldCard> {
                                     widget.field.desc,
                                     textAlign: TextAlign.center,
                                     style: TextStyle(
-                                      fontFamily: 'Roboto',
                                       fontSize: 14,
                                     ),
                                   ),
@@ -216,7 +215,6 @@ class _FieldCardState extends State<FieldCard> {
                                     Text('#',
                                         style: TextStyle(
                                             fontSize: 16,
-                                            fontFamily: 'Roboto',
                                             fontWeight: FontWeight.w500,
                                             color: Colors.black)),
                                     Padding(
@@ -225,7 +223,6 @@ class _FieldCardState extends State<FieldCard> {
                                       child: Text("${widget.field.id}",
                                           style: TextStyle(
                                               fontSize: 15,
-                                              fontFamily: 'Roboto',
                                               fontWeight: FontWeight.w500,
                                               color: Colors.black)),
                                     )
@@ -294,7 +291,6 @@ Widget _createInfo({IconData icon, String text}) {
           child: Text(text,
               style: TextStyle(
                   fontSize: 15,
-                  fontFamily: 'Roboto',
                   fontWeight: FontWeight.w500,
                   color: Colors.black)))
     ],
