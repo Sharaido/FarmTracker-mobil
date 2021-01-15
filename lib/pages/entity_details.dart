@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_app/api/api.dart';
 import 'package:flutter_app/models/category.dart';
 import 'package:flutter_app/models/field.dart';
 import 'package:http/http.dart' as http;
@@ -14,27 +15,11 @@ class EntityDetailProvider extends ChangeNotifier {
   Map<String, EntityDetail> detailMap;
 
   EntityDetailProvider(Entity entity) {
-    entity.getEntityDetails().then((value) {
+    API.getEntityDetails(entity.id).then((value) {
       detailMap = Map.fromIterable(value, key: (d) => d.name, value: (d) => d);
-      future = _getCategory(entity.categoryID);
+      future = API.getCategory(entity.categoryID);
       notifyListeners();
     });
-  }
-
-  Future<Category> _getCategory(int id) async {
-    var jwt = await storage.read(key: "token");
-    final response =
-        await http.get('$BASE_URL/api/Farms/Categories/$id', headers: {
-      'Content-Type': 'application/json',
-      'Accept': 'application/json',
-      'Authorization': 'Bearer $jwt',
-    });
-    return parseCategory(response.body);
-  }
-
-  Category parseCategory(String responseBody) {
-    final parsed = Map<String, dynamic>.from(jsonDecode(responseBody));
-    return Category.fromJson(parsed);
   }
 }
 

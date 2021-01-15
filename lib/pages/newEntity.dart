@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_app/api/api.dart';
 import 'package:flutter_app/models/category.dart';
 import 'package:flutter_app/models/field.dart';
 import 'package:http/http.dart' as http;
@@ -88,73 +89,6 @@ class _MyHomePageState extends State<newEntity> {
     selectedCategoryIndex = [0, 0, 0];
   }
 
-  Future<List<Category>> _getCategories(int id) async {
-    var jwt = await storage.read(key: "token");
-    final response =
-        await http.get('$BASE_URL/api/Farms/SubCategories/$id', headers: {
-      'Content-Type': 'application/json',
-      'Accept': 'application/json',
-      'Authorization': 'Bearer $jwt',
-    });
-    return parseProperties(response.body);
-  }
-
-  Future<bool> _addCOPValue(String entityID, int copID, String value) async {
-    var jwt = await storage.read(key: "token");
-    final http.Response response = await http.post(
-      '$BASE_URL/api/Farms/Properties/Entities/COPValues/',
-      headers: <String, String>{
-        'Content-Type': 'application/json; charset=UTF-8',
-        'Authorization': 'Bearer $jwt',
-      },
-      body: jsonEncode(<String, dynamic>{
-        'EUID': entityID,
-        'PUID': copID,
-        'Value': value,
-      }),
-    );
-    return response.statusCode == 201;
-  }
-
-  Future<Entity> _addEntity(int categoryID, String propertyID, String id,
-      String name, String desc, int count) async {
-    var jwt = await storage.read(key: "token");
-    final http.Response response = await http.post(
-      '$BASE_URL/api/Farms/Properties/Entities/',
-      headers: <String, String>{
-        'Content-Type': 'application/json; charset=UTF-8',
-        'Authorization': 'Bearer $jwt',
-      },
-      body: jsonEncode(<String, dynamic>{
-        "CUID": categoryID,
-        "PUID": propertyID,
-        "ID": id,
-        "Name": name,
-        "Description": desc,
-        "Count": count,
-        "PurchasedDate": null,
-        "Cost": 0
-      }),
-    );
-
-    if (response.statusCode == 201) {
-      var entity = parseEntity(response.body);
-      entity.creadeInitialDetails();
-      return entity;
-    }
-    return null;
-  }
-
-  List<Category> parseProperties(String responseBody) {
-    final parsed = jsonDecode(responseBody).cast<Map<String, dynamic>>();
-    return parsed.map<Category>((json) => Category.fromJson(json)).toList();
-  }
-
-  Entity parseEntity(String responseBody) {
-    var parsed = Map<String, dynamic>.from(jsonDecode(responseBody));
-    return Entity.fromJson(parsed);
-  }
-
   Widget dropDown(int order, context) {
     var provider = Provider.of<CategoryProvider>(context, listen: false);
     return FutureBuilder<List<Category>>(
@@ -196,7 +130,7 @@ class _MyHomePageState extends State<newEntity> {
                 }
                 if (order != 2 && selectedIndex != 0) {
                   provider.setFuture(
-                      _getCategories(selectedCategoryList[order].id),
+                      API.getSubCategories(selectedCategoryList[order].id),
                       order + 1);
                 }
               });
@@ -244,7 +178,8 @@ class _MyHomePageState extends State<newEntity> {
 
   _onAddButtonClicked() async {
     if (!_formKey.currentState.validate()) return;
-    _addEntity(entityCategory.id, widget.property.id, _idController.text,
+    API
+        .createEntity(entityCategory.id, widget.property.id, _idController.text,
             'name', 'desc', int.parse(_countController.text))
         .then((value) {
       setState(() {
@@ -252,7 +187,7 @@ class _MyHomePageState extends State<newEntity> {
           hasError = true;
           return;
         }
-        _addCOPValue(value.id, 3, _health).then((value) => onAddSuccesful());
+        API.addCOPValue(value.id, 3, _health).then((value) => onAddSuccesful());
       });
     });
   }
@@ -293,7 +228,7 @@ class _MyHomePageState extends State<newEntity> {
   @override
   Widget build(BuildContext context) {
     return ChangeNotifierProvider(
-        create: (_) => CategoryProvider(_getCategories(1)),
+        create: (_) => CategoryProvider(API.getSubCategories(1)),
         builder: (ctx, wid) {
           return Scaffold(
             body: Center(

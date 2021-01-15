@@ -164,32 +164,4 @@ class UserProfile extends StatelessWidget {
       ),
     );
   }
-
-  Widget _buildStatItem(String label, String count) {
-    TextStyle _statLabelTextStyle = TextStyle(
-      color: Colors.black,
-      fontSize: 16.0,
-      fontWeight: FontWeight.w200,
-    );
-
-    TextStyle _statCountTextStyle = TextStyle(
-      color: Colors.black54,
-      fontSize: 24.0,
-      fontWeight: FontWeight.bold,
-    );
-
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: <Widget>[
-        Text(
-          count,
-          style: _statCountTextStyle,
-        ),
-        Text(
-          label,
-          style: _statLabelTextStyle,
-        ),
-      ],
-    );
-  }
 }

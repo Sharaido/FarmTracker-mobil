@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_app/api/api.dart';
 import 'package:flutter_app/main.dart';
 import 'package:flutter_app/models/field.dart';
 import 'package:flutter_app/widgets/add_field.dart';
@@ -30,22 +31,7 @@ class MyFields extends StatefulWidget {
   _MyFieldsState createState() => _MyFieldsState();
 }
 
-List<Farm> parseFarms(String responseBody) {
-  final parsed = jsonDecode(responseBody).cast<Map<String, dynamic>>();
-
-  return parsed.map<Farm>((json) => Farm.fromJson(json)).toList();
-}
-
 class _MyFieldsState extends State<MyFields> {
-  Future<List<Farm>> get _farms async {
-    final response = await http.get('$BASE_URL/api/Farms/', headers: {
-      'Content-Type': 'application/json',
-      'Accept': 'application/json',
-      'Authorization': 'Bearer ${widget.jwt}',
-    });
-    return parseFarms(response.body);
-  }
-
   final refreshIndicatorKey = GlobalKey<RefreshIndicatorState>();
 
   FarmsFuture farmsFuture;
@@ -53,7 +39,7 @@ class _MyFieldsState extends State<MyFields> {
   Future<Null> _getFarms() async {
     await new Future.delayed(new Duration(seconds: 0));
     setState(() {
-      farmsFuture.updateFuture(_farms);
+      farmsFuture.updateFuture(API.getAllFarms());
     });
     return null;
   }
@@ -70,7 +56,7 @@ class _MyFieldsState extends State<MyFields> {
               content: new NewFieldModal(widget.jwt));
         }).then((value) {
       setState(() {
-        farmsFuture.updateFuture(_farms);
+        farmsFuture.updateFuture(API.getAllFarms());
       });
     });
   }
@@ -78,7 +64,7 @@ class _MyFieldsState extends State<MyFields> {
   @override
   Widget build(BuildContext context) {
     return ChangeNotifierProvider(
-      create: (context) => FarmsFuture(_farms),
+      create: (context) => FarmsFuture(API.getAllFarms()),
       builder: (context, wdg) {
         farmsFuture = Provider.of<FarmsFuture>(context, listen: false);
         return Scaffold(
