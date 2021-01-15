@@ -44,7 +44,7 @@ class MyApp extends StatelessWidget {
             desc: "asd",
             createdDate: "asd",
             farmID: "asd"),
-      ),*/
+      ),
 
       home: ExpensePage(
         title: 'Expenses',
