@@ -91,49 +91,11 @@ class _FieldDetailsState extends State<FieldDetails> {
   bool sprayValue = false;
   bool irrigationValue = false;
   bool harvestValue = false;
+  String image = "pine_tree.png";
   TextEditingController kgController = TextEditingController();
   TextEditingController valueController = TextEditingController();
   TextEditingController skgController = TextEditingController();
   TextEditingController svalueController = TextEditingController();
-  Widget fertilizerCheck() {
-    return Checkbox(
-        value: fertilizerValue,
-        onChanged: (bool value) {
-          setState(() {
-            fertilizerValue = value;
-          });
-        });
-  }
-
-  Widget sprayCheck() {
-    return Checkbox(
-        value: sprayValue,
-        onChanged: (bool value) {
-          setState(() {
-            sprayValue = value;
-          });
-        });
-  }
-
-  Widget irrigationCheck() {
-    return Checkbox(
-        value: irrigationValue,
-        onChanged: (bool value) {
-          setState(() {
-            irrigationValue = value;
-          });
-        });
-  }
-
-  Widget harvestCheck() {
-    return Checkbox(
-        value: harvestValue,
-        onChanged: (bool value) {
-          setState(() {
-            harvestValue = value;
-          });
-        });
-  }
 
   Widget detailCard(String st, int count, List<Entity> no, context) {
     return Flexible(
@@ -162,10 +124,12 @@ class _FieldDetailsState extends State<FieldDetails> {
                                     .toString()
                                     .replaceAll('SAYISI', 'NUMARALARI'),
                                 textAlign: TextAlign.center,
+                                style: TextStyle(fontWeight: FontWeight.bold),
                               ),
                               content: Container(
+                                height: no.length.toDouble() + 10,
                                 width: MediaQuery.of(context).size.width * .0,
-                                color: Colors.grey[200],
+                                color: Colors.white,
                                 child: GridView.count(
                                   childAspectRatio: 1,
                                   crossAxisCount:
@@ -205,17 +169,41 @@ class _FieldDetailsState extends State<FieldDetails> {
                         st,
                         style: TextStyle(
                             fontWeight: FontWeight.bold,
-                            fontSize: 20.0,
+                            fontSize: 18.0,
                             color: Colors.white),
                         textAlign: TextAlign.center,
                       ),
-                      new Text(""),
+                      if (st.contains("HASTA"))
+                        Image(
+                          image: AssetImage("assets/images/pine_tree_fire.png"),
+                          fit: BoxFit.fitHeight,
+                          height: 25,
+                        )
+                      else if (st.contains("DİKİLEN"))
+                        Image(
+                          image: AssetImage("assets/images/newtree.png"),
+                          fit: BoxFit.fitHeight,
+                          height: 25,
+                        )
+                      else if (st.contains("ÖLEN"))
+                        Image(
+                          image: AssetImage("assets/images/pine_tree.png"),
+                          color: Colors.black,
+                          fit: BoxFit.fitHeight,
+                          height: 25,
+                        )
+                      else
+                        Image(
+                          image: AssetImage("assets/images/pine_tree.png"),
+                          fit: BoxFit.fitHeight,
+                          height: 25,
+                        ),
                       new Text(
                         count.toString(),
                         textAlign: TextAlign.center,
                         style: TextStyle(
                           color: Colors.white,
-                          fontSize: 30.0,
+                          fontSize: 25.0,
                         ),
                       ),
                     ],
@@ -403,24 +391,28 @@ class _FieldDetailsState extends State<FieldDetails> {
                   onTap: () {
                     //print(no);
                     showDialog(
-                      context: context,
-                      builder: (_) => new AlertDialog(
-                        title: new Text(
-                          st.toString(),
-                          style: TextStyle(
-                              fontWeight: FontWeight.bold,
-                              fontSize: 20.0,
-                              color: Colors.green.withOpacity(1.0)),
-                        ),
-                        content: Column(
-                          children: [
-                            if (st.toString().contains("TOPLAM"))
-                              productEntry(),
-                            if (st.toString().contains("DÖNEM")) seasonEntry(),
-                          ],
-                        ),
-                      ),
-                    );
+                        context: context,
+                        builder: (_) => new AlertDialog(
+                              title: StatefulBuilder(builder:
+                                  (BuildContext context, StateSetter setState) {
+                                return Column(
+                                  children: [
+                                    Text(
+                                      st,
+                                      style: TextStyle(
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: 20.0,
+                                          color: Colors.black),
+                                      textAlign: TextAlign.center,
+                                    ),
+                                    if (st.toString().contains("TOPLAM"))
+                                      productEntry(),
+                                    if (st.toString().contains("DÖNEM"))
+                                      seasonEntry(),
+                                  ],
+                                );
+                              }),
+                            ));
                   },
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
@@ -434,6 +426,16 @@ class _FieldDetailsState extends State<FieldDetails> {
                             color: Colors.white),
                         textAlign: TextAlign.center,
                       ),
+                      if (st.contains("TOPLAM"))
+                        Icon(
+                          Icons.shopping_cart,
+                          color: Colors.white,
+                        )
+                      else
+                        Icon(
+                          Icons.shopping_basket,
+                          color: Colors.white,
+                        ),
                       new Text(
                         "KG: " + kg.toString(),
                         style: TextStyle(fontSize: 18.0, color: Colors.white),
@@ -445,7 +447,7 @@ class _FieldDetailsState extends State<FieldDetails> {
                         textAlign: TextAlign.center,
                       ),
                       new Text(
-                        "Hasat Tarihi: " + harvestDate.toString(),
+                        "" + harvestDate.toString(),
                         style: TextStyle(fontSize: 18.0, color: Colors.white),
                         textAlign: TextAlign.center,
                       ),
@@ -460,7 +462,7 @@ class _FieldDetailsState extends State<FieldDetails> {
     );
   }
 
-  Widget otherCard(String st, isBool, otherDate, context, Color color) {
+  Widget otherCard(String st, isDone, otherDate, context, Color color) {
     return Flexible(
       child: Container(
         height: 130,
@@ -480,91 +482,132 @@ class _FieldDetailsState extends State<FieldDetails> {
                   onTap: () {
                     //print(no);
                     showDialog(
-                      context: context,
-                      builder: (context) => new AlertDialog(
-                        title: new Text(st.toString()),
-                        content: Column(
-                          children: [
-                            if (1 == 1 && st.contains("SU"))
-                              Column(children: <Widget>[
-                                Row(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: <Widget>[
-                                    irrigationCheck(),
-                                    Text("Sulandı"),
+                        context: context,
+                        builder: (context) => new AlertDialog(
+                              title: StatefulBuilder(builder:
+                                  (BuildContext context, StateSetter setState) {
+                                return Column(
+                                  children: [
+                                    Text(
+                                      st,
+                                      style: TextStyle(
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: 20.0,
+                                          color: Colors.black),
+                                      textAlign: TextAlign.center,
+                                    ),
+                                    if (1 == 1 && st.contains("SU"))
+                                      Column(children: <Widget>[
+                                        Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.center,
+                                          children: <Widget>[
+                                            Checkbox(
+                                                value: irrigationValue,
+                                                onChanged: (bool value) {
+                                                  setState(() {
+                                                    irrigationValue = value;
+                                                  });
+                                                }),
+                                            Text("Sulandı"),
+                                          ],
+                                        ),
+                                        Text(
+                                          "\n Sıradaki Sulama tarihi:",
+                                          style: TextStyle(
+                                              fontWeight: FontWeight.bold,
+                                              fontSize: 20.0,
+                                              color:
+                                                  Colors.blue.withOpacity(1.0)),
+                                          textAlign: TextAlign.center,
+                                        ),
+                                        irrigationPick(),
+                                      ]),
+                                    if (1 == 1 && st.contains("GÜBRE"))
+                                      Column(children: <Widget>[
+                                        Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.center,
+                                          children: <Widget>[
+                                            Checkbox(
+                                                value: fertilizerValue,
+                                                onChanged: (bool value) {
+                                                  setState(() {
+                                                    fertilizerValue = value;
+                                                  });
+                                                }),
+                                            Text("Gübrelendi"),
+                                          ],
+                                        ),
+                                        Text(
+                                          "\nSıradaki Gübre tarihi:",
+                                          style: TextStyle(
+                                              fontWeight: FontWeight.bold,
+                                              fontSize: 20.0,
+                                              color:
+                                                  Colors.blue.withOpacity(1.0)),
+                                          textAlign: TextAlign.center,
+                                        ),
+                                        fertilizerPick(),
+                                      ]),
+                                    if (1 == 1 && st.contains("İLAÇ"))
+                                      Column(children: <Widget>[
+                                        Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.center,
+                                          children: <Widget>[
+                                            Checkbox(
+                                                value: sprayValue,
+                                                onChanged: (bool value) {
+                                                  setState(() {
+                                                    sprayValue = value;
+                                                  });
+                                                }),
+                                            Text("İlaçlandı"),
+                                          ],
+                                        ),
+                                        Text(
+                                          "\n Sıradaki İlaçlama tarihi:",
+                                          style: TextStyle(
+                                              fontWeight: FontWeight.bold,
+                                              fontSize: 20.0,
+                                              color:
+                                                  Colors.blue.withOpacity(1.0)),
+                                          textAlign: TextAlign.center,
+                                        ),
+                                        sprayPick()
+                                      ]),
+                                    if (1 == 1 && st.contains("HASAT"))
+                                      Column(children: <Widget>[
+                                        Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.center,
+                                          children: <Widget>[
+                                            Checkbox(
+                                                value: harvestValue,
+                                                onChanged: (bool value) {
+                                                  setState(() {
+                                                    harvestValue = value;
+                                                  });
+                                                }),
+                                            Text("Toplandı"),
+                                          ],
+                                        ),
+                                        Text(
+                                          "\n Sıradaki Hasat tarihi:",
+                                          style: TextStyle(
+                                              fontWeight: FontWeight.bold,
+                                              fontSize: 20.0,
+                                              color:
+                                                  Colors.blue.withOpacity(1.0)),
+                                          textAlign: TextAlign.center,
+                                        ),
+                                        harvestPick()
+                                      ]),
                                   ],
-                                ),
-                                Text(
-                                  "\n Sıradaki Sulama tarihi:",
-                                  style: TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 20.0,
-                                      color: Colors.blue.withOpacity(1.0)),
-                                  textAlign: TextAlign.center,
-                                ),
-                                irrigationPick(),
-                              ]),
-                            if (1 == 1 && st.contains("GÜBRE"))
-                              Column(children: <Widget>[
-                                Row(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: <Widget>[
-                                    fertilizerCheck(),
-                                    Text("Gübrelendi"),
-                                  ],
-                                ),
-                                Text(
-                                  "\n Sıradaki Gübreleme tarihi:",
-                                  style: TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 20.0,
-                                      color: Colors.blue.withOpacity(1.0)),
-                                  textAlign: TextAlign.center,
-                                ),
-                                fertilizerPick(),
-                              ]),
-                            if (1 == 1 && st.contains("İLAÇ"))
-                              Column(children: <Widget>[
-                                Row(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: <Widget>[
-                                    sprayCheck(),
-                                    Text("İlaçlandı"),
-                                  ],
-                                ),
-                                Text(
-                                  "\n Sıradaki İlaçlama tarihi:",
-                                  style: TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 20.0,
-                                      color: Colors.blue.withOpacity(1.0)),
-                                  textAlign: TextAlign.center,
-                                ),
-                                sprayPick()
-                              ]),
-                            if (1 == 1 && st.contains("HASAT"))
-                              Column(children: <Widget>[
-                                Row(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: <Widget>[
-                                    harvestCheck(),
-                                    Text("Toplandı"),
-                                  ],
-                                ),
-                                Text(
-                                  "\n Sıradaki Ürün toplama tarihi:",
-                                  style: TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 20.0,
-                                      color: Colors.blue.withOpacity(1.0)),
-                                  textAlign: TextAlign.center,
-                                ),
-                                harvestPick()
-                              ]),
-                          ],
-                        ),
-                      ),
-                    );
+                                );
+                              }),
+                            ));
                   },
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
@@ -578,106 +621,134 @@ class _FieldDetailsState extends State<FieldDetails> {
                             color: Colors.white),
                         textAlign: TextAlign.center,
                       ),
-                      new Text(""),
-                      if (isBool == true && st.contains("SU"))
+                      if (st.contains("SU"))
+                        Icon(
+                          Icons.wash,
+                          color: Colors.white,
+                        )
+                      else if (st.contains("GÜBRE"))
+                        Icon(
+                          Icons.nature_rounded,
+                          color: Colors.white,
+                        )
+                      else if (st.contains("İLAÇ"))
+                        Icon(
+                          Icons.sanitizer,
+                          color: Colors.white,
+                        )
+                      else if (st.contains("HASAT"))
+                        Icon(
+                          Icons.shopping_basket,
+                          color: Colors.white,
+                        ),
+                      if (irrigationValue && st.contains("SU"))
                         new Text(
                           'SULANDI',
                           style: TextStyle(
-                              fontSize: 20.0, color: Colors.purple[800]),
+                              fontWeight: FontWeight.bold,
+                              fontSize: 20.0,
+                              color: Colors.purple[800]),
                           textAlign: TextAlign.center,
                         ),
-                      if (isBool == true && st.contains("SU")) new Text(""),
-                      if (isBool == true && st.contains("SU"))
+                      //if (isDone == true && st.contains("SU")) new Text(""),
+                      if (irrigationValue && st.contains("SU"))
                         new Text(
-                          'Sıradaki sulama tarihi: ' + otherDate,
+                          '' + otherDate,
                           textAlign: TextAlign.center,
                           style: TextStyle(
-                            fontSize: 15.0,
+                            fontSize: 18.0,
                             color: Colors.white,
                           ),
                         ),
-                      if (isBool == false && st.contains("SU"))
+                      if (!irrigationValue && st.contains("SU"))
                         new Text(
                           'SULANMADI',
                           style: TextStyle(
+                              fontWeight: FontWeight.bold,
                               fontSize: 20.0,
-                              color: Colors.red.withOpacity(1.0)),
+                              color: Colors.red.shade900),
                           textAlign: TextAlign.center,
                         )
-                      else if (isBool == true && st.contains("GÜBRE"))
+                      else if (fertilizerValue == true && st.contains("GÜBRE"))
                         new Text(
                           'GÜBRELENDİ',
                           style: TextStyle(
-                              fontSize: 20.0, color: Colors.purple[800]),
+                              fontWeight: FontWeight.bold,
+                              fontSize: 20.0,
+                              color: Colors.purple[800]),
                           textAlign: TextAlign.center,
                         ),
-                      if (isBool == true && st.contains("GÜBRE")) new Text(""),
-                      if (isBool == true && st.contains("GÜBRE"))
+                      if (fertilizerValue && st.contains("GÜBRE"))
                         new Text(
-                          'Sıradaki gübreleme tarihi: ' + otherDate,
+                          '' + otherDate,
                           textAlign: TextAlign.center,
                           style: TextStyle(
-                            fontSize: 15.0,
+                            fontSize: 18.0,
                             color: Colors.white,
                           ),
                         ),
-                      if (isBool == false && st.contains("GÜBRE"))
+                      if (!fertilizerValue && st.contains("GÜBRE"))
                         new Text(
                           'GÜBRELENMEDİ',
                           style: TextStyle(
+                              fontWeight: FontWeight.bold,
                               fontSize: 20.0,
-                              color: Colors.red.withOpacity(1.0)),
+                              color: Colors.red.shade900),
                           textAlign: TextAlign.center,
                         )
-                      else if (isBool == true && st.contains("İLAÇ"))
+                      else if (sprayValue && st.contains("İLAÇ"))
                         new Text(
                           'İLAÇLANDI',
                           textAlign: TextAlign.center,
                           style: TextStyle(
-                              fontSize: 20.0, color: Colors.purple[800]),
+                              fontWeight: FontWeight.bold,
+                              fontSize: 20.0,
+                              color: Colors.purple[800]),
                         ),
-                      if (isBool == true && st.contains("İLAÇ")) new Text(""),
-                      if (isBool == true && st.contains("İLAÇ"))
+                      if (sprayValue && st.contains("İLAÇ"))
                         new Text(
-                          'Sıradaki ilaçlama tarihi: ' + otherDate,
+                          '' + otherDate,
                           textAlign: TextAlign.center,
                           style: TextStyle(
-                            fontSize: 15.0,
+                            fontSize: 18.0,
                             color: Colors.white,
                           ),
                         ),
-                      if (isBool == false && st.contains("İLAÇ"))
+                      if (!sprayValue && st.contains("İLAÇ"))
                         new Text(
                           'İLAÇLANMADI',
                           textAlign: TextAlign.center,
                           style: TextStyle(
+                              fontWeight: FontWeight.bold,
                               fontSize: 20.0,
-                              color: Colors.red.withOpacity(1.0)),
+                              color: Colors.red.shade900),
                         )
-                      else if (isBool == true && st.contains("HASAT"))
+                      else if (harvestValue && st.contains("HASAT"))
                         new Text(
                           'TOPLANDI',
                           style: TextStyle(
-                              fontSize: 20.0, color: Colors.purple[800]),
+                              fontWeight: FontWeight.bold,
+                              fontSize: 20.0,
+                              color: Colors.purple[800]),
                           textAlign: TextAlign.center,
                         ),
-                      if (isBool == true && st.contains("HASAT")) new Text(""),
-                      if (isBool == true && st.contains("HASAT"))
+                      if (harvestValue && st.contains("HASAT"))
                         new Text(
-                          'Sıradaki toplama tarihi: ' + otherDate,
+                          '' + otherDate,
                           textAlign: TextAlign.center,
                           style: TextStyle(
-                            fontSize: 15.0,
+                            fontSize: 18.0,
                             color: Colors.white,
                           ),
                         ),
-                      if (isBool == false && st.contains("HASAT"))
+                      if (!harvestValue && st.contains("HASAT"))
                         new Text(
                           'TOPLANMADI',
                           textAlign: TextAlign.center,
                           style: TextStyle(
+                              fontWeight: FontWeight.bold,
                               fontSize: 20.0,
-                              color: Colors.red.withOpacity(1.0)),
+                              color: Colors.red.shade900),
                         ),
                     ],
                   ),
@@ -697,13 +768,9 @@ class _FieldDetailsState extends State<FieldDetails> {
     DateTime now = new DateTime.now();
     String harvestDate = DateFormat('yMd').format(now);
     String whenHarvestDate = DateFormat('yMd').format(now);
-    bool isHarvest = true;
     String irrigationDate = DateFormat('yMd').format(now);
-    bool isIrrigation = true;
     String sprayDate = DateFormat('yMd').format(now);
-    bool isSpray = true;
     String fertilizerDate = DateFormat('yMd').format(now);
-    bool isFertilizer = true;
     return ChangeNotifierProvider(
       create: (context) => EntityProvider(widget.property),
       builder: (context, wid) {
@@ -772,27 +839,21 @@ class _FieldDetailsState extends State<FieldDetails> {
                             mainAxisSize: MainAxisSize.min,
                             children: <Widget>[
                               detailCard(
-                                  "TOPLAM AĞAÇ SAYISI",
+                                  "TOPLAM AĞAÇ",
                                   widget.property.all.length,
                                   widget.property.all,
                                   context),
                               detailCard(
-                                  "TOPLAM HASTA AĞAÇ SAYISI",
+                                  "HASTA AĞAÇ",
                                   widget.property.diseased.length,
                                   widget.property.diseased,
                                   context),
                             ]),
                         Row(mainAxisSize: MainAxisSize.min, children: <Widget>[
-                          detailCard(
-                              "BU YIL DİKİLEN AĞAÇ SAYISI",
-                              widget.property.all.length,
-                              widget.property.all,
-                              context),
-                          detailCard(
-                              "BU YIL ÖLEN AĞAÇ SAYISI",
-                              widget.property.dead.length,
-                              widget.property.dead,
-                              context),
+                          detailCard("DİKİLEN AĞAÇ", widget.property.all.length,
+                              widget.property.all, context),
+                          detailCard("ÖLEN AĞAÇ", widget.property.dead.length,
+                              widget.property.dead, context),
                         ]),
                         new Text(""),
                         new Text(
@@ -819,22 +880,26 @@ class _FieldDetailsState extends State<FieldDetails> {
                         Row(mainAxisSize: MainAxisSize.min, children: <Widget>[
                           otherCard(
                               "SULAMA BİLGİSİ",
-                              isIrrigation,
+                              irrigationValue,
                               irrigationDate,
                               context,
                               Color.fromARGB(255, 99, 181, 246)),
                           otherCard(
                               "GÜBRE BİLGİSİ",
-                              isFertilizer,
+                              fertilizerValue,
                               fertilizerDate,
                               context,
                               Color.fromARGB(255, 141, 110, 99)),
                         ]),
                         Row(mainAxisSize: MainAxisSize.min, children: <Widget>[
-                          otherCard("İLAÇLAMA BİLGİSİ", isSpray, sprayDate,
+                          otherCard("İLAÇ BİLGİSİ", sprayValue, sprayDate,
                               context, Color.fromARGB(255, 249, 168, 39)),
-                          otherCard("HASAT BİLGİSİ", isHarvest, whenHarvestDate,
-                              context, Color.fromARGB(255, 229, 115, 115)),
+                          otherCard(
+                              "HASAT BİLGİSİ",
+                              harvestValue,
+                              whenHarvestDate,
+                              context,
+                              Color.fromARGB(255, 229, 115, 115)),
                         ]),
                       ]),
                 ),

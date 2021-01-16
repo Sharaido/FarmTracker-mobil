@@ -50,6 +50,10 @@ class MyApp extends StatelessWidget {
       //   title: 'Expenses',
       // ),
 
+      // home: ExpensePage(
+      //   title: 'Expenses',
+      // ),
+
       routes: {
         '/login': (context) => LoginPage(),
         '/homepage': (context) => HomePage(),
