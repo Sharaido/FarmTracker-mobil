@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_app/pages/real_animal_details.dart';
 import 'package:flutter_app/pages/field_details.dart';
 import 'package:flutter_app/pages/homepage.dart';
 import 'package:flutter_app/pages/login_page.dart';
@@ -31,10 +32,13 @@ class MyApp extends StatelessWidget {
               bodyColor: Colors.black,
               displayColor: Colors.black)),
 
-      // home: HomePage(
-      //   title: 'Home',
-      // ),
-      home: LoginPage(),
+       //home: HomePage(
+        // title: 'Home',
+       //),
+       home:RealAnimalDetails(
+         title: "RealAnimalDetails",
+       ),
+      //home: LoginPage(),
       //  home: FieldDetails(
       //   property: new Property(
       //       categoryID: 2,
