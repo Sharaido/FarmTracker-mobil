@@ -1,6 +1,7 @@
 import 'package:datetime_picker_formfield/datetime_picker_formfield.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_app/api/api.dart';
 import 'package:flutter_app/models/field.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
@@ -14,7 +15,7 @@ class EntityProvider extends ChangeNotifier {
   Future future;
 
   EntityProvider(Property property) {
-    property.getAllEntities().then((value) {
+    API.getAllEntities(property.id).then((value) {
       property.all = value;
       future = property.setEntitiesList().then((value) {
         notifyListeners();
@@ -28,7 +29,7 @@ class EntityProvider extends ChangeNotifier {
   }
 
   void updateFuture(Property property) async {
-    property.getAllEntities().then((value) {
+    API.getAllEntities(property.id).then((value) {
       property.all = value;
       future = property.setEntitiesList();
       notifyListeners();

@@ -5,6 +5,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
+import 'package:flutter_app/api/api.dart';
 import 'package:flutter_app/pages/register_page.dart';
 import 'package:http/http.dart' as http;
 
@@ -12,7 +13,9 @@ import '../main.dart';
 import 'my_fields.dart';
 
 class LoginPage extends StatefulWidget {
-  LoginPage({Key key}) : super(key: key);
+  LoginPage({Key key}) : super(key: key) {
+    storage.read(key: "token").then((value) => API.jwt = value);
+  }
 
   @override
   State<StatefulWidget> createState() => _LoginPageState();
@@ -48,36 +51,11 @@ class _LoginPageState extends State<LoginPage> {
   final _formKey = new GlobalKey<FormState>();
   bool _hidePass = true;
 
-  Future<String> tryLogin(String username, String password) async {
-    final http.Response response = await http.post(
-      '$BASE_URL/api/Members/SignIn',
-      headers: <String, String>{
-        'Content-Type': 'application/json; charset=UTF-8',
-      },
-      body: jsonEncode(<String, String>{
-        'SignInKey': username,
-        'Password': password,
-      }),
-    );
-
-    var body = json.decode(response.body);
-
-    if (body['result']) {
-      var jwt = body['token'];
-      var expires = body['expiration'];
-      await storage.write(key: "token", value: jwt);
-      await storage.write(key: "expire", value: expires);
-      return '{"result": true, "expiration":"$expires", "token":"$jwt"}';
-    }
-
-    return '{"result":false}';
-  }
-
   _onLoginPressed() async {
     if (!_formKey.currentState.validate()) return;
     setState(() {
       _loginResult =
-          tryLogin(_usernameController.text, _passwordController.text);
+          API.tryLogin(_usernameController.text, _passwordController.text);
     });
   }
 

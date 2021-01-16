@@ -34,21 +34,21 @@ class MyApp extends StatelessWidget {
       // home: HomePage(
       //   title: 'Home',
       // ),
-      //home: LoginPage(),
-      /* home: FieldDetails(
-        property: new Property(
-            categoryID: 2,
-            createdBy: "asd",
-            id: "asd",
-            name: "Tarla",
-            desc: "asd",
-            createdDate: "asd",
-            farmID: "asd"),
-      ),
+      home: LoginPage(),
+      //  home: FieldDetails(
+      //   property: new Property(
+      //       categoryID: 2,
+      //       createdBy: "asd",
+      //       id: "asd",
+      //       name: "Tarla",
+      //       desc: "asd",
+      //       createdDate: "asd",
+      //       farmID: "asd"),
+      // ),
 
-      home: ExpensePage(
-        title: 'Expenses',
-      ),
+      // home: ExpensePage(
+      //   title: 'Expenses',
+      // ),
 
       routes: {
         '/login': (context) => LoginPage(),

@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_app/api/api.dart';
 import 'package:flutter_app/pages/login_page.dart';
 import 'package:flutter_app/pages/my_fields.dart';
 import 'package:http/http.dart' as http;
@@ -27,24 +28,9 @@ class _NewFieldModalState extends State<NewFieldModal> {
     return null;
   }
 
-  Future<bool> addFarm(String name, String desc) async {
-    final http.Response response = await http.post(
-      '$BASE_URL/api/Farms/',
-      headers: <String, String>{
-        'Content-Type': 'application/json; charset=UTF-8',
-        'Authorization': 'Bearer ${widget.jwt}',
-      },
-      body: jsonEncode(<String, String>{
-        'Name': name,
-        'Description': desc,
-      }),
-    );
-    return response.statusCode == 201;
-  }
-
   _onAddPressed() {
     if (!_formKey.currentState.validate()) return;
-    addFarm(_nameController.text, _descController.text).then((value) {
+    API.createFarm(_nameController.text, _descController.text).then((value) {
       if (value) {
         setState(() {
           _hasError = false;

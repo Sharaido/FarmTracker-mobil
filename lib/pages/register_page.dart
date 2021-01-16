@@ -1,12 +1,10 @@
 import 'dart:async';
 import 'dart:convert';
-
 import 'package:flutter/material.dart';
+import 'package:flutter_app/api/api.dart';
 import 'package:flutter_app/models/user.dart';
 import 'package:http/http.dart' as http;
-
 import '../main.dart';
-import 'my_fields.dart';
 import 'login_page.dart';
 
 class RegisterPage extends StatefulWidget {
@@ -20,8 +18,6 @@ class _RegisterPageState extends State<RegisterPage> {
   TextEditingController _emailController = TextEditingController();
   TextEditingController _nameController = TextEditingController();
   TextEditingController _surnameController = TextEditingController();
-
-  Future<bool> _loginResult;
 
   String _emailError;
   String _usernameError;
@@ -111,18 +107,18 @@ class _RegisterPageState extends State<RegisterPage> {
   }
 
   _onRegisterClicked() async {
-    bool r = await isEmailTaken(_emailController.text);
+    bool r = await API.isEmailTaken(_emailController.text);
     _emailError = r ? "Bu e-posta alınmış" : null;
 
-    r = await isUsernameTaken(_usernameController.text);
+    r = await API.isUsernameTaken(_usernameController.text);
     _usernameError = r ? "Bu kullanıcı adı alınmış" : null;
 
     if (!_formKey.currentState.validate()) return;
 
-    var guc = await getCodeForRegister();
+    var guc = await API.getCodeForRegister();
     User user = new User(_usernameController.text, _passwordController.text,
         _emailController.text, _nameController.text, _surnameController.text);
-    bool res = await tryRegister(user, guc);
+    bool res = await API.tryRegister(user, guc);
 
     if (res) {
       Navigator.pop(context);
@@ -133,56 +129,6 @@ class _RegisterPageState extends State<RegisterPage> {
     return RegExp(
             r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+")
         .hasMatch(email);
-  }
-
-  Future<bool> tryLogin(String username, String password) async {
-    final http.Response response = await http.post(
-      '$BASE_URL/api/Members/SignIn',
-      headers: <String, String>{
-        'Content-Type': 'application/json; charset=UTF-8',
-      },
-      body: jsonEncode(<String, String>{
-        'SignInKey': username,
-        'Password': password,
-      }),
-    );
-    return response.statusCode == 200;
-  }
-
-  Future<bool> isUsernameTaken(String username) async {
-    final http.Response response =
-        await http.get("$BASE_URL/api/Members/IsUsedUsername/$username");
-    return response.body == 'true';
-  }
-
-  Future<bool> isEmailTaken(String email) async {
-    final http.Response response =
-        await http.get("$BASE_URL/api/Members/IsUsedEmail/$email");
-    return response.body == 'true';
-  }
-
-  Future<String> getCodeForRegister() async {
-    final http.Response response =
-        await http.get("$BASE_URL/api/Members/GetNewUCodeForSignUp");
-    return json.decode(response.body)['guc'];
-  }
-
-  Future<bool> tryRegister(User user, String guc) async {
-    final http.Response response = await http.post(
-      '$BASE_URL/api/Members/SignUp',
-      headers: <String, String>{
-        'Content-Type': 'application/json; charset=UTF-8',
-      },
-      body: jsonEncode(<String, String>{
-        'Username': user.username,
-        'Password': user.password,
-        'Email': user.email,
-        'Name': user.name,
-        'Surname': user.surname,
-        'Guc': guc,
-      }),
-    );
-    return response.statusCode == 200;
   }
 
   @override

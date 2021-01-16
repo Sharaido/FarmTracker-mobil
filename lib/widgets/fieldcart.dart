@@ -1,6 +1,7 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_app/api/api.dart';
 import 'package:flutter_app/models/field.dart';
 import 'package:flutter_app/pages/field_details.dart';
 import 'package:flutter_app/pages/map_sample.dart';
@@ -31,25 +32,12 @@ class _FieldCardState extends State<FieldCard> {
     return widget.field.desc != "";
   }
 
-  Future<bool> _deleteFarm(id) async {
-    jwt = await storage.read(key: "token");
-
-    final http.Response response = await http.delete(
-      '$BASE_URL/api/Farms/$id',
-      headers: <String, String>{
-        'Content-Type': 'application/json; charset=UTF-8',
-        'Authorization': 'Bearer $jwt',
-      },
-    );
-    return response.statusCode == 200;
-  }
-
   @override
   Widget build(BuildContext context) {
     return Dismissible(
       key: Key(widget.field.id),
       onDismissed: (direction) async {
-        await _deleteFarm(widget.field.id);
+        await API.deleteFarm(widget.field.id);
         // Navigator.pushReplacement(
         //   context,
         //   MaterialPageRoute(

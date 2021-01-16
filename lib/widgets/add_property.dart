@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_app/api/api.dart';
 import 'package:flutter_app/main.dart';
 import 'package:flutter_app/models/field.dart';
 import 'package:flutter_app/pages/login_page.dart';
@@ -30,28 +31,11 @@ class _NewPropertyModalState extends State<NewPropertyModal> {
     return null;
   }
 
-  Future<bool> addProperty(
-      String name, String desc, int category, String farmID) async {
-    final http.Response response = await http.post(
-      '$BASE_URL/api/Farms/Properties',
-      headers: <String, String>{
-        'Content-Type': 'application/json; charset=UTF-8',
-        'Authorization': 'Bearer ${widget.jwt}',
-      },
-      body: jsonEncode(<String, dynamic>{
-        'Name': name,
-        'Description': desc,
-        'CUID': category,
-        'FUID': farmID,
-      }),
-    );
-    return response.statusCode == 201;
-  }
-
   _onAddPressed() {
     if (!_formKey.currentState.validate()) return;
-    addProperty(_nameController.text, _descController.text, selectedValue,
-            widget.farm.id)
+    API
+        .createProperty(_nameController.text, _descController.text,
+            selectedValue, widget.farm.id)
         .then((value) {
       if (value) {
         setState(() {

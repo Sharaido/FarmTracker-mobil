@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_app/api/api.dart';
 import 'package:flutter_app/models/field.dart';
 import 'package:flutter_app/widgets/add_property.dart';
 import 'package:flutter_app/widgets/property_card.dart';
@@ -52,35 +53,6 @@ class FarmProperties extends StatefulWidget {
 class _FarmPropertiesState extends State<FarmProperties> {
   final refreshIndicatorKey = GlobalKey<RefreshIndicatorState>();
 
-  Future<List<Property>> _getProperties() async {
-    final response = await http
-        .get('$BASE_URL/api/Farms/Properties/${widget.farm.id}', headers: {
-      'Content-Type': 'application/json',
-      'Accept': 'application/json',
-      'Authorization': 'Bearer ${widget.jwt}',
-    });
-
-    return parseProperties(response.body);
-  }
-
-  List<Property> parseProperties(String responseBody) {
-    final parsed = jsonDecode(responseBody).cast<Map<String, dynamic>>();
-
-    return parsed.map<Property>((json) => Property.fromJson(json)).toList();
-  }
-
-  Future<bool> _deleteFarm(id) async {
-    final http.Response response = await http.delete(
-      '$BASE_URL/api/Farms/$id',
-      headers: <String, String>{
-        'Content-Type': 'application/json; charset=UTF-8',
-        'Authorization': 'Bearer ${widget.jwt}',
-      },
-    );
-    print(response.body);
-    return response.statusCode == 200;
-  }
-
   _onDeleteProperty() async {
     final bool res = await showDialog(
       context: context,
@@ -102,7 +74,7 @@ class _FarmPropertiesState extends State<FarmProperties> {
     );
     if (!res) return;
 
-    _deleteFarm(widget.farm.id).then((value) {
+    API.deleteFarm(widget.farm.id).then((value) {
       if (!value) return;
 
       Navigator.pop(context);
@@ -112,7 +84,7 @@ class _FarmPropertiesState extends State<FarmProperties> {
   @override
   Widget build(BuildContext context) {
     return ChangeNotifierProvider(
-      create: (context) => PropertyProvider(_getProperties()),
+      create: (context) => PropertyProvider(API.getProperties(widget.farm.id)),
       builder: (context, wid) {
         return Scaffold(
           floatingActionButton: FloatingActionButton(
@@ -130,7 +102,7 @@ class _FarmPropertiesState extends State<FarmProperties> {
                   }).then((value) {
                 setState(() {
                   Provider.of<PropertyProvider>(context, listen: false)
-                      .setFuture(_getProperties());
+                      .setFuture(API.getProperties(widget.farm.id));
                 });
               });
             },
@@ -172,7 +144,7 @@ class _FarmPropertiesState extends State<FarmProperties> {
                     await new Future.delayed(new Duration(seconds: 0));
                     setState(() {
                       Provider.of<PropertyProvider>(context, listen: false)
-                          .setFuture(_getProperties());
+                          .setFuture(API.getProperties(widget.farm.id));
                     });
                     return null;
                   },
