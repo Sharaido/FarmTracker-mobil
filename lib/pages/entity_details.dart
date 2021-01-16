@@ -1,20 +1,25 @@
-import 'dart:convert';
-
+import 'package:datetime_picker_formfield/datetime_picker_formfield.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_app/api/api.dart';
-import 'package:flutter_app/models/category.dart';
 import 'package:flutter_app/models/field.dart';
-import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
-import '../main.dart';
-
 class EntityDetailProvider extends ChangeNotifier {
   Future future;
+  Entity entity;
   Map<String, EntityDetail> detailMap;
 
   EntityDetailProvider(Entity entity) {
+    this.entity = entity;
+    API.getEntityDetails(entity.id).then((value) {
+      detailMap = Map.fromIterable(value, key: (d) => d.name, value: (d) => d);
+      future = API.getCategory(entity.categoryID);
+      notifyListeners();
+    });
+  }
+
+  updateFuture() {
     API.getEntityDetails(entity.id).then((value) {
       detailMap = Map.fromIterable(value, key: (d) => d.name, value: (d) => d);
       future = API.getCategory(entity.categoryID);
@@ -167,7 +172,7 @@ class _EntityDetailsState extends State<EntityDetails> {
   }
 
   getIconButton(IconData icon, String text, EntityDetail detail,
-      Color buttonColor, Color borderColor, bool isActive) {
+      Color buttonColor, Color borderColor, bool isActive, context) {
     return Column(
       children: [
         !isDateAfter(detail.remainderDate)
@@ -188,7 +193,11 @@ class _EntityDetailsState extends State<EntityDetails> {
                   width: 1.5)),
           child: FlatButton(
             padding: EdgeInsets.zero,
-            onPressed: isActive ? () {} : null,
+            onPressed: isActive
+                ? () {
+                    onButtonClick(detail.name, context);
+                  }
+                : null,
             child: Padding(
               padding: const EdgeInsets.fromLTRB(0, 4, 0, 4),
               child: Column(
@@ -212,7 +221,9 @@ class _EntityDetailsState extends State<EntityDetails> {
                         fontWeight: FontWeight.bold),
                   ),
                   Text(
-                    parseDate(detail.remainderDate),
+                    detail.remainderDate == null
+                        ? 'YAPILMADI'
+                        : parseDate(detail.remainderDate),
                     textAlign: TextAlign.center,
                     style: TextStyle(
                         color: Colors.white,
@@ -227,6 +238,112 @@ class _EntityDetailsState extends State<EntityDetails> {
         ),
       ],
     );
+  }
+
+  onButtonClick(String detailName, context) {
+    //Todo: bugünü remainder completed date'e at, seçilen günü de remainder date'e at
+    DateTime date;
+    final format = DateFormat("dd-MM-yyyy HH:mm");
+    var provider = Provider.of<EntityDetailProvider>(context, listen: false);
+    var detail = provider.detailMap[detailName];
+    showDialog(
+        context: context,
+        builder: (BuildContext ctx) {
+          return AlertDialog(
+            shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.all(Radius.circular(30))),
+            elevation: 10,
+            contentPadding: EdgeInsets.all(20),
+            content: SingleChildScrollView(
+              child: Container(
+                height: 130,
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    DateTimeField(
+                      validator: (value) {
+                        if (value == null) {
+                          return 'Lütfen tarih seçin.';
+                        }
+                        return null;
+                      },
+                      decoration: InputDecoration(
+                        labelText: 'Sonraki Hatırlatma Tarihi',
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                      ),
+                      format: format,
+                      onShowPicker: (context, currentValue) async {
+                        date = await showDatePicker(
+                            context: context,
+                            firstDate: DateTime.now(),
+                            initialDate: currentValue ?? DateTime.now(),
+                            lastDate: DateTime(2100));
+                        if (date != null) {
+                          final time = await showTimePicker(
+                            context: context,
+                            initialTime: TimeOfDay.fromDateTime(
+                                currentValue ?? DateTime.now()),
+                          );
+                          date = new DateTime(date.year, date.month, date.day,
+                              time.hour, time.minute);
+                          return date;
+                        } else {
+                          return currentValue;
+                        }
+                      },
+                    ),
+                    Container(
+                      height: 50,
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          RaisedButton(
+                            shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(10)),
+                            color: Colors.red[400],
+                            onPressed: () {
+                              Navigator.of(context, rootNavigator: true).pop();
+                            },
+                            child: Text(
+                              "İptal",
+                              style: TextStyle(
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.bold),
+                            ),
+                          ),
+                          RaisedButton(
+                            shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(10)),
+                            color: Colors.green[300],
+                            onPressed: () async {
+                              detail.remainderCompletedDate =
+                                  DateTime.now().toIso8601String();
+                              detail.remainderDate = date.toIso8601String();
+                              await API.updateDetail(detail);
+                              setState(() {
+                                provider.updateFuture();
+                                Navigator.of(context, rootNavigator: true)
+                                    .pop();
+                              });
+                            },
+                            child: Text(
+                              "Kaydet",
+                              style: TextStyle(
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.bold),
+                            ),
+                          ),
+                        ],
+                      ),
+                    )
+                  ],
+                ),
+              ),
+            ),
+          );
+        });
   }
 
   @override
@@ -255,6 +372,8 @@ class _EntityDetailsState extends State<EntityDetails> {
                   IconButton(
                       icon: Icon(Icons.delete),
                       onPressed: () async {
+                        await API.deleteEntity(widget.entity.id);
+                        Navigator.pop(context);
                         //Navigator.popUntil(context, ModalRoute.withName('/'));
                       })
                 ],
@@ -327,38 +446,75 @@ class _EntityDetailsState extends State<EntityDetails> {
                                     ...getCheckText(
                                         Icons.wash,
                                         Colors.blue,
-                                        parseDate(provider.detailMap['water']
-                                            .remainderCompletedDate),
+                                        provider.detailMap['water']
+                                                    .remainderCompletedDate ==
+                                                null
+                                            ? ""
+                                            : parseDate(provider
+                                                .detailMap['water']
+                                                .remainderCompletedDate),
                                         "SULANDI",
-                                        isDateAfter(provider
-                                            .detailMap['water'].remainderDate)),
+                                        provider.detailMap['water']
+                                                    .remainderDate ==
+                                                null
+                                            ? false
+                                            : isDateAfter(provider
+                                                .detailMap['water']
+                                                .remainderDate)),
                                     ...getCheckText(
                                         Icons.nature_rounded,
                                         Colors.brown,
-                                        parseDate(provider
-                                            .detailMap['fertilizer']
-                                            .remainderCompletedDate),
+                                        provider.detailMap['fertilizer']
+                                                    .remainderCompletedDate ==
+                                                null
+                                            ? ""
+                                            : parseDate(provider
+                                                .detailMap['fertilizer']
+                                                .remainderCompletedDate),
                                         "GÜBRELENDİ",
-                                        isDateAfter(provider
-                                            .detailMap['fertilizer']
-                                            .remainderDate)),
+                                        provider.detailMap['fertilizer']
+                                                    .remainderDate ==
+                                                null
+                                            ? false
+                                            : isDateAfter(provider
+                                                .detailMap['fertilizer']
+                                                .remainderDate)),
                                     ...getCheckText(
                                         Icons.sanitizer,
                                         Colors.yellow[800],
-                                        parseDate(provider.detailMap['spray']
-                                            .remainderCompletedDate),
+                                        provider.detailMap['spray']
+                                                    .remainderCompletedDate ==
+                                                null
+                                            ? ""
+                                            : parseDate(provider
+                                                .detailMap['spray']
+                                                .remainderCompletedDate),
                                         "İLAÇLANDI",
-                                        isDateAfter(provider
-                                            .detailMap['spray'].remainderDate)),
+                                        provider.detailMap['spray']
+                                                    .remainderDate ==
+                                                null
+                                            ? false
+                                            : isDateAfter(provider
+                                                .detailMap['spray']
+                                                .remainderDate)),
                                     ...getCheckText(
                                         Icons.shopping_basket,
                                         Colors.red[300],
-                                        parseDate(provider.detailMap['harvest']
-                                            .remainderCompletedDate),
+                                        provider.detailMap['harvest']
+                                                    .remainderCompletedDate ==
+                                                null
+                                            ? ""
+                                            : parseDate(provider
+                                                .detailMap['harvest']
+                                                .remainderCompletedDate),
                                         "HASAT EDİLDİ",
-                                        isDateAfter(provider
-                                            .detailMap['harvest']
-                                            .remainderDate)),
+                                        provider.detailMap['harvest']
+                                                    .remainderDate ==
+                                                null
+                                            ? false
+                                            : isDateAfter(provider
+                                                .detailMap['harvest']
+                                                .remainderDate)),
                                   ],
                                 ),
                               ),
@@ -377,6 +533,7 @@ class _EntityDetailsState extends State<EntityDetails> {
                                 Colors.blue[300],
                                 Colors.blue,
                                 true,
+                                context,
                               ),
                               getIconButton(
                                 Icons.nature_rounded,
@@ -385,6 +542,7 @@ class _EntityDetailsState extends State<EntityDetails> {
                                 Colors.brown[400],
                                 Colors.brown,
                                 true,
+                                context,
                               ),
                               getIconButton(
                                 Icons.sanitizer,
@@ -393,6 +551,7 @@ class _EntityDetailsState extends State<EntityDetails> {
                                 Colors.yellow[800],
                                 Colors.yellow[900],
                                 true,
+                                context,
                               ),
                               getIconButton(
                                 Icons.shopping_basket,
@@ -401,6 +560,7 @@ class _EntityDetailsState extends State<EntityDetails> {
                                 Colors.red[300],
                                 Colors.red[400],
                                 true,
+                                context,
                               ),
                             ],
                           ),
@@ -426,6 +586,10 @@ String parseDate(String value) {
   return new DateFormat("dd/MM/yyyy").format(DateTime.parse(value)).toString();
 }
 
+DateTime parseDateTime(DateTime value) {
+  return DateTime.parse(DateFormat("dd/MM/yyyy hh:mm:ss a").format(value));
+}
+
 bool isDateAfter(String value) {
-  return DateTime.parse(value).isAfter(DateTime.now());
+  return value == null ? false : DateTime.parse(value).isAfter(DateTime.now());
 }

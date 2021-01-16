@@ -48,43 +48,6 @@ class FieldDetails extends StatefulWidget {
 }
 
 String st = "";
-Widget noButton(Entity entity, context) {
-  Color color;
-  switch (entity.health) {
-    case HealthStatus.HEALTHY:
-      color = Colors.green;
-      break;
-    case HealthStatus.DISEASED:
-      color = Colors.orange;
-      break;
-    case HealthStatus.DEAD:
-      color = Colors.black;
-      break;
-  }
-  return Padding(
-    padding: const EdgeInsets.all(4.0),
-    child: MaterialButton(
-      padding: EdgeInsets.zero,
-      materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-      color: color,
-      shape: CircleBorder(),
-      onPressed: () {
-        print("come on");
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-              builder: (context) => EntityDetails(
-                    entity: entity,
-                  )),
-        );
-      },
-      child: Text(
-        entity.fakeID,
-        style: TextStyle(color: Colors.white, fontSize: 18),
-      ),
-    ),
-  );
-}
 
 class _FieldDetailsState extends State<FieldDetails> {
   bool fertilizerValue = false;
@@ -96,6 +59,52 @@ class _FieldDetailsState extends State<FieldDetails> {
   TextEditingController valueController = TextEditingController();
   TextEditingController skgController = TextEditingController();
   TextEditingController svalueController = TextEditingController();
+
+  Widget noButton(Entity entity, context) {
+    Color color;
+    switch (entity.health) {
+      case HealthStatus.HEALTHY:
+        color = Colors.green;
+        break;
+      case HealthStatus.DISEASED:
+        color = Colors.orange;
+        break;
+      case HealthStatus.DEAD:
+        color = Colors.black;
+        break;
+    }
+    return Padding(
+      padding: const EdgeInsets.all(4.0),
+      child: MaterialButton(
+        padding: EdgeInsets.zero,
+        materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+        color: color,
+        shape: CircleBorder(),
+        onPressed: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (context) => EntityDetails(
+                      entity: entity,
+                    )),
+          ).then((value) {
+            setState(() {
+              Navigator.pop(context);
+              Provider.of<EntityProvider>(context, listen: false)
+                  .updateFuture(widget.property);
+              refreshIndicatorKey.currentState.show();
+            });
+          });
+        },
+        child: FittedBox(
+          child: Text(
+            entity.fakeID,
+            style: TextStyle(color: Colors.white, fontSize: 18),
+          ),
+        ),
+      ),
+    );
+  }
 
   Widget detailCard(String st, int count, List<Entity> no, context) {
     return Flexible(
@@ -127,7 +136,8 @@ class _FieldDetailsState extends State<FieldDetails> {
                                 style: TextStyle(fontWeight: FontWeight.bold),
                               ),
                               content: Container(
-                                height: no.length.toDouble() + 10,
+                                height: no.length.toDouble() * 5 +
+                                    50, // ibret vol.2 no.length.toDouble() + 10
                                 width: MediaQuery.of(context).size.width * .0,
                                 color: Colors.white,
                                 child: GridView.count(
@@ -149,7 +159,14 @@ class _FieldDetailsState extends State<FieldDetails> {
                                           builder: (context) => newEntity(
                                                 property: widget.property,
                                               )),
-                                    );
+                                    ).then((value) {
+                                      setState(() {
+                                        Provider.of<EntityProvider>(context,
+                                                listen: false)
+                                            .updateFuture(widget.property);
+                                        Navigator.of(context).pop();
+                                      });
+                                    });
                                   },
                                 ),
                                 FlatButton(
@@ -507,6 +524,9 @@ class _FieldDetailsState extends State<FieldDetails> {
                                                 onChanged: (bool value) {
                                                   setState(() {
                                                     irrigationValue = value;
+                                                    refreshIndicatorKey
+                                                        .currentState
+                                                        .show();
                                                   });
                                                 }),
                                             Text("Sulandı"),
@@ -534,6 +554,9 @@ class _FieldDetailsState extends State<FieldDetails> {
                                                 onChanged: (bool value) {
                                                   setState(() {
                                                     fertilizerValue = value;
+                                                    refreshIndicatorKey
+                                                        .currentState
+                                                        .show();
                                                   });
                                                 }),
                                             Text("Gübrelendi"),
@@ -561,6 +584,9 @@ class _FieldDetailsState extends State<FieldDetails> {
                                                 onChanged: (bool value) {
                                                   setState(() {
                                                     sprayValue = value;
+                                                    refreshIndicatorKey
+                                                        .currentState
+                                                        .show();
                                                   });
                                                 }),
                                             Text("İlaçlandı"),
@@ -588,6 +614,9 @@ class _FieldDetailsState extends State<FieldDetails> {
                                                 onChanged: (bool value) {
                                                   setState(() {
                                                     harvestValue = value;
+                                                    refreshIndicatorKey
+                                                        .currentState
+                                                        .show();
                                                   });
                                                 }),
                                             Text("Toplandı"),
@@ -761,6 +790,7 @@ class _FieldDetailsState extends State<FieldDetails> {
     );
   }
 
+  final refreshIndicatorKey = GlobalKey<RefreshIndicatorState>();
   @override
   Widget build(BuildContext context) {
     int kg = 0;
@@ -805,106 +835,128 @@ class _FieldDetailsState extends State<FieldDetails> {
             backgroundColor: Colors.grey[200],
             iconTheme: new IconThemeData(color: Colors.green[600]),
           ),
-          body: FutureBuilder(
-            future: Provider.of<EntityProvider>(context).future,
-            builder: (context, snapshot) {
-              if (snapshot.connectionState == ConnectionState.waiting) {
-                return Container(
-                  color: Colors.grey[200],
-                  child: Center(
-                    child: CircularProgressIndicator(
-                      strokeWidth: 5,
+          body: RefreshIndicator(
+            key: refreshIndicatorKey,
+            onRefresh: () async {
+              await new Future.delayed(new Duration(seconds: 0));
+              setState(() {});
+              return null;
+            },
+            child: FutureBuilder(
+              future: Provider.of<EntityProvider>(context).future,
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return Container(
+                    color: Colors.grey[200],
+                    child: Center(
+                      child: CircularProgressIndicator(
+                        strokeWidth: 5,
+                      ),
                     ),
+                  );
+                }
+
+                return SingleChildScrollView(
+                  child: Container(
+                    color: Colors.grey[200],
+                    child: Column(mainAxisSize: MainAxisSize.max,
+                        //mainAxisAlignment: MainAxisAlignment.center,
+                        //crossAxisAlignment: CrossAxisAlignment.center,
+                        children: <Widget>[
+                          new Text(
+                            'AĞAÇ BİLGİSİ',
+                            style: TextStyle(
+                                fontSize: 20.0,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.black.withOpacity(1.0)),
+                          ),
+                          //Text(widget.field.location),
+                          Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              mainAxisSize: MainAxisSize.min,
+                              children: <Widget>[
+                                detailCard(
+                                    "TOPLAM AĞAÇ",
+                                    widget.property.all.length,
+                                    widget.property.all,
+                                    context),
+                                detailCard(
+                                    "HASTA AĞAÇ",
+                                    widget.property.diseased.length,
+                                    widget.property.diseased,
+                                    context),
+                              ]),
+                          Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: <Widget>[
+                                detailCard(
+                                    "DİKİLEN AĞAÇ",
+                                    widget.property.all.length,
+                                    widget.property.all,
+                                    context),
+                                detailCard(
+                                    "ÖLEN AĞAÇ",
+                                    widget.property.dead.length,
+                                    widget.property.dead,
+                                    context),
+                              ]),
+                          new Text(""),
+                          new Text(
+                            'ÜRÜN BİLGİSİ',
+                            style: TextStyle(
+                                fontSize: 20.0,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.black.withOpacity(1.0)),
+                          ),
+                          Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: <Widget>[
+                                productCard("BU DÖNEM", true, context, kg,
+                                    value, harvestDate),
+                                productCard("TOPLAM", true, context, kg, value,
+                                    harvestDate),
+                              ]),
+                          new Text(""),
+                          new Text(
+                            'DİĞER BİLGİLER',
+                            style: TextStyle(
+                                fontSize: 20.0,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.black.withOpacity(1.0)),
+                          ),
+                          Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: <Widget>[
+                                otherCard(
+                                    "SULAMA BİLGİSİ",
+                                    irrigationValue,
+                                    irrigationDate,
+                                    context,
+                                    Color.fromARGB(255, 99, 181, 246)),
+                                otherCard(
+                                    "GÜBRE BİLGİSİ",
+                                    fertilizerValue,
+                                    fertilizerDate,
+                                    context,
+                                    Color.fromARGB(255, 141, 110, 99)),
+                              ]),
+                          Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: <Widget>[
+                                otherCard("İLAÇ BİLGİSİ", sprayValue, sprayDate,
+                                    context, Color.fromARGB(255, 249, 168, 39)),
+                                otherCard(
+                                    "HASAT BİLGİSİ",
+                                    harvestValue,
+                                    whenHarvestDate,
+                                    context,
+                                    Color.fromARGB(255, 229, 115, 115)),
+                              ]),
+                        ]),
                   ),
                 );
-              }
-
-              return SingleChildScrollView(
-                child: Container(
-                  color: Colors.grey[200],
-                  child: Column(mainAxisSize: MainAxisSize.max,
-                      //mainAxisAlignment: MainAxisAlignment.center,
-                      //crossAxisAlignment: CrossAxisAlignment.center,
-                      children: <Widget>[
-                        new Text(
-                          'AĞAÇ BİLGİSİ',
-                          style: TextStyle(
-                              fontSize: 20.0,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.black.withOpacity(1.0)),
-                        ),
-                        //Text(widget.field.location),
-                        Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            mainAxisSize: MainAxisSize.min,
-                            children: <Widget>[
-                              detailCard(
-                                  "TOPLAM AĞAÇ",
-                                  widget.property.all.length,
-                                  widget.property.all,
-                                  context),
-                              detailCard(
-                                  "HASTA AĞAÇ",
-                                  widget.property.diseased.length,
-                                  widget.property.diseased,
-                                  context),
-                            ]),
-                        Row(mainAxisSize: MainAxisSize.min, children: <Widget>[
-                          detailCard("DİKİLEN AĞAÇ", widget.property.all.length,
-                              widget.property.all, context),
-                          detailCard("ÖLEN AĞAÇ", widget.property.dead.length,
-                              widget.property.dead, context),
-                        ]),
-                        new Text(""),
-                        new Text(
-                          'ÜRÜN BİLGİSİ',
-                          style: TextStyle(
-                              fontSize: 20.0,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.black.withOpacity(1.0)),
-                        ),
-                        Row(mainAxisSize: MainAxisSize.min, children: <Widget>[
-                          productCard("BU DÖNEM", true, context, kg, value,
-                              harvestDate),
-                          productCard(
-                              "TOPLAM", true, context, kg, value, harvestDate),
-                        ]),
-                        new Text(""),
-                        new Text(
-                          'DİĞER BİLGİLER',
-                          style: TextStyle(
-                              fontSize: 20.0,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.black.withOpacity(1.0)),
-                        ),
-                        Row(mainAxisSize: MainAxisSize.min, children: <Widget>[
-                          otherCard(
-                              "SULAMA BİLGİSİ",
-                              irrigationValue,
-                              irrigationDate,
-                              context,
-                              Color.fromARGB(255, 99, 181, 246)),
-                          otherCard(
-                              "GÜBRE BİLGİSİ",
-                              fertilizerValue,
-                              fertilizerDate,
-                              context,
-                              Color.fromARGB(255, 141, 110, 99)),
-                        ]),
-                        Row(mainAxisSize: MainAxisSize.min, children: <Widget>[
-                          otherCard("İLAÇ BİLGİSİ", sprayValue, sprayDate,
-                              context, Color.fromARGB(255, 249, 168, 39)),
-                          otherCard(
-                              "HASAT BİLGİSİ",
-                              harvestValue,
-                              whenHarvestDate,
-                              context,
-                              Color.fromARGB(255, 229, 115, 115)),
-                        ]),
-                      ]),
-                ),
-              );
-            },
+              },
+            ),
           ),
           /*floatingActionButton: FloatingActionButton(
               heroTag: "add",
@@ -919,7 +971,6 @@ class _FieldDetailsState extends State<FieldDetails> {
                           )),
                 ).then((value) {
                   setState(() {
-                    print("update babyyy");
                     Provider.of<EntityProvider>(context, listen: false)
                         .updateFuture(widget.property);
                   });

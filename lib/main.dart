@@ -32,13 +32,13 @@ class MyApp extends StatelessWidget {
               bodyColor: Colors.black,
               displayColor: Colors.black)),
 
-       //home: HomePage(
-        // title: 'Home',
-       //),
-       home:RealAnimalDetails(
-         title: "RealAnimalDetails",
-       ),
-      //home: LoginPage(),
+      //home: HomePage(
+      // title: 'Home',
+      //),
+      //home:RealAnimalDetails(
+      //  title: "RealAnimalDetails",
+      //),
+      home: LoginPage(),
       //  home: FieldDetails(
       //   property: new Property(
       //       categoryID: 2,

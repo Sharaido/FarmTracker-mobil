@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:flutter_app/models/IncomeExpense.dart';
 import 'package:flutter_app/models/category.dart';
 import 'package:flutter_app/models/field.dart';
 import 'package:flutter_app/models/user.dart';
@@ -67,7 +68,7 @@ class API {
       'Accept': 'application/json',
       'Authorization': 'Bearer $jwt',
     });
-    return response.statusCode == 404 ? [] : _parseDetails(response.body);
+    return response.statusCode != 200 ? [] : _parseDetails(response.body);
   }
 
   static List<EntityDetail> _parseDetails(String responseBody) {
@@ -130,6 +131,25 @@ class API {
     return Entity.fromJson(parsed);
   }
 
+  static Future<List<IncomeExpense>> getIncomesExpenses(String id) async {
+    final response =
+        await http.get('$BASE_URL/api/Farms/IncomeAndExpenses/$id', headers: {
+      'Content-Type': 'application/json',
+      'Accept': 'application/json',
+      'Authorization': 'Bearer $jwt',
+    });
+    return response.statusCode == 404
+        ? []
+        : _parseIncomesExpenses(response.body);
+  }
+
+  static List<IncomeExpense> _parseIncomesExpenses(String responseBody) {
+    final parsed = jsonDecode(responseBody).cast<Map<String, dynamic>>();
+    return parsed
+        .map<IncomeExpense>((json) => IncomeExpense.fromJson(json))
+        .toList();
+  }
+
   static Future<bool> createFarm(String name, String desc) async {
     final http.Response response = await http.post(
       '$BASE_URL/api/Farms/',
@@ -181,6 +201,26 @@ class API {
     return response.statusCode == 201;
   }
 
+  static Future<bool> createIncomeExpense(String farmID, String date,
+      String head, String desc, double cost, bool isExpense) async {
+    var endpoint = isExpense ? 'Expenses' : 'Incomes';
+    final http.Response response = await http.post(
+      '$BASE_URL/api/Farms/$endpoint/',
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+        'Authorization': 'Bearer $jwt',
+      },
+      body: jsonEncode(<String, dynamic>{
+        "FUID": farmID,
+        "Date": date,
+        "Head": head,
+        "Description": desc,
+        "Cost": cost,
+      }),
+    );
+    return response.statusCode == 201;
+  }
+
   static Future<Entity> createEntity(int categoryID, String propertyID,
       String id, String name, String desc, int count) async {
     final http.Response response = await http.post(
@@ -226,6 +266,18 @@ class API {
     return response.statusCode == 201;
   }
 
+  static Future<bool> updateDetail(EntityDetail detail) async {
+    final http.Response response = await http.put(
+      '$BASE_URL/api/Farms/Properties/Entities/Details/${detail.duid}',
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+        'Authorization': 'Bearer $jwt',
+      },
+      body: jsonEncode(detail.toJson()),
+    );
+    return response.statusCode == 200;
+  }
+
   static Future<bool> deleteFarm(id) async {
     final http.Response response = await http.delete(
       '$BASE_URL/api/Farms/$id',
@@ -234,7 +286,6 @@ class API {
         'Authorization': 'Bearer $jwt',
       },
     );
-    print(response.body);
     return response.statusCode == 200;
   }
 
@@ -246,7 +297,28 @@ class API {
         'Authorization': 'Bearer $jwt',
       },
     );
-    print(response.body);
+    return response.statusCode == 200;
+  }
+
+  static Future<bool> deleteIncomeExpense(id) async {
+    final http.Response response = await http.delete(
+      '$BASE_URL/api/Farms/IncomeAndExpenses/$id',
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+        'Authorization': 'Bearer $jwt',
+      },
+    );
+    return response.statusCode == 200;
+  }
+
+  static Future<bool> deleteEntity(id) async {
+    final http.Response response = await http.delete(
+      '$BASE_URL/api/Farms/Properties/Entities/$id',
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+        'Authorization': 'Bearer $jwt',
+      },
+    );
     return response.statusCode == 200;
   }
 

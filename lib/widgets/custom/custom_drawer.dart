@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_app/pages/expensepage.dart';
 import 'package:flutter_app/pages/homepage.dart';
-import 'package:flutter_app/pages/login_page.dart';
 import 'package:flutter_app/pages/my_fields.dart';
 import 'package:flutter_app/pages/user_profile.dart';
 import 'package:flutter_app/widgets/overriden_default_widgets/my_drawer.dart';
@@ -11,7 +9,9 @@ import 'custom_drawer_header.dart';
 
 class CustomDrawer extends StatelessWidget {
   CustomDrawer(this.selected);
+
   final String selected;
+
   @override
   Widget build(BuildContext context) {
     return MyDrawer(
@@ -36,15 +36,6 @@ class CustomDrawer extends StatelessWidget {
                 var jwt = await storage.read(key: "token");
                 Navigator.of(context)
                     .push(routeRightToLeft(MyFields(jwt: jwt)));
-              },
-              selected: selected),
-          _createDrawerItem(
-              icon: Icons.multiline_chart,
-              text: 'GELİR - GİDER',
-              onTap: () {
-                Navigator.of(context).push(routeRightToLeft(ExpensePage(
-                  title: 'Gelir - Gider',
-                )));
               },
               selected: selected),
           _createDrawerItem(
@@ -107,7 +98,7 @@ Widget _createLogo() {
   return Column(
     children: [
       SizedBox(
-        height: 35,
+        height: 50,
       ),
       Text(
         'Farm Tracker',

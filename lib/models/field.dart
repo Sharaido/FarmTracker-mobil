@@ -251,7 +251,7 @@ class EntityDetail {
     this.deletedByUuid,
   });
 
-  factory EntityDetail.fromJson(Map<String, dynamic> json) {
+  factory EntityDetail.fromJson(Map<dynamic, dynamic> json) {
     return EntityDetail(
       duid: json['duid'],
       euid: json['euid'],

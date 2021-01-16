@@ -1,9 +1,12 @@
+// aga be
+
 import 'dart:developer';
 
 import 'package:datetime_picker_formfield/datetime_picker_formfield.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_app/widgets/custom/custom_drawer.dart';
 import 'package:intl/intl.dart';
+
 import '../models/transactions.dart' as transactions;
 
 class ExpensePage extends StatefulWidget {
@@ -83,54 +86,63 @@ class _ExpensePageState extends State<ExpensePage> {
             width: 4,
           ),
         ),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            SizedBox(height: 10),
-            Text(
-              '${titles[index]}',
-              textAlign: TextAlign.center,
-              style: TextStyle(
-                fontFamily: 'Montserrat',
-                fontWeight: FontWeight.bold,
-                fontSize: 15,
-                color: Colors.white,
-              ),
-            ),
-            SizedBox(height: 10),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Text(
-                  '${addamount[index]}',
-                  style: TextStyle(
-                      color: Colors.white,
-                      fontFamily: 'Montserrat',
-                      fontWeight: FontWeight.bold,
-                      fontSize: 15),
+        child: Padding(
+          padding: const EdgeInsets.fromLTRB(5, 12, 5, 12),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(
+                'Farm Name',
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  fontFamily: 'Montserrat',
+                  fontWeight: FontWeight.bold,
+                  fontSize: 15,
+                  color: Colors.white,
                 ),
-                SizedBox(width: 10),
-                Text(
-                  'TL',
-                  style: TextStyle(
-                      color: Colors.white,
-                      fontFamily: 'Montserrat',
-                      fontWeight: FontWeight.bold,
-                      fontSize: 15),
-                ),
-              ],
-            ),
-            SizedBox(height: 10),
-            Text(
-              '${dates[index]}',
-              style: TextStyle(
-                fontFamily: 'Montserrat',
-                fontSize: 15,
-                fontWeight: FontWeight.bold,
-                color: Colors.white,
               ),
-            ),
-          ],
+              Text(
+                '${titles[index]}',
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  fontFamily: 'Montserrat',
+                  fontWeight: FontWeight.bold,
+                  fontSize: 15,
+                  color: Colors.white,
+                ),
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(
+                    '${addamount[index]}',
+                    style: TextStyle(
+                        color: Colors.white,
+                        fontFamily: 'Montserrat',
+                        fontWeight: FontWeight.bold,
+                        fontSize: 15),
+                  ),
+                  Text(
+                    'TL',
+                    style: TextStyle(
+                        color: Colors.white,
+                        fontFamily: 'Montserrat',
+                        fontWeight: FontWeight.bold,
+                        fontSize: 15),
+                  ),
+                ],
+              ),
+              Text(
+                '${dates[index]}',
+                style: TextStyle(
+                  fontFamily: 'Montserrat',
+                  fontSize: 15,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.white,
+                ),
+              ),
+            ],
+          ),
         ),
         onPressed: () {
           showDialog(
@@ -199,12 +211,12 @@ class _ExpensePageState extends State<ExpensePage> {
                       child: Column(
                         mainAxisSize: MainAxisSize.min,
                         children: [
-                          Text('Add Income/Expense'),
+                          Text('Gelir - Gider Ekle'),
                           SizedBox(height: 15),
                           TextFormField(
                             validator: (value) {
                               if (value.isEmpty) {
-                                return 'Please enter the title';
+                                return 'Başlık boş kalamaz.';
                               }
                               return null;
                             },
@@ -213,14 +225,14 @@ class _ExpensePageState extends State<ExpensePage> {
                               border: OutlineInputBorder(
                                 borderRadius: BorderRadius.circular(10),
                               ),
-                              labelText: 'Title',
+                              labelText: 'Başlık',
                             ),
                           ),
                           SizedBox(height: 10),
                           TextFormField(
                             validator: (value) {
                               if (value.isEmpty) {
-                                return 'Please enter the description';
+                                return 'Açıklama boş kalamaz.';
                               }
                               return null;
                             },
@@ -230,14 +242,14 @@ class _ExpensePageState extends State<ExpensePage> {
                               border: OutlineInputBorder(
                                 borderRadius: BorderRadius.circular(10),
                               ),
-                              labelText: 'Description',
+                              labelText: 'Açıklama',
                             ),
                           ),
                           SizedBox(height: 10),
                           TextFormField(
                             validator: (value) {
                               if (value.isEmpty) {
-                                return 'Please enter the amount';
+                                return 'Miktar boş kalamaz.';
                               }
                               return null;
                             },
@@ -247,19 +259,19 @@ class _ExpensePageState extends State<ExpensePage> {
                               border: OutlineInputBorder(
                                 borderRadius: BorderRadius.circular(10),
                               ),
-                              labelText: 'Amount',
+                              labelText: 'Miktar',
                             ),
                           ),
                           SizedBox(height: 15),
                           DateTimeField(
                             validator: (value) {
                               if (value == null) {
-                                return 'Please choose a date';
+                                return 'Lütfen tarih seçin.';
                               }
                               return null;
                             },
                             decoration: InputDecoration(
-                              labelText: 'Date',
+                              labelText: 'Tarih',
                               border: OutlineInputBorder(
                                 borderRadius: BorderRadius.circular(10),
                               ),
@@ -276,7 +288,7 @@ class _ExpensePageState extends State<ExpensePage> {
                           ),
                           SizedBox(height: 15),
                           CheckboxListTile(
-                            title: const Text('Is it an expense?'),
+                            title: const Text('Bu bir gider mi?'),
                             value: isExpense,
                             onChanged: (bool value) {
                               setState(() {
@@ -287,6 +299,7 @@ class _ExpensePageState extends State<ExpensePage> {
                           SizedBox(
                             width: 320.0,
                             child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
                                 RaisedButton(
                                   shape: RoundedRectangleBorder(
@@ -297,7 +310,7 @@ class _ExpensePageState extends State<ExpensePage> {
                                         .pop();
                                   },
                                   child: Text(
-                                    "Cancel",
+                                    "İptal",
                                     style: TextStyle(color: Colors.white),
                                   ),
                                 ),
@@ -315,7 +328,7 @@ class _ExpensePageState extends State<ExpensePage> {
                                         .pop();
                                   },
                                   child: Text(
-                                    "Submit",
+                                    "Kaydet",
                                     style: TextStyle(color: Colors.white),
                                   ),
                                 ),
